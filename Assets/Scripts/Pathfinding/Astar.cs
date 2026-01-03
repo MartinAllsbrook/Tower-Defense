@@ -21,6 +21,8 @@ public class Astar
     }
     public List<Node> CreatePath(Vector3Int[,] grid, Vector2Int start, Vector2Int end, bool allowDiagonalMovement = false)
     {
+        Debug.Log(grid);
+
         // Initialize nodes
         Node End = null;
         Node Start = null;
@@ -41,7 +43,7 @@ public class Astar
         {
             for (int j = 0; j < rows; j++)
             {
-                NodeGrid[i, j].AddNeighbors(NodeGrid, i, j, allowDiagonalMovement);
+                NodeGrid[i, j].AddNeighbors(NodeGrid, i, j);
                 if (NodeGrid[i, j].X == start.x && NodeGrid[i, j].Y == start.y)
                     Start = NodeGrid[i, j];
                 else if (NodeGrid[i, j].X == end.x && NodeGrid[i, j].Y == end.y)

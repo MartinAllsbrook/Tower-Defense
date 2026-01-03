@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject defensePreviewPrefab;
     [SerializeField] private Tilemap hexTilemap;
     [SerializeField] private GameObject hexagonHighlightPrefab;
+    [SerializeField] private Enemy enemy;
 
     private bool placingDefense = false;
     private GameObject defensePreviewInstance;
@@ -90,6 +91,14 @@ public class Player : MonoBehaviour
             }
             
             placingDefense = false;
+        } 
+        else
+        {
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            mouseWorldPos.z = 0f;
+            // Convert world position to cell coordinates
+            Vector3Int cellPosition = hexTilemap.WorldToCell(mouseWorldPos);
+            enemy.MoveToLocation(new Vector2Int(cellPosition.x, cellPosition.y));
         }
     }
 

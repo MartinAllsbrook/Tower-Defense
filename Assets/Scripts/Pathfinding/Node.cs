@@ -30,31 +30,31 @@ public class Node
         Neighbors = new List<Node>();
     }
 
-    public void AddNeighbors(Node[,] grid, int x, int y, bool allowDiagonal)
+    public void AddNeighbors(Node[,] grid, int x, int y)
     {
-        // X
-        if (x < grid.GetUpperBound(0))
-            Neighbors.Add(grid[x + 1, y]);
-        if (x > 0)
-            Neighbors.Add(grid[x - 1, y]);
+        // Flat top hex grid neighbor offsets
+        // Even-q layout (even columns shifted down)
+        int[][] evenOffsets = new int[][] {
+            new int[] {+1,  0}, new int[] { 0, -1}, new int[] {-1, -1},
+            new int[] {-1,  0}, new int[] {-1, +1}, new int[] { 0, +1}
+        };
+        int[][] oddOffsets = new int[][] {
+            new int[] {+1,  0}, new int[] {+1, -1}, new int[] { 0, -1},
+            new int[] {-1,  0}, new int[] { 0, +1}, new int[] {+1, +1}
+        };
 
-        // Y
-        if (y < grid.GetUpperBound(1))
-            Neighbors.Add(grid[x, y + 1]);
-        if (y > 0)
-            Neighbors.Add(grid[x, y - 1]);
+        int maxX = grid.GetUpperBound(0);
+        int maxY = grid.GetUpperBound(1);
+        int[][] offsets = (x % 2 == 0) ? evenOffsets : oddOffsets;
 
-        if (!allowDiagonal)
-            return;
-     
-        // Diagonals
-        if (x > 0 && y > 0)
-            Neighbors.Add(grid[x - 1, y - 1]);
-        if (x < grid.GetUpperBound(0) && y > 0)
-            Neighbors.Add(grid[x + 1, y - 1]);
-        if (x > 0 && y < grid.GetUpperBound(1))
-            Neighbors.Add(grid[x - 1, y + 1]);
-        if (x < grid.GetUpperBound(0) && y < grid.GetUpperBound(1))
-            Neighbors.Add(grid[x + 1, y + 1]);
+        foreach (var offset in offsets)
+        {
+            int nx = x + offset[0];
+            int ny = y + offset[1];
+            if (nx >= 0 && nx <= maxX && ny >= 0 && ny <= maxY)
+            {
+                Neighbors.Add(grid[nx, ny]);
+            }
+        }
     }
 }
