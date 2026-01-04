@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -9,10 +10,12 @@ public class Enemy : MonoBehaviour
     public float speed = 1f;
     private Vector3Int[,] grid;
     private Astar aStar;
+    private Tilemap walkableTilemap;
+    private Coroutine moveCoroutine;
 
     void Start()
     {
-        Tilemap walkableTilemap = GameObject.FindWithTag("Walkable Tilemap").GetComponent<Tilemap>();
+        walkableTilemap = GameObject.FindWithTag("Walkable Tilemap").GetComponent<Tilemap>();
 
         walkableTilemap.CompressBounds(); // Optional: compress bounds to fit tiles
         grid = CreateGrid(walkableTilemap);
@@ -45,19 +48,64 @@ public class Enemy : MonoBehaviour
 
     public void MoveToLocation(Vector2Int end)
     {
-        List<Node> path = aStar.CreatePath(grid, new Vector2Int(0, 0), end);
+        Vector3Int gridPos = walkableTilemap.WorldToCell(transform.position);
+        List<Node> path = aStar.CreatePath(grid, new Vector2Int(gridPos.x, gridPos.y), end);
 
-        if (path != null)
+        if (path != null && path.Count > 0)
         {
-            foreach (var node in path)
+            // Stop any existing movement
+            if (moveCoroutine != null)
             {
-                Debug.Log($"Path Node: ({node.X}, {node.Y})");
+                StopCoroutine(moveCoroutine);
             }
+            
+            // Start moving along the path
+            moveCoroutine = StartCoroutine(MoveAlongPath(path));
         }
         else
         {
             Debug.Log("No valid path found.");
         }
+    }
+
+    private IEnumerator MoveAlongPath(List<Node> path)
+    {
+        foreach (var node in path)
+        {
+            // Convert grid coordinates to world position (flat-top hex grid)
+            Vector3 targetWorldPos = GridToWorldPosition(node.X, node.Y);
+            
+            // Move towards the target position
+            while (Vector3.Distance(transform.position, targetWorldPos) > 0.01f)
+            {
+                transform.position = Vector3.MoveTowards(
+                    transform.position, 
+                    targetWorldPos, 
+                    speed * Time.deltaTime
+                );
+                yield return null;
+            }
+            
+            // Ensure we're exactly at the target position
+            transform.position = targetWorldPos;
+        }
+        
+        Debug.Log("Enemy reached destination.");
+    }
+
+    private Vector3 GridToWorldPosition(int gridX, int gridY)
+    {
+        // Convert grid coordinates to tilemap cell position
+        Vector3Int cellPosition = new Vector3Int(gridX, gridY, 0);
+        
+        // Get the world position from the tilemap
+        // Tilemap.CellToWorld gives us the world position of the cell
+        Vector3 worldPosition = walkableTilemap.CellToWorld(cellPosition);
+        
+        // // Center the position within the cell
+        // worldPosition += walkableTilemap.cellSize / 2f;
+        
+        return worldPosition;
     }
 
     void Update()

@@ -30,31 +30,56 @@ public class Node
         Neighbors = new List<Node>();
     }
 
-    public void AddNeighbors(Node[,] grid, int x, int y)
+    public void AddNeighbors(Node[,] grid, int arrayX, int arrayY)
     {
         // Flat top hex grid neighbor offsets
-        // Even-q layout (even columns shifted down)
-        int[][] evenOffsets = new int[][] {
-            new int[] {+1,  0}, new int[] { 0, -1}, new int[] {-1, -1},
-            new int[] {-1,  0}, new int[] {-1, +1}, new int[] { 0, +1}
+        // Even-q layout (even COLUMNS are reference, odd columns shifted down)
+        // When column (X coordinate) is even
+        int[][] evenColOffsets = new int[][] {
+            new int[] {+1,  0}, // N
+            new int[] { 0, +1}, // NE
+            new int[] {-1, +1}, // SE
+            new int[] {-1,  0}, // S
+            new int[] {-1, -1}, // SW
+            new int[] { 0, -1}  // NW
         };
-        int[][] oddOffsets = new int[][] {
-            new int[] {+1,  0}, new int[] {+1, -1}, new int[] { 0, -1},
-            new int[] {-1,  0}, new int[] { 0, +1}, new int[] {+1, +1}
+        // When column (X coordinate) is odd (shifted down, so upper diagonals have Y-1)
+        int[][] oddColOffsets = new int[][] {
+            new int[] {+1,  0}, // N
+            new int[] {+1, +1}, // NE
+            new int[] { 0, +1}, // SE
+            new int[] {-1,  0}, // S
+            new int[] { 0, -1}, // SW
+            new int[] {+1, -1}  // NW
         };
 
-        int maxX = grid.GetUpperBound(0);
-        int maxY = grid.GetUpperBound(1);
-        int[][] offsets = (x % 2 == 0) ? evenOffsets : oddOffsets;
+        int maxArrayX = grid.GetUpperBound(0);
+        int minArrayX = grid.GetLowerBound(0);
+        int maxArrayY = grid.GetUpperBound(1);
+        int minArrayY = grid.GetLowerBound(1);
+        
+        // Use the actual Y coordinate of THIS node, not the array index
+        int[][] offsets = (this.Y % 2 == 0) ? evenColOffsets : oddColOffsets;
 
         foreach (var offset in offsets)
         {
-            int nx = x + offset[0];
-            int ny = y + offset[1];
-            if (nx >= 0 && nx <= maxX && ny >= 0 && ny <= maxY)
+            // Calculate neighbor's actual coordinates
+            int neighborX = this.X + offset[0];
+            int neighborY = this.Y + offset[1];
+            
+            // Search for the node with matching actual coordinates
+            for (int i = minArrayX; i <= maxArrayX; i++)
             {
-                Neighbors.Add(grid[nx, ny]);
+                for (int j = minArrayY; j <= maxArrayY; j++)
+                {
+                    if (grid[i, j].X == neighborX && grid[i, j].Y == neighborY)
+                    {
+                        Neighbors.Add(grid[i, j]);
+                        goto NextOffset; // Found the neighbor, move to next offset
+                    }
+                }
             }
+            NextOffset:;
         }
     }
 }

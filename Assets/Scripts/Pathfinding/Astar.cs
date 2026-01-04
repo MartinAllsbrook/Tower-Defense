@@ -135,20 +135,16 @@ public class Astar
 
     private int Heuristic(Node a, Node b, bool allowDiagonal)
     {
-        if (!allowDiagonal)
-        {
-            //manhattan
-            var dx = Math.Abs(a.X - b.X);
-            var dy = Math.Abs(a.Y - b.Y);
-            return 1 * (dx + dy);
-        }
-        else
-        {
-            //diagonal
-            // Chebyshev distance
-            var dx = Math.Abs(a.X - b.X);
-            var dy = Math.Abs(a.Y - b.Y);
-            return Math.Max(dx, dy);
-        }
+        // Hexagonal distance for even-q offset coordinates (flat-top hexagons)
+        // Convert from offset coordinates to axial coordinates for distance calculation
+        int aq = a.X;
+        int ar = a.Y - (a.X - (a.X & 1)) / 2;
+        int bq = b.X;
+        int br = b.Y - (b.X - (b.X & 1)) / 2;
+        
+        // Calculate hex distance in axial coordinates (cube distance / 2)
+        int distance = (Math.Abs(aq - bq) + Math.Abs(aq + ar - bq - br) + Math.Abs(ar - br)) / 2;
+        
+        return distance;
     }
 }
