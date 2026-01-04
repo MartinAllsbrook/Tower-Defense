@@ -68,18 +68,26 @@ public class Node
             int neighborY = this.Y + offset[1];
             
             // Search for the node with matching actual coordinates
-            for (int i = minArrayX; i <= maxArrayX; i++)
+            Node neighbor = FindNodeInGrid(grid, neighborX, neighborY, minArrayX, maxArrayX, minArrayY, maxArrayY);
+            if (neighbor != null)
             {
-                for (int j = minArrayY; j <= maxArrayY; j++)
+                Neighbors.Add(neighbor);
+            }
+        }
+    }
+
+    private Node FindNodeInGrid(Node[,] grid, int targetX, int targetY, int minX, int maxX, int minY, int maxY)
+    {
+        for (int i = minX; i <= maxX; i++)
+        {
+            for (int j = minY; j <= maxY; j++)
+            {
+                if (grid[i, j].X == targetX && grid[i, j].Y == targetY)
                 {
-                    if (grid[i, j].X == neighborX && grid[i, j].Y == neighborY)
-                    {
-                        Neighbors.Add(grid[i, j]);
-                        goto NextOffset; // Found the neighbor, move to next offset
-                    }
+                    return grid[i, j];
                 }
             }
-            NextOffset:;
         }
+        return null;
     }
 }

@@ -1,13 +1,18 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using TMPro;
+using Unity.VisualScripting;
 
 public class GridDebug : MonoBehaviour
 {
     [SerializeField] private Tilemap walkableTilemap;
+    [SerializeField] private bool showGrid = false;
 
     void Start()
     {
+        if (!showGrid)
+            return;
+
         // Tilemap walkableTilemap = GameObject.FindWithTag("Walkable Tilemap").GetComponent<Tilemap>();
         walkableTilemap.CompressBounds(); // Optional: compress bounds to fit tiles
         BoundsInt bounds = walkableTilemap.cellBounds;

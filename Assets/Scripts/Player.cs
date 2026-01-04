@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Tilemap hexTilemap;
     [SerializeField] private GameObject hexagonHighlightPrefab;
     [SerializeField] private Enemy enemy;
+    [SerializeField] private RuleTile wallTile;
 
     private bool placingDefense = false;
     private GameObject defensePreviewInstance;
@@ -82,21 +83,24 @@ public class Player : MonoBehaviour
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             mouseWorldPos.z = 0f;
-            Instantiate(defensePrefab, mouseWorldPos, Quaternion.identity);
+            Vector3Int cellPosition = hexTilemap.WorldToCell(mouseWorldPos);
+            hexTilemap.SetTile(cellPosition, wallTile); // Remove tile for test
+
             
-            // Clean up preview
-            if (defensePreviewInstance != null)
-            {
-                Destroy(defensePreviewInstance);
-            }
+            // Instantiate(defensePrefab, mouseWorldPos, Quaternion.identity);
             
-            placingDefense = false;
+            // // Clean up preview
+            // if (defensePreviewInstance != null)
+            // {
+            //     Destroy(defensePreviewInstance);
+            // }
+            
+            // placingDefense = false;
         } 
         else
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             mouseWorldPos.z = 0f;
-            // Convert world position to cell coordinates
             Vector3Int cellPosition = hexTilemap.WorldToCell(mouseWorldPos);
             enemy.MoveToLocation(new Vector2Int(cellPosition.x, cellPosition.y));
         }

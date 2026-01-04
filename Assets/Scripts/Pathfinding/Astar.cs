@@ -202,11 +202,13 @@ public class Astar
 
     /// <summary>
     /// Draws a line between two hexes using linear interpolation in cube coordinates
-    /// Returns all hex coordinates along the line
+    /// Returns all hex coordinates along the line.
+    /// Uses supersampling (multiple samples per hex) to ensure no hexes are missed.
     /// </summary>
     private List<Vector2Int> HexLineDraw(int x0, int y0, int x1, int y1)
     {
         List<Vector2Int> results = new List<Vector2Int>();
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>(); // Track unique hexes
         
         // Convert offset coordinates to cube coordinates
         Vector3 a = OffsetToCube(x0, y0);
@@ -215,17 +217,23 @@ public class Astar
         // Calculate distance in hex space
         int distance = (int)((Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y) + Math.Abs(a.z - b.z)) / 2);
         
-        // Interpolate along the line
-        for (int i = 0; i <= distance; i++)
+        // Supersample: Use 3 samples per hex distance unit to catch hexes near boundaries
+        // This ensures the line doesn't miss hexes it passes through
+        int samples = Math.Max(distance * 5, 1);
+        
+        // Interpolate along the line with higher sampling rate
+        for (int i = 0; i <= samples; i++)
         {
-            float t = distance == 0 ? 0f : (float)i / distance;
+            float t = samples == 0 ? 0f : (float)i / samples;
             Vector3 cubeCoord = CubeLerp(a, b, t);
             Vector3 rounded = CubeRound(cubeCoord);
             Vector2Int offsetCoord = CubeToOffset((int)rounded.x, (int)rounded.y, (int)rounded.z);
             
-            // Avoid duplicates
-            if (results.Count == 0 || results[results.Count - 1] != offsetCoord)
+            // Only add if we haven't seen this hex before
+            if (visited.Add(offsetCoord))
+            {
                 results.Add(offsetCoord);
+            }
         }
         
         return results;
