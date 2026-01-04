@@ -92,7 +92,7 @@ public class Astar
             OpenSet.Remove(current);
             ClosedSet.Add(current);
 
-            // Examine each neighbor of the current node
+            // Examine each neighbor of the current node (Theta* algorithm)
             var neighbors = current.Neighbors;
             for (int i = 0; i < neighbors.Count; i++)
             {
@@ -100,8 +100,25 @@ public class Astar
                 // Skip if neighbor is already evaluated (in ClosedSet) or is not traversable
                 if (!ClosedSet.Contains(n) && n.T)
                 {
-                    // Calculate tentative G score (cost from start to this neighbor through current node)
-                    var tempG = current.G + current.C;
+                    // THETA* KEY DIFFERENCE: Check line of sight from parent
+                    // If there's line of sight from current's parent to this neighbor,
+                    // we can skip the current node and create a more direct path
+                    Node parent = current.previous;
+                    int tempG;
+                    Node pathParent;
+                    
+                    if (parent != null && LineOfSight(parent, n))
+                    {
+                        // Path 2: Direct line from parent to neighbor (skip current node)
+                        tempG = parent.G + Heuristic(parent, n, allowDiagonalMovement);
+                        pathParent = parent;
+                    }
+                    else
+                    {
+                        // Path 1: Traditional A* path through current node
+                        tempG = current.G + current.C;
+                        pathParent = current;
+                    }
 
                     bool newPath = false;
                     if (OpenSet.Contains(n)) // Neighbor is already discovered
@@ -124,7 +141,7 @@ public class Astar
                     {
                         n.H = Heuristic(n, End, allowDiagonalMovement); // Calculate heuristic (estimated cost to goal)
                         n.F = n.G + n.H; // Total estimated cost (actual cost + heuristic)
-                        n.previous = current; // Track the path by setting parent node
+                        n.previous = pathParent; // Track the path (may skip current node if LOS exists)
                     }
                 }
             }
@@ -135,16 +152,140 @@ public class Astar
 
     private int Heuristic(Node a, Node b, bool allowDiagonal)
     {
-        // Hexagonal distance for even-q offset coordinates (flat-top hexagons)
-        // Convert from offset coordinates to axial coordinates for distance calculation
-        int aq = a.X;
-        int ar = a.Y - (a.X - (a.X & 1)) / 2;
-        int bq = b.X;
-        int br = b.Y - (b.X - (b.X & 1)) / 2;
+        // Use Euclidean distance between node a and node b
+        double dx = a.X - b.X;
+        double dy = a.Y - b.Y;
+        return (int)Mathf.RoundToInt(Mathf.Sqrt((float)(dx * dx + dy * dy)));
+    }
+
+    /// <summary>
+    /// Checks if there is a clear line of sight between two nodes on a hexagonal grid
+    /// </summary>
+    private bool LineOfSight(Node a, Node b)
+    {
+        if (a == null || b == null) return false;
+        if (a == b) return true;
         
-        // Calculate hex distance in axial coordinates (cube distance / 2)
-        int distance = (Math.Abs(aq - bq) + Math.Abs(aq + ar - bq - br) + Math.Abs(ar - br)) / 2;
+        // Get all hexes along the line between a and b
+        List<Vector2Int> hexLine = HexLineDraw(a.X, a.Y, b.X, b.Y);
         
-        return distance;
+        // Check if all hexes along the line are traversable
+        foreach (var hex in hexLine)
+        {
+            // Find the node with these coordinates
+            Node node = FindNodeByCoordinates(hex.x, hex.y);
+            if (node == null || !node.T)
+                return false;
+        }
+        
+        return true;
+    }
+
+    /// <summary>
+    /// Finds a node in the grid by its actual X,Y coordinates
+    /// </summary>
+    private Node FindNodeByCoordinates(int x, int y)
+    {
+        int columns = NodeGrid.GetUpperBound(0) + 1;
+        int rows = NodeGrid.GetUpperBound(1) + 1;
+        
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                if (NodeGrid[i, j].X == x && NodeGrid[i, j].Y == y)
+                    return NodeGrid[i, j];
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Draws a line between two hexes using linear interpolation in cube coordinates
+    /// Returns all hex coordinates along the line
+    /// </summary>
+    private List<Vector2Int> HexLineDraw(int x0, int y0, int x1, int y1)
+    {
+        List<Vector2Int> results = new List<Vector2Int>();
+        
+        // Convert offset coordinates to cube coordinates
+        Vector3 a = OffsetToCube(x0, y0);
+        Vector3 b = OffsetToCube(x1, y1);
+        
+        // Calculate distance in hex space
+        int distance = (int)((Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y) + Math.Abs(a.z - b.z)) / 2);
+        
+        // Interpolate along the line
+        for (int i = 0; i <= distance; i++)
+        {
+            float t = distance == 0 ? 0f : (float)i / distance;
+            Vector3 cubeCoord = CubeLerp(a, b, t);
+            Vector3 rounded = CubeRound(cubeCoord);
+            Vector2Int offsetCoord = CubeToOffset((int)rounded.x, (int)rounded.y, (int)rounded.z);
+            
+            // Avoid duplicates
+            if (results.Count == 0 || results[results.Count - 1] != offsetCoord)
+                results.Add(offsetCoord);
+        }
+        
+        return results;
+    }
+
+    /// <summary>
+    /// Convert even-q offset coordinates to cube coordinates
+    /// </summary>
+    private Vector3 OffsetToCube(int col, int row)
+    {
+        int x = col;
+        int z = row - (col - (col & 1)) / 2;
+        int y = -x - z;
+        return new Vector3(x, y, z);
+    }
+
+    /// <summary>
+    /// Convert cube coordinates to even-q offset coordinates
+    /// </summary>
+    private Vector2Int CubeToOffset(int x, int y, int z)
+    {
+        int col = x;
+        int row = z + (x - (x & 1)) / 2;
+        return new Vector2Int(col, row);
+    }
+
+    /// <summary>
+    /// Linear interpolation between two cube coordinates
+    /// </summary>
+    private Vector3 CubeLerp(Vector3 a, Vector3 b, float t)
+    {
+        return new Vector3(
+            a.x + (b.x - a.x) * t,
+            a.y + (b.y - a.y) * t,
+            a.z + (b.z - a.z) * t
+        );
+    }
+
+    /// <summary>
+    /// Round fractional cube coordinates to nearest hex
+    /// </summary>
+    private Vector3 CubeRound(Vector3 cube)
+    {
+        int rx = Mathf.RoundToInt(cube.x);
+        int ry = Mathf.RoundToInt(cube.y);
+        int rz = Mathf.RoundToInt(cube.z);
+        
+        float xDiff = Math.Abs(rx - cube.x);
+        float yDiff = Math.Abs(ry - cube.y);
+        float zDiff = Math.Abs(rz - cube.z);
+        
+        // Re-calculate the component with the largest rounding difference
+        // to maintain the constraint that x + y + z = 0
+        if (xDiff > yDiff && xDiff > zDiff)
+            rx = -ry - rz;
+        else if (yDiff > zDiff)
+            ry = -rx - rz;
+        else
+            rz = -rx - ry;
+        
+        return new Vector3(rx, ry, rz);
     }
 }
