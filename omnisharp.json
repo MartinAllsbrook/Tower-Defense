@@ -1,0 +1,16 @@
+{
+  "msbuild": {
+    "enabled": true,
+    "ToolsVersion": "current",
+    "loadProjectsOnDemand": false
+  },
+  "RoslynExtensionsOptions": {
+    "EnableAnalyzersSupport": true,
+    "EnableImportCompletion": true,
+    "EnableDecompilationSupport": true,
+    "LocationPaths": []
+  },
+  "FormattingOptions": {
+    "enableEditorConfigSupport": true
+  }
+}

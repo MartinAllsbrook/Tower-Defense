@@ -10,8 +10,8 @@ public class Enemy : MonoBehaviour
     public float speed = 1f;
     private Vector3Int[,] grid;
     private Astar aStar;
-    private Tilemap walkableTilemap;
     private Coroutine moveCoroutine;
+    private Tilemap walkableTilemap;
 
     void Start()
     {

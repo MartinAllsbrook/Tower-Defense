@@ -19,6 +19,7 @@ public class StructurePlacer : MonoBehaviour
         Removing
     }
 
+    [SerializeField] World world;
     [SerializeField] Structure[] structures;
     [SerializeField] RuleTile removeIconTile;
 
@@ -88,15 +89,22 @@ public class StructurePlacer : MonoBehaviour
     {
         if (context.performed)
         {
+            bool mapChanged = false;
             if (mode == Mode.Placing && currentStructure != null)
             {    
                 Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
                 worldTilemap.SetTile(cellPosition, currentStructure.tile);
+                mapChanged = true;
             }
             else if (mode == Mode.Removing)
             {
                 Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
                 worldTilemap.SetTile(cellPosition, null);
+                mapChanged = true;
+            }
+            if (mapChanged)
+            {
+                world.UpdateTilemap();
             }
         } 
     }

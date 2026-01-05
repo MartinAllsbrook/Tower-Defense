@@ -917,6 +917,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78011de70e748e848802caf2236aa3a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPlacer
+  world: {fileID: 1074162246}
   structures:
   - {fileID: 11400000, guid: 8ba4d9e251663e14c91077de49edc1d2, type: 2}
   - {fileID: 11400000, guid: 2457d5bb4ce99244eb98a0232d6f887f, type: 2}
@@ -1935,6 +1936,7 @@ GameObject:
   - component: {fileID: 1074162244}
   - component: {fileID: 1074162243}
   - component: {fileID: 1074162245}
+  - component: {fileID: 1074162246}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -1983,8 +1985,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2d3c590c49f1b4490d4372bd2874ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridDebug
-  walkableTilemap: {fileID: 925936650}
   showGrid: 1
+  world: {fileID: 1074162246}
+--- !u!114 &1074162246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074162242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13dd9f4659a9a6145880f46fcc6ba11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::World
+  tilemap: {fileID: 925936650}
 --- !u!1 &1113621066
 GameObject:
   m_ObjectHideFlags: 0

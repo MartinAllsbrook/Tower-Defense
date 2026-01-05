@@ -1,14 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Astar
 {
     public Node[,] NodeGrid;
+
     public Astar(Vector3Int[,] grid, int columns, int rows)
     {
         NodeGrid = new Node[columns, rows];
     }
+    
     private bool IsValidPath(Vector3Int[,] grid, Node start, Node end)
     {
         if (end == null)
@@ -19,6 +21,7 @@ public class Astar
             return false;
         return true;
     }
+
     public List<Node> CreatePath(Vector3Int[,] grid, Vector2Int start, Vector2Int end, bool allowDiagonalMovement = false)
     {
         Debug.Log(grid);
