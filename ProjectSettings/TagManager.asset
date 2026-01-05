@@ -5,7 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
-  - Walkable Tilemap
+  - Preview Tilemap
+  - World Tilemap
   layers:
   - Default
   - TransparentFX

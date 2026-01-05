@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        walkableTilemap = GameObject.FindWithTag("Walkable Tilemap").GetComponent<Tilemap>();
+        walkableTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
 
         walkableTilemap.CompressBounds(); // Optional: compress bounds to fit tiles
         grid = CreateGrid(walkableTilemap);
