@@ -11,13 +11,13 @@ public class Enemy : MonoBehaviour
     private float angle = 0f;
     public float radius = 2f;
     public float speed = 1f;
-    private Astar aStar;
+    private ThetaStar thetaStar;
     private Coroutine moveCoroutine;
     
 
     void Start()
     {
-        aStar = new Astar();
+        thetaStar = new ThetaStar();
 
         world.OnGridUpdated += (updatedGrid) => {
             Debug.Log("World grid updated, recalculating path.");
@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
         Vector3Int start = world.WorldToCell(transform.position);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        List<Node> path = aStar.CreatePath(world.grid, world.bounds, new Vector2Int(start.x, start.y), end);
+        List<Node> path = thetaStar.CreatePath(world.grid, world.bounds, new Vector2Int(start.x, start.y), end);
         stopwatch.Stop();
         Debug.Log($"Path creation took {stopwatch.ElapsedMilliseconds} ms.");
 

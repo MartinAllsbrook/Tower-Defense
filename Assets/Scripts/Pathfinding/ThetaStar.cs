@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Astar
+public class ThetaStar
 {
     public Node[,] NodeGrid;
     BoundsInt bounds;
 
-    public Astar()
+    public ThetaStar()
     {
         
     }
@@ -62,7 +62,7 @@ public class Astar
         if (!IsValidPath(Start, End))
             return null;
 
-        // A* Algorithm
+        // Theta* Algorithm
         List<Node> OpenSet = new List<Node>();
         List<Node> ClosedSet = new List<Node>();
 
@@ -114,7 +114,7 @@ public class Astar
                     }
                     else
                     {
-                        // Path 1: Traditional A* path through current node
+                        // Path 1: Traditional Theta* path through current node
                         tempG = current.G + current.C;
                         pathParent = current;
                     }
