@@ -8,6 +8,7 @@ TagManager:
   - Preview Tilemap
   - World Tilemap
   - World
+  - Target
   layers:
   - Default
   - TransparentFX

@@ -3,14 +3,7 @@ using UnityEngine;
 public class Defense : MonoBehaviour
 {
     [SerializeField] private LayerMask enemyLayer;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Range to search for enemies
-    [SerializeField] private float detectionRange = 5f;
+    [SerializeField] private float detectionRange = 5f; 
 
     // Update is called once per frame
     void Update()

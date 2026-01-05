@@ -5,33 +5,56 @@ using UnityEngine.Tilemaps;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private World world;
-    [SerializeField] private Transform target;
+    private World world;
+    private Target target;
     
     private float angle = 0f;
     public float radius = 2f;
     public float speed = 1f;
     private ThetaStar thetaStar;
     private Coroutine moveCoroutine;
-    
+
+    void Awake()
+    {
+    }
 
     void Start()
     {
+        target = GameObject.FindWithTag("Target").GetComponent<Target>();
+        world = GameObject.FindWithTag("World").GetComponent<World>();
+
+
+        Debug.Log("Moving to target at position: " + target.transform.position);
+        
         thetaStar = new ThetaStar();
 
-        world.OnGridUpdated += (updatedGrid) => {
-            Debug.Log("World grid updated, recalculating path.");
-            if (moveCoroutine != null)
-            {
-                StopCoroutine(moveCoroutine);
-                MoveToTarget();
-            }
-        };
+        world.OnGridUpdated += OnUpdateGrid;
+    }
+
+    void Update()
+    {
+        float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+        if (distanceToTarget < radius)
+        {
+            target.DealDamage(50f);
+            world.OnGridUpdated -= OnUpdateGrid;
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnUpdateGrid(Vector3Int[,] updatedGrid)
+    {
+        Debug.Log("World grid updated, recalculating path.");
+        if (moveCoroutine != null)
+        {
+            StopCoroutine(moveCoroutine);
+            MoveToTarget();
+        }
     }
 
     public void MoveToTarget()
     {
-        Vector3Int targetPos = world.WorldToCell(target.position);
+        Vector3Int targetPos = world.WorldToCell(target.transform.position);
         MoveToLocation(new Vector2Int(targetPos.x, targetPos.y));
     }
 
