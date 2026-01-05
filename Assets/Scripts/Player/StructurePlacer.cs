@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,13 +12,22 @@ public enum StructureType
 
 public class StructurePlacer : MonoBehaviour
 {
+    enum Mode
+    {
+        None,
+        Placing,
+        Removing
+    }
+
     [SerializeField] Structure[] structures;
+    [SerializeField] RuleTile removeIconTile;
 
     Tilemap previewTilemap;
     Tilemap worldTilemap;
 
     private Structure currentStructure;
-    private bool isPlacingStructure = false;
+    
+    private Mode mode = Mode.None;
 
     void Start()
     {
@@ -27,7 +37,7 @@ public class StructurePlacer : MonoBehaviour
 
     void Update()
     {
-        if (isPlacingStructure && currentStructure != null)
+        if (mode == Mode.Placing && currentStructure != null)
         {
             // Get mouse position in world space
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -38,34 +48,57 @@ public class StructurePlacer : MonoBehaviour
             previewTilemap.ClearAllTiles();
             previewTilemap.SetTile(mouseGridPos, currentStructure.tile);
         }
+        else if (mode == Mode.Removing)
+        {
+            // Get mouse position in world space
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            mouseWorldPos.z = 0f;
+            Vector3Int mouseGridPos = previewTilemap.WorldToCell(mouseWorldPos);
+
+            // Update preview tilemap
+            previewTilemap.ClearAllTiles();
+            previewTilemap.SetTile(mouseGridPos, removeIconTile);
+        }
     }
 
     // This method can be called from a Unity UI Button event
     public void EnterPlaceMode(int structureID)
     {
         currentStructure = GetStructureByType((StructureType)structureID);
-        isPlacingStructure = true;
-        Debug.Log("Entering place mode for structure type: " + currentStructure.name);
+        mode = Mode.Placing;
     }
 
-    public void ExitPlaceMode(InputAction.CallbackContext context)
+    public void EnterRemoveMode()
+    {
+        currentStructure = null;
+        mode = Mode.Removing;
+    }
+
+    public void ExitMode(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
             previewTilemap.ClearAllTiles();
-            currentStructure = default;
-            isPlacingStructure = false;
-            Debug.Log("Exiting place mode");   
+            currentStructure = null;
+            mode = Mode.None;
         }
     }
 
     public void PlaceStructure(InputAction.CallbackContext context)
     {
-        if (context.performed && isPlacingStructure)
+        if (context.performed)
         {
-            Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
-            worldTilemap.SetTile(cellPosition, currentStructure.tile);
-        }
+            if (mode == Mode.Placing && currentStructure != null)
+            {    
+                Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
+                worldTilemap.SetTile(cellPosition, currentStructure.tile);
+            }
+            else if (mode == Mode.Removing)
+            {
+                Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
+                worldTilemap.SetTile(cellPosition, null);
+            }
+        } 
     }
 
     Structure GetStructureByType(StructureType type)
@@ -78,11 +111,6 @@ public class StructurePlacer : MonoBehaviour
             }
         }
         return null;
-    }
-
-    void CreateStructure(StructureType type, Vector3 position)
-    {
-        
     }
 
     #region Helper Methods
