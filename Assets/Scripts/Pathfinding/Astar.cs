@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Astar
 {
     public Node[,] NodeGrid;
+    BoundsInt bounds;
 
-    public Astar(Vector3Int[,] grid, int columns, int rows)
+    public Astar()
     {
-        NodeGrid = new Node[columns, rows];
+        
     }
     
-    private bool IsValidPath(Vector3Int[,] grid, Node start, Node end)
+    private bool IsValidPath(Node start, Node end)
     {
         if (end == null)
             return false;
@@ -22,17 +24,17 @@ public class Astar
         return true;
     }
 
-    public List<Node> CreatePath(Vector3Int[,] grid, Vector2Int start, Vector2Int end, bool allowDiagonalMovement = false)
+    public List<Node> CreatePath(Vector3Int[,] grid, BoundsInt bounds, Vector2Int start, Vector2Int end)
     {
-        Debug.Log(grid);
-
         // Initialize nodes
         Node End = null;
         Node Start = null;
-        var columns = NodeGrid.GetUpperBound(0) + 1;
-        var rows = NodeGrid.GetUpperBound(1) + 1;
+        this.bounds = bounds;
+        int columns = bounds.size.x;
+        int rows = bounds.size.y;
         NodeGrid = new Node[columns, rows];
 
+        // Create nodes based on grid data
         for (int i = 0; i < columns; i++)
         {
             for (int j = 0; j < rows; j++)
@@ -41,21 +43,23 @@ public class Astar
             }
         }
 
-        // Add neighbors and identify start/end nodes
+        // Add neighbors 
         for (int i = 0; i < columns; i++)
         {
             for (int j = 0; j < rows; j++)
             {
-                NodeGrid[i, j].AddNeighbors(NodeGrid, i, j);
-                if (NodeGrid[i, j].X == start.x && NodeGrid[i, j].Y == start.y)
-                    Start = NodeGrid[i, j];
-                else if (NodeGrid[i, j].X == end.x && NodeGrid[i, j].Y == end.y)
-                    End = NodeGrid[i, j];
+                NodeGrid[i, j].AddNeighbors(NodeGrid, bounds);
             }
         }
 
-        // Validate start and end nodes
-        if (!IsValidPath(grid, Start, End))
+        // Identify start/end nodes
+        Vector2Int startGrid = TilemapToGrid(start);
+        Vector2Int endGrid = TilemapToGrid(end);
+        Start = NodeGrid[startGrid.x, startGrid.y];
+        End = NodeGrid[endGrid.x, endGrid.y];
+
+        // Validate start and end nodes+
+        if (!IsValidPath(Start, End))
             return null;
 
         // A* Algorithm
@@ -75,33 +79,25 @@ public class Astar
                     if (OpenSet[i].H < OpenSet[winner].H)
                         winner = i;
 
-            var current = OpenSet[winner]; // The node in openSet with the lowest F value
+            Node current = OpenSet[winner]; // The node in openSet with the lowest F value
 
-            //Found the path; create path (from end to start) and return in correct order
+            // If we reached the end node, reconstruct and return the path
             if (End != null && current == End)
             {
-                List<Node> Path = new List<Node>();
-                var temp = current;
-                Path.Add(temp);
-                while (temp.previous != null)
-                {
-                    Path.Add(temp.previous);
-                    temp = temp.previous;
-                }
-                Path.Reverse();
-                return Path;
+                return RetracePath(Start, End);
             }
 
+            // If not at the end, continue searching
             OpenSet.Remove(current);
             ClosedSet.Add(current);
 
             // Examine each neighbor of the current node (Theta* algorithm)
-            var neighbors = current.Neighbors;
+            List<Node> neighbors = current.Neighbors;
             for (int i = 0; i < neighbors.Count; i++)
             {
-                var n = neighbors[i];
+                Node neighbor = neighbors[i];
                 // Skip if neighbor is already evaluated (in ClosedSet) or is not traversable
-                if (!ClosedSet.Contains(n) && n.T)
+                if (!ClosedSet.Contains(neighbor) && neighbor.T)
                 {
                     // THETA* KEY DIFFERENCE: Check line of sight from parent
                     // If there's line of sight from current's parent to this neighbor,
@@ -110,10 +106,10 @@ public class Astar
                     int tempG;
                     Node pathParent;
                     
-                    if (parent != null && LineOfSight(parent, n))
+                    if (parent != null && LineOfSight(parent, neighbor))
                     {
                         // Path 2: Direct line from parent to neighbor (skip current node)
-                        tempG = parent.G + Heuristic(parent, n, allowDiagonalMovement);
+                        tempG = parent.G + Heuristic(parent, neighbor);
                         pathParent = parent;
                     }
                     else
@@ -124,27 +120,27 @@ public class Astar
                     }
 
                     bool newPath = false;
-                    if (OpenSet.Contains(n)) // Neighbor is already discovered
+                    if (OpenSet.Contains(neighbor)) // Neighbor is already discovered
                     {
                         // Check if this path to the neighbor is better than the previously found path
-                        if (tempG < n.G)
+                        if (tempG < neighbor.G)
                         {
-                            n.G = tempG; // Update to the better (shorter) path cost
+                            neighbor.G = tempG; // Update to the better (shorter) path cost
                             newPath = true;
                         }
                     }
                     else // Neighbor has not been discovered yet
                     {
-                        n.G = tempG; // Set initial path cost
+                        neighbor.G = tempG; // Set initial path cost
                         newPath = true;
-                        OpenSet.Add(n); // Add to nodes to be evaluated
+                        OpenSet.Add(neighbor); // Add to nodes to be evaluated
                     }
                     
                     if (newPath) // If we found a better or new path to this neighbor
                     {
-                        n.H = Heuristic(n, End, allowDiagonalMovement); // Calculate heuristic (estimated cost to goal)
-                        n.F = n.G + n.H; // Total estimated cost (actual cost + heuristic)
-                        n.previous = pathParent; // Track the path (may skip current node if LOS exists)
+                        neighbor.H = Heuristic(neighbor, End); // Calculate heuristic (estimated cost to goal)
+                        neighbor.F = neighbor.G + neighbor.H; // Total estimated cost (actual cost + heuristic)
+                        neighbor.previous = pathParent; // Track the path (may skip current node if LOS exists)
                     }
                 }
             }
@@ -153,13 +149,32 @@ public class Astar
         return null;
     }
 
-    private int Heuristic(Node a, Node b, bool allowDiagonal)
+    private int Heuristic(Node a, Node b)
     {
         // Use Euclidean distance between node a and node b
         double dx = a.X - b.X;
         double dy = a.Y - b.Y;
-        return (int)Mathf.RoundToInt(Mathf.Sqrt((float)(dx * dx + dy * dy)));
+        return Mathf.RoundToInt(Mathf.Sqrt((float)(dx * dx + dy * dy)));
     }
+
+
+    #region General A* / Theta* Helpers
+
+    private List<Node> RetracePath(Node startNode, Node endNode)
+    {
+        List<Node> path = new List<Node>();
+        Node currentNode = endNode;
+
+        while (currentNode != startNode)
+        {
+            path.Add(currentNode);
+            currentNode = currentNode.previous;
+        }
+        path.Reverse();
+        return path;
+    }
+
+    #endregion 
 
     /// <summary>
     /// Checks if there is a clear line of sight between two nodes on a hexagonal grid
@@ -184,24 +199,7 @@ public class Astar
         return true;
     }
 
-    /// <summary>
-    /// Finds a node in the grid by its actual X,Y coordinates
-    /// </summary>
-    private Node FindNodeByCoordinates(int x, int y)
-    {
-        int columns = NodeGrid.GetUpperBound(0) + 1;
-        int rows = NodeGrid.GetUpperBound(1) + 1;
-        
-        for (int i = 0; i < columns; i++)
-        {
-            for (int j = 0; j < rows; j++)
-            {
-                if (NodeGrid[i, j].X == x && NodeGrid[i, j].Y == y)
-                    return NodeGrid[i, j];
-            }
-        }
-        return null;
-    }
+    #region Hex Line Drawing Helpers
 
     /// <summary>
     /// Draws a line between two hexes using linear interpolation in cube coordinates
@@ -299,4 +297,43 @@ public class Astar
         
         return new Vector3(rx, ry, rz);
     }
+
+    #endregion
+
+    #region Grid Conversion Helpers
+
+    /// <summary>
+    /// Finds a node in the grid by its actual X,Y coordinates
+    /// </summary>
+    private Node FindNodeByCoordinates(int x, int y)
+    {
+        int columns = NodeGrid.GetUpperBound(0) + 1;
+        int rows = NodeGrid.GetUpperBound(1) + 1;
+        
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                if (NodeGrid[i, j].X == x && NodeGrid[i, j].Y == y)
+                    return NodeGrid[i, j];
+            }
+        }
+        return null;
+    }
+
+    private Vector2Int GridToTilemap(Vector2Int gridPos)
+    {
+        int tilemapX = gridPos.x + bounds.xMin;
+        int tilemapY = gridPos.y + bounds.yMin;
+        return new Vector2Int(tilemapX, tilemapY);
+    }
+
+    private Vector2Int TilemapToGrid(Vector2Int tilemapPos)
+    {
+        int gridX = tilemapPos.x - bounds.xMin;
+        int gridY = tilemapPos.y - bounds.yMin;
+        return new Vector2Int(gridX, gridY);
+    }
+
+    #endregion
 }

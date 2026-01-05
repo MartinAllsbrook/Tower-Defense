@@ -30,8 +30,10 @@ public class Node
         Neighbors = new List<Node>();
     }
 
-    public void AddNeighbors(Node[,] grid, int arrayX, int arrayY)
+    public void AddNeighbors(Node[,] grid, BoundsInt bounds)
     {
+        // Debug.Log($"Adding neighbors for node at ({X}, {Y})");
+
         // Flat top hex grid neighbor offsets
         // Even-q layout (even COLUMNS are reference, odd columns shifted down)
         // When column (X coordinate) is even
@@ -52,42 +54,47 @@ public class Node
             new int[] { 0, -1}, // SW
             new int[] {+1, -1}  // NW
         };
-
-        int maxArrayX = grid.GetUpperBound(0);
-        int minArrayX = grid.GetLowerBound(0);
-        int maxArrayY = grid.GetUpperBound(1);
-        int minArrayY = grid.GetLowerBound(1);
         
         // Use the actual Y coordinate of THIS node, not the array index
         int[][] offsets = (this.Y % 2 == 0) ? evenColOffsets : oddColOffsets;
 
         foreach (var offset in offsets)
         {
-            // Calculate neighbor's actual coordinates
-            int neighborX = this.X + offset[0];
-            int neighborY = this.Y + offset[1];
-            
-            // Search for the node with matching actual coordinates
-            Node neighbor = FindNodeInGrid(grid, neighborX, neighborY, minArrayX, maxArrayX, minArrayY, maxArrayY);
-            if (neighbor != null)
+            // Calculate neighbor's tilemap coordinates
+            Vector2Int neighborPos = new Vector2Int(X + offset[0], Y + offset[1]);
+
+            // Correct bounds check: ensure neighborPos is within bounds
+            if (neighborPos.x >= bounds.xMin && neighborPos.x < bounds.xMax &&
+                neighborPos.y >= bounds.yMin && neighborPos.y < bounds.yMax)
             {
-                Neighbors.Add(neighbor);
+                // Get for the node with matching actual coordinates
+                Node neighbor = FindNodeInGrid(grid, bounds, neighborPos);
+
+                if (neighbor != null)
+                {
+                    Neighbors.Add(neighbor);
+                }
             }
         }
     }
 
-    private Node FindNodeInGrid(Node[,] grid, int targetX, int targetY, int minX, int maxX, int minY, int maxY)
+    private Node FindNodeInGrid(Node[,] grid, BoundsInt bounds, Vector2Int target)
     {
-        for (int i = minX; i <= maxX; i++)
+        // Debug.Log($"Target at ({target.x}, {target.y})");
+        int x = target.x - bounds.xMin;
+        int y = target.y - bounds.yMin;
+
+        // Debug.Assert(x >= 0 && x < grid.GetLength(0) && y >= 0 && y < grid.GetLength(1), $"Target position ({x}, {y}) is out of grid bounds. Grid bounds: xMin={grid.GetLowerBound(0)}, xMax={grid.GetUpperBound(0)}, yMin={grid.GetLowerBound(1)}, yMax={grid.GetUpperBound(1)}");
+        Node node = grid[x, y];
+
+        if (node.X == target.x && node.Y == target.y)
         {
-            for (int j = minY; j <= maxY; j++)
-            {
-                if (grid[i, j].X == targetX && grid[i, j].Y == targetY)
-                {
-                    return grid[i, j];
-                }
-            }
+            return grid[x, y];
         }
+
+        // Debug.LogWarning($"Node at ({target.x}, {target.y}) not found in grid.");
         return null;
     }
+
+
 }

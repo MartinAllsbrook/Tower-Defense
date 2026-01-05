@@ -7,19 +7,25 @@ public class World : MonoBehaviour
     // Event that passes the updated grid to subscribers
     public event Action<Vector3Int[,]> OnGridUpdated;
 
-    private Vector3Int[,] grid;
+    public Vector3Int[,] grid;
 
+    public BoundsInt bounds;
     public Tilemap tilemap; // PUBLIC FOR DEBUGGING
 
     void Start()
     {
         UpdateTilemap();
+
+        // Tilemap.tilemapTileChanged += (tilemap, position) => {
+        //     UpdateTilemap();
+        // };
     }
 
     public void UpdateTilemap()
     {
         tilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
         tilemap.CompressBounds(); // Optional: compress bounds to fit tiles
+        bounds = tilemap.cellBounds;
         grid = CreateGrid(tilemap);
 
         // Notify all subscribers with the updated grid
@@ -46,6 +52,16 @@ public class World : MonoBehaviour
         }
 
         return grid;
+    }
+
+    public Vector3Int WorldToCell(Vector3 worldPosition)
+    {
+        return tilemap.WorldToCell(worldPosition);
+    }
+
+    public Vector3 CellToWorld(Vector3Int cellPosition)
+    {
+        return tilemap.CellToWorld(cellPosition);
     }
 }
 
