@@ -102,23 +102,38 @@ public class ThetaStar
                 // Skip if neighbor is already evaluated (in ClosedSet) or is not traversable
                 if (!ClosedSet.Contains(neighbor) && neighbor.T)
                 {
-                    Node parent = current.previous;
+                    // Calculate cost via current node (standard A* path)
+                    float distance = 1; // Approximate distance between adjacent hexes
+                    float costViaCurrent = current.G + neighbor.C + distance;
+                    
                     // The cost to reach this neighbor
                     float G;
-                    // The would-be parent if we take this path
+                    // The would-be previous if we take this path
                     Node pathParent;
                     
-                    // if (parent != null && LineOfSight(parent, neighbor))
-                    // {
-                    //     // Path 2: Direct line from parent to neighbor (skip current node)
-                    //     // Cost = parent's accumulated cost + sum of traversal costs along the line
-                    //     G = parent.G + CalculatePathCost(parent, neighbor);
-                    //     pathParent = parent;
-                    // }
-                    // else
+                    // Check if there is line of sight from current's previous to this neighbor
+                    Node previous = current.previous;
+                    if (previous != null && LineOfSight(previous, neighbor))
                     {
-                        float distance = 0.866f; // Approximate distance between adjacent hexes
-                        G = current.G + neighbor.C + distance; // Cost from start to neighbor via current
+                        // Calculate cost via line of sight path (Theta* optimization)
+                        float costViaLOS = previous.G + CalculatePathCost(previous, neighbor);
+                        
+                        // Choose the path with lower cost
+                        if (costViaLOS <= costViaCurrent)
+                        {
+                            G = costViaLOS;
+                            pathParent = previous;
+                        }
+                        else
+                        {
+                            G = costViaCurrent;
+                            pathParent = current;
+                        }
+                    }
+                    else
+                    {
+                        // No line of sight, must go through current
+                        G = costViaCurrent;
                         pathParent = current;
                     }
 
@@ -217,7 +232,7 @@ public class ThetaStar
         
         // Get all hexes along the line between a and b
         List<Vector2Int> hexLine = HexBresenham.HexLineDraw(a.X, a.Y, b.X, b.Y);
-        
+
         // Sum up the traversal cost of nodes along the path
         // Skip index 0 (node 'a') because its cost is already in a.G
         // We only pay the cost for nodes we're entering, not the node we're leaving from
@@ -231,7 +246,21 @@ public class ThetaStar
                 traversalCost += node.C;
             }
         }
+
+        // Add true Euclidean distance as movement cost
+        // Convert hex offset coordinates to world coordinates for flat-top hexagons
+        float hexWidth = 1.5f; // Horizontal distance between hex centers (normalized)
+        float hexHeight = Mathf.Sqrt(3); // Vertical distance (normalized)
         
+        float x1 = a.X * hexWidth;
+        float y1 = a.Y * hexHeight + (a.X % 2) * (hexHeight * 0.5f);
+        float x2 = b.X * hexWidth;
+        float y2 = b.Y * hexHeight + (b.X % 2) * (hexHeight * 0.5f);
+        
+        float distance = Mathf.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+        traversalCost += distance;
+
+
         return traversalCost;
     }
 
@@ -242,16 +271,11 @@ public class ThetaStar
     /// </summary>
     private Node FindNodeByCoordinates(int x, int y)
     {
-        int columns = NodeGrid.GetUpperBound(0) + 1;
-        int rows = NodeGrid.GetUpperBound(1) + 1;
-        
-        for (int i = 0; i < columns; i++)
+        Vector2Int gridPos = TilemapToGrid(new Vector2Int(x, y));
+        if (gridPos.x >= 0 && gridPos.x < NodeGrid.GetLength(0) &&
+            gridPos.y >= 0 && gridPos.y < NodeGrid.GetLength(1))
         {
-            for (int j = 0; j < rows; j++)
-            {
-                if (NodeGrid[i, j].X == x && NodeGrid[i, j].Y == y)
-                    return NodeGrid[i, j];
-            }
+            return NodeGrid[gridPos.x, gridPos.y];
         }
         return null;
     }
