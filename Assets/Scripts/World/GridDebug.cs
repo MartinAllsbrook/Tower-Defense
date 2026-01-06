@@ -8,6 +8,7 @@ public class GridDebug : MonoBehaviour
 {
     [SerializeField] private bool showGrid = false;
     [SerializeField] private World world;
+    [SerializeField] private TileDebug tileDebugPrefab;
 
     private List<GameObject> labels = new List<GameObject>();
 
@@ -16,7 +17,7 @@ public class GridDebug : MonoBehaviour
         world.OnGridUpdated += HandleGridUpdate;
     }
 
-    void HandleGridUpdate(Vector3Int[,] grid)
+    void HandleGridUpdate(GridCell[,] grid)
     {
         // Clear existing labels
         foreach (var label in labels)
@@ -33,48 +34,23 @@ public class GridDebug : MonoBehaviour
         {
             for (int y = bounds.yMin; y < bounds.yMax; y++)
             {
-                Vector3Int cellPosition = new Vector3Int(x, y, 0);
-                Vector3 worldPosition = world.tilemap.CellToWorld(cellPosition);
+                Vector3Int cellPos = new Vector3Int(x, y, 0);
+                Vector3 worldPos = world.tilemap.CellToWorld(cellPos);
+                Vector2Int gridPos = new Vector2Int(x - bounds.xMin, y - bounds.yMin);
 
-                CreateLabel(worldPosition, world.tilemap.HasTile(cellPosition), x, y);
+                TileDebug tileLabel = Instantiate(tileDebugPrefab, worldPos, Quaternion.identity, this.transform);
+                tileLabel.name = $"TileLabel_{x}_{y}";
+
+                GridCell cell = grid[gridPos.x, gridPos.y];
+
+                tileLabel.SetCoordinates(cell.Position);
+                tileLabel.SetCost(cell.Cost); // Placeholder cost
+                if (!cell.Traversable)
+                {
+                    tileLabel.SetColor(Color.red);
+                }
+                labels.Add(tileLabel.gameObject);
             }
         }
-    }
-
-    // void Start()
-    // {
-    //     if (!showGrid)
-    //         return;
-
-    //     // Tilemap walkableTilemap = GameObject.FindWithTag("Walkable Tilemap").GetComponent<Tilemap>();
-    //     walkableTilemap.CompressBounds(); // Optional: compress bounds to fit tiles
-    //     BoundsInt bounds = walkableTilemap.cellBounds;
-
-    //     for (int x = bounds.xMin; x < bounds.xMax; x++)
-    //     {
-    //         for (int y = bounds.yMin; y < bounds.yMax; y++)
-    //         {
-    //             Vector3Int cellPosition = new Vector3Int(x, y, 0);
-    //             Vector3 worldPosition = walkableTilemap.CellToWorld(cellPosition);
-
-    //             CreateLabel(worldPosition, !walkableTilemap.HasTile(cellPosition), x, y);
-    //         }
-    //     }
-    // }
-
-    private void CreateLabel(Vector3 worldPosition, bool isBlocked, int x, int y)
-    {
-        GameObject textObj = new GameObject($"GridDebug_{x}_{y}");
-        textObj.transform.position = worldPosition;
-        textObj.transform.SetParent(transform);
-
-        TextMeshPro textMesh = textObj.AddComponent<TextMeshPro>();
-        textMesh.text = $"{x}, {y}";
-        textMesh.fontSize = 3;
-        textMesh.alignment = TextAlignmentOptions.Center;
-
-        textMesh.color = isBlocked ? Color.red : Color.green;
-
-        labels.Add(textObj);
     }
 }

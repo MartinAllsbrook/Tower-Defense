@@ -24,7 +24,7 @@ public class ThetaStar
         return true;
     }
 
-    public List<Node> CreatePath(Vector3Int[,] grid, BoundsInt bounds, Vector2Int start, Vector2Int end)
+    public List<Node> CreatePath(GridCell[,] grid, BoundsInt bounds, Vector2Int start, Vector2Int end)
     {
         // Initialize nodes
         Node End = null;
@@ -39,7 +39,8 @@ public class ThetaStar
         {
             for (int j = 0; j < rows; j++)
             {
-                NodeGrid[i, j] = new Node(grid[i, j].x, grid[i, j].y, 1, grid[i, j].z >= 1);
+                GridCell cell = grid[i, j];
+                NodeGrid[i, j] = new Node(cell.Position.x, cell.Position.y, cell.Cost, cell.Traversable);
             }
         }
 
@@ -109,13 +110,15 @@ public class ThetaStar
                     if (parent != null && LineOfSight(parent, neighbor))
                     {
                         // Path 2: Direct line from parent to neighbor (skip current node)
-                        tempG = parent.G + Heuristic(parent, neighbor);
+                        // Cost = parent's accumulated cost + sum of traversal costs along the line
+                        tempG = parent.G + CalculatePathCost(parent, neighbor);
                         pathParent = parent;
                     }
                     else
                     {
-                        // Path 1: Traditional Theta* path through current node
-                        tempG = current.G + current.C;
+                        // Path 1: Traditional A* path through current node
+                        // Cost = current's accumulated cost + neighbor's traversal cost
+                        tempG = current.G + neighbor.C;
                         pathParent = current;
                     }
 
@@ -151,10 +154,12 @@ public class ThetaStar
 
     private int Heuristic(Node a, Node b)
     {
-        // Use Euclidean distance between node a and node b
-        double dx = a.X - b.X;
-        double dy = a.Y - b.Y;
-        return Mathf.RoundToInt(Mathf.Sqrt((float)(dx * dx + dy * dy)));
+        // For hex grids with node traversal costs, use hex distance
+        // This provides an admissible heuristic (never overestimates)
+        // Convert to cube coordinates and calculate hex distance
+        Vector3 cubeA = OffsetToCube(a.X, a.Y);
+        Vector3 cubeB = OffsetToCube(b.X, b.Y);
+        return (int)((Math.Abs(cubeA.x - cubeB.x) + Math.Abs(cubeA.y - cubeB.y) + Math.Abs(cubeA.z - cubeB.z)) / 2);
     }
 
 
@@ -197,6 +202,35 @@ public class ThetaStar
         }
         
         return true;
+    }
+
+    /// <summary>
+    /// Calculates the total cost of moving from node a to node b,
+    /// by summing the traversal cost of all nodes along the path
+    /// </summary>
+    private int CalculatePathCost(Node a, Node b)
+    {
+        if (a == null || b == null) return int.MaxValue;
+        if (a == b) return 0;
+        
+        // Get all hexes along the line between a and b
+        List<Vector2Int> hexLine = HexLineDraw(a.X, a.Y, b.X, b.Y);
+        
+        // Sum up the traversal cost of nodes along the path
+        // Skip index 0 (node 'a') because its cost is already in a.G
+        // We only pay the cost for nodes we're entering, not the node we're leaving from
+        int traversalCost = 0;
+        for (int i = 1; i < hexLine.Count; i++)
+        {
+            var hex = hexLine[i];
+            Node node = FindNodeByCoordinates(hex.x, hex.y);
+            if (node != null)
+            {
+                traversalCost += node.C;
+            }
+        }
+        
+        return traversalCost;
     }
 
     #region Hex Line Drawing Helpers

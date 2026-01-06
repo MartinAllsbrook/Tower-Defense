@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e6a8cfbb804671488bb1b2ba45bd2e8, type: 3}
-  m_Name: Target
+  m_Name: Terrain
   m_EditorClassIdentifier: Assembly-CSharp::TaggedTile
-  m_DefaultSprite: {fileID: -4119334708683220384, guid: 7d25dfa4b83f04c4985a6eca80546853, type: 3}
-  m_DefaultGameObject: {fileID: 1020017536399174426, guid: 7b806299f4300fa4280ef11b51f708b7, type: 3}
+  m_DefaultSprite: {fileID: -712631045867808456, guid: a2be43fdb2e5ff54d801a7826121d829, type: 3}
+  m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules: []
   m_FlatTop: 0
-  tag: 1
+  tag: 2

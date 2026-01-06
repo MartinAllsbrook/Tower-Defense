@@ -1,13 +1,14 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class World : MonoBehaviour
 {
     // Event that passes the updated grid to subscribers
-    public event Action<Vector3Int[,]> OnGridUpdated;
+    public event Action<GridCell[,]> OnGridUpdated;
 
-    public Vector3Int[,] grid;
+    public GridCell[,] grid;
 
     public BoundsInt bounds;
     public Tilemap tilemap; // PUBLIC FOR DEBUGGING
@@ -32,21 +33,32 @@ public class World : MonoBehaviour
         OnGridUpdated?.Invoke(grid);
     }
 
-    Vector3Int[,] CreateGrid(Tilemap tilemap)
+    GridCell[,] CreateGrid(Tilemap tilemap)
     {
         BoundsInt bounds = tilemap.cellBounds;
-        Vector3Int[,] grid = new Vector3Int[bounds.size.x, bounds.size.y];
-        for (int x = bounds.xMin, i = 0; i < (bounds.size.x); x++, i++)
+        GridCell[,] grid = new GridCell[bounds.size.x, bounds.size.y];
+        for (int x = bounds.xMin, i = 0; i < bounds.size.x; x++, i++)
         {
-            for (int y = bounds.yMin, j = 0; j < (bounds.size.y); y++, j++)
+            for (int y = bounds.yMin, j = 0; j < bounds.size.y; y++, j++)
             {
-                if (tilemap.HasTile(new Vector3Int(x, y, 0)))
+                TileBase tile = tilemap.GetTile(new Vector3Int(x, y, 0));
+                if (tile is TaggedTile taggedTile)
                 {
-                    grid[i, j] = new Vector3Int(x, y, 0);
+                    grid[i, j] = new GridCell
+                    {
+                        Position = new Vector2Int(x, y),
+                        Cost = taggedTile.tag == TileTag.Structure ? 15 : 1,
+                        Traversable = taggedTile.tag != TileTag.Terrain,
+                    };
                 }
                 else
                 {
-                    grid[i, j] = new Vector3Int(x, y, 1);
+                    grid[i, j] = new GridCell
+                    {
+                        Position = new Vector2Int(x, y),
+                        Cost = 1,
+                        Traversable = true,
+                    };
                 }
             }
         }

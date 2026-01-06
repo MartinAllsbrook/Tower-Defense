@@ -42,7 +42,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnUpdateGrid(Vector3Int[,] updatedGrid)
+    private void OnUpdateGrid(GridCell[,] updatedGrid)
     {
         Debug.Log("World grid updated, recalculating path.");
         if (moveCoroutine != null)
