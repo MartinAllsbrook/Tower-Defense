@@ -25,6 +25,8 @@ public class GridDebug : MonoBehaviour
             Destroy(label);
         }
 
+        List<Vector2Int> line = HexBresenhamTest();
+
         if (!showGrid)
             return;
 
@@ -49,8 +51,22 @@ public class GridDebug : MonoBehaviour
                 {
                     tileLabel.SetColor(Color.red);
                 }
+                if (line.Contains(cell.Position))
+                {
+                    tileLabel.SetColor(Color.green);
+                }
                 labels.Add(tileLabel.gameObject);
             }
         }
+    }
+
+    List<Vector2Int> HexBresenhamTest()
+    {
+        List<Vector2Int> line = HexBresenham.HexLineDraw(-5, 4, 3, -7);
+        foreach (var hex in line)
+        {
+            Debug.Log($"Hex: {hex}");
+        }
+        return line;
     }
 }
