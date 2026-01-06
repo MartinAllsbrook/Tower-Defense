@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55f747e8af38fbe4d8819f37be6fd5aa, type: 3}
-  m_Name: Cused
-  m_EditorClassIdentifier: Unity.2D.Tilemap.Extras::UnityEngine.HexagonalRuleTile
+  m_Script: {fileID: 11500000, guid: 570281b811ec8754aaeb491435600bef, type: 3}
+  m_Name: Cursed Biome TIle
+  m_EditorClassIdentifier: Assembly-CSharp::BiomeTile
   m_DefaultSprite: {fileID: -5785857229047980075, guid: 2ffdd54c320bde34ab7d54ad0e3d3372, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules: []
-  m_FlatTop: 0
+  m_FlatTop: 1
+  tag: 3

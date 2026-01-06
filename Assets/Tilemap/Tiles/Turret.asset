@@ -16,5 +16,5 @@ MonoBehaviour:
   m_DefaultGameObject: {fileID: 2786205599803057699, guid: 9881d372c4daad441bace44a49ef33e8, type: 3}
   m_DefaultColliderType: 1
   m_TilingRules: []
-  m_FlatTop: 0
+  m_FlatTop: 1
   tag: 1
