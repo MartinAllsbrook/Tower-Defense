@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 8564215156375032517}
   - component: {fileID: 7125263966504654196}
   - component: {fileID: 3881861150001605543}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Basic Projectile
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69,7 +69,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.05, y: 0.1}
+  m_Size: {x: 0.1, y: 0.05}
   m_Direction: 1
 --- !u!114 &3881861150001605543
 MonoBehaviour:
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5561672264686321397}
   - component: {fileID: 8622284965371883881}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}

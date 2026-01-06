@@ -9,6 +9,7 @@ TagManager:
   - World Tilemap
   - World
   - Target
+  - Projectile
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - Water
   - UI
   - Enemy
-  - 
-  - 
+  - Enemy Projectile
+  - Friendly Projectile
   - 
   - 
   - 

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8607992153932832088}
   - component: {fileID: 4565356992051795417}
   - component: {fileID: 2675474381764475046}
+  - component: {fileID: 2311559584009982639}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
@@ -49,6 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   radius: 2
   speed: 1
+  spriteObject: {fileID: 8518335989947130008}
+  healthBar: {fileID: 4001359603497208410}
+  maxHealth: 100
 --- !u!58 &2675474381764475046
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -85,6 +89,33 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.25
+--- !u!50 &2311559584009982639
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3862966811575854548}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &8518335989947130008
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,7 +127,7 @@ GameObject:
   - component: {fileID: 5395903704949539568}
   - component: {fileID: 8712325465412007932}
   m_Layer: 0
-  m_Name: Enemy_0
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,13 +141,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8518335989947130008}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8607992153932832088}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8712325465412007932
 SpriteRenderer:
   serializedVersion: 2
@@ -273,6 +304,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31527fb819a23c04ea65c7f0a8971d1d, type: 3}
+--- !u!114 &4001359603497208410 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1654362171001080277, guid: 31527fb819a23c04ea65c7f0a8971d1d, type: 3}
+  m_PrefabInstance: {fileID: 2410225123674129295}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c411ae7f9d90e428a243c5d3143c11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBar
 --- !u!224 &5110084292810190761 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7464853193719065638, guid: 31527fb819a23c04ea65c7f0a8971d1d, type: 3}

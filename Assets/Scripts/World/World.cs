@@ -5,6 +5,10 @@ using UnityEngine.Tilemaps;
 
 public class World : MonoBehaviour
 {
+    public enum WorldSizeOption { Size15 = 15, Size31 = 31, Size63 = 63, Size127 = 127, Size255 = 255 }
+    [SerializeField] private WorldSizeOption worldSize = WorldSizeOption.Size63;
+    [SerializeField] private TileBase[] backgroundTiles;
+
     // Event that passes the updated grid to subscribers
     public event Action<GridCell[,]> OnGridUpdated;
 
@@ -13,13 +17,30 @@ public class World : MonoBehaviour
     public BoundsInt bounds;
     public Tilemap tilemap; // PUBLIC FOR DEBUGGING
 
+    [SerializeField] private Tilemap backgroundTilemap;
+
     void Start()
     {
         UpdateTilemap();
 
-        // Tilemap.tilemapTileChanged += (tilemap, position) => {
-        //     UpdateTilemap();
-        // };
+        FastNoiseLite noise = new FastNoiseLite();
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        noise.SetFrequency(0.05f);
+        // Gather noise data
+        int halfSize = (int)worldSize / 2;
+
+        for (int x = -halfSize, i = 0; i < (int)worldSize; i++, x++)
+        {
+            for (int y = -halfSize, j = 0; j < (int)worldSize; j++, y++)
+            {
+                float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
+                Debug.Log(value);
+
+                TileBase tile = backgroundTiles[(int)(value * backgroundTiles.Length)];
+                backgroundTilemap.SetTile(new Vector3Int(x, y, 0), tile);    
+            }
+        }
+
     }
 
     public void UpdateTilemap()

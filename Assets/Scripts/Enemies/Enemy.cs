@@ -9,28 +9,45 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed = 1f;
     [SerializeField] private GameObject spriteObject;
     [SerializeField] private HealthBar healthBar;
+    [SerializeField] private float maxHealth = 100f;
 
+    private float health = 100f;
     private World world;
     private Target target;
     private float angle = 0f;
     private ThetaStar thetaStar;
     private Coroutine moveCoroutine;
 
-    void Awake()
-    {
-    }
-
     void Start()
     {
         target = GameObject.FindWithTag("Target").GetComponent<Target>();
         world = GameObject.FindWithTag("World").GetComponent<World>();
 
-        Debug.Log("Moving to target at position: " + target.transform.position);
+        // Debug.Log("Moving to target at position: " + target.transform.position);
         
         thetaStar = new ThetaStar();
 
         world.OnGridUpdated += OnUpdateGrid;
         MoveToTarget();
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Projectile"))
+        {
+            DecreaseHealth(10f);
+        }
+    }
+
+    void DecreaseHealth(float amount)
+    {
+        health -= amount;
+        healthBar.SetFill(health / maxHealth);
+        if (health <= 0)
+        {
+            world.OnGridUpdated -= OnUpdateGrid;
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -109,7 +126,7 @@ public class Enemy : MonoBehaviour
                 );
                 Vector3 direction = (targetWorldPos - transform.position).normalized;
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                spriteObject.transform.rotation = Quaternion.Euler(0, 0, angle - 90f);
+                spriteObject.transform.rotation = Quaternion.Euler(0, 0, angle);
                 yield return null;
             }
             
