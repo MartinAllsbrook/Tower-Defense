@@ -1538,12 +1538,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::World
   backgroundTilemap: {fileID: 835494806}
   tilemap: {fileID: 925936650}
-  worldSize: 31
+  worldSize: 255
   backgroundTiles:
   - {fileID: 11400000, guid: 5aa5f712e11f4eb4188b6d9638f06cae, type: 2}
   - {fileID: 11400000, guid: 970cf6b7c0689654480c9c7fa95939ba, type: 2}
   - {fileID: 11400000, guid: f5c686afa21a88143b5d176fbdec6514, type: 2}
   - {fileID: 11400000, guid: 74c782c16be152346b5d71248343ff84, type: 2}
+  mountainTile: {fileID: 11400000, guid: 91c2170fe975d4744b0e1b8220d29eb0, type: 2}
   enemySpawnerTile: {fileID: 11400000, guid: 788b92c38fad61047aec9168d04db829, type: 2}
   bounds:
     m_Position: {x: 0, y: 0, z: 0}

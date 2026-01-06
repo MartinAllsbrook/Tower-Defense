@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -14,6 +15,7 @@ public class World : MonoBehaviour
     public enum WorldSizeOption { Size15 = 15, Size31 = 31, Size63 = 63, Size127 = 127, Size255 = 255 }
     [SerializeField] private WorldSizeOption worldSize = WorldSizeOption.Size63;
     [SerializeField] private BiomeTile[] backgroundTiles;
+    [SerializeField] private TaggedTile mountainTile;
     [SerializeField] private TaggedTile enemySpawnerTile;
 
     // Event that passes the updated grid to subscribers
@@ -35,6 +37,7 @@ public class World : MonoBehaviour
     private void GenerateWorld()
     {
         GenerateBiomeTiles();
+        GenerateTerrain();
         PlacePOI();
     }
 
@@ -52,12 +55,35 @@ public class World : MonoBehaviour
             for (int y = -halfSize, j = 0; j < (int)worldSize; j++, y++)
             {
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
-                Debug.Log(value);
 
                 BiomeTile tile = backgroundTiles[(int)(value * backgroundTiles.Length)];
                 backgroundTilemap.SetTile(new Vector3Int(x, y, 0), tile);    
 
                 biomeMap[i, j] = tile.tag;
+            }
+        }
+    }
+
+    void GenerateTerrain()
+    {
+        FastNoiseLite noise = new FastNoiseLite();
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        noise.SetFrequency(0.1f);
+        int halfSize = (int)worldSize / 2;
+
+        biomeMap = new BiomeID[(int)worldSize, (int)worldSize];
+        
+        for (int x = -halfSize, i = 0; i < (int)worldSize; i++, x++)
+        {
+            for (int y = -halfSize, j = 0; j < (int)worldSize; j++, y++)
+            {
+                float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
+
+                if (value < 0.2f)
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), mountainTile);
+                    continue;
+                }  
             }
         }
     }
@@ -96,12 +122,11 @@ public class World : MonoBehaviour
         }
     }
 
-    List<Vector2Int> FindPointsInBiome(BiomeID biome, int count, int minSpacing, int maxAttempts = 100)
+    List<Vector2Int> FindPointsInBiome(BiomeID biome, int count, int minSpacing, int maxAttempts = 1000)
     {
         int halfSize = (int)worldSize / 2;
         System.Random rand = new System.Random();
         List<Vector2Int> points = new List<Vector2Int>();
-
         while (points.Count < count && maxAttempts > 0)
         {
             maxAttempts--;
