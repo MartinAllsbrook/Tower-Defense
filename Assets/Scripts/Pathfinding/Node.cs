@@ -9,10 +9,10 @@ public class Node
 {
     public int X;
     public int Y;
-    public int F; // F = G + H
-    public int G; // Cost from start to current node
-    public int H; // Heuristic cost estimate to end node
-    public int C; // Cost to traverse this node
+    public float F; // F = G + H
+    public float G; // Cost from start to current node
+    public float H; // Heuristic cost estimate to end node
+    public float C; // Cost to traverse this node
     public bool T; // Whether the node is traversable at all
     public List<Node> Neighbors;
     public Node previous = null;

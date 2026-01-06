@@ -71,20 +71,22 @@ public class ThetaStar
 
         while (OpenSet.Count > 0)
         {
-            //Find shortest step distance in the direction of your goal within the open set
-            int winner = 0;
+            // Find smallest F within the open set
+            int winnerIndex = 0;
             for (int i = 0; i < OpenSet.Count; i++)
-                if (OpenSet[i].F < OpenSet[winner].F)
-                    winner = i;
-                else if (OpenSet[i].F == OpenSet[winner].F) // TODO: Make this tie breaking for faster routing better
-                    if (OpenSet[i].H < OpenSet[winner].H)
-                        winner = i;
+                if (OpenSet[i].F < OpenSet[winnerIndex].F)
+                    winnerIndex = i;
+                else if (OpenSet[i].F == OpenSet[winnerIndex].F) // TODO: Make this tie breaking for faster routing better
+                    if (OpenSet[i].H < OpenSet[winnerIndex].H)
+                        winnerIndex = i;
 
-            Node current = OpenSet[winner]; // The node in openSet with the lowest F value
+            // The node in openSet with the lowest F value
+            Node current = OpenSet[winnerIndex]; 
 
             // If we reached the end node, reconstruct and return the path
             if (End != null && current == End)
             {
+                Debug.Log("Path found, cost: " + current.G);
                 return RetracePath(Start, End);
             }
 
@@ -100,41 +102,41 @@ public class ThetaStar
                 // Skip if neighbor is already evaluated (in ClosedSet) or is not traversable
                 if (!ClosedSet.Contains(neighbor) && neighbor.T)
                 {
-                    // THETA* KEY DIFFERENCE: Check line of sight from parent
-                    // If there's line of sight from current's parent to this neighbor,
-                    // we can skip the current node and create a more direct path
                     Node parent = current.previous;
-                    int tempG;
+                    // The cost to reach this neighbor
+                    float G;
+                    // The would-be parent if we take this path
                     Node pathParent;
                     
-                    if (parent != null && LineOfSight(parent, neighbor))
-                    {
-                        // Path 2: Direct line from parent to neighbor (skip current node)
-                        // Cost = parent's accumulated cost + sum of traversal costs along the line
-                        tempG = parent.G + CalculatePathCost(parent, neighbor);
-                        pathParent = parent;
-                    }
+                    // if (parent != null && LineOfSight(parent, neighbor))
+                    // {
+                    //     // Path 2: Direct line from parent to neighbor (skip current node)
+                    //     // Cost = parent's accumulated cost + sum of traversal costs along the line
+                    //     G = parent.G + CalculatePathCost(parent, neighbor);
+                    //     pathParent = parent;
+                    // }
                     else
                     {
-                        // Path 1: Traditional A* path through current node
-                        // Cost = current's accumulated cost + neighbor's traversal cost
-                        tempG = current.G + neighbor.C;
+                        float distance = 0.866f; // Approximate distance between adjacent hexes
+                        G = current.G + neighbor.C + distance; // Cost from start to neighbor via current
                         pathParent = current;
                     }
 
                     bool newPath = false;
-                    if (OpenSet.Contains(neighbor)) // Neighbor is already discovered
+                    // If the neighbor is already discovered
+                    if (OpenSet.Contains(neighbor)) 
                     {
                         // Check if this path to the neighbor is better than the previously found path
-                        if (tempG < neighbor.G)
+                        if (G < neighbor.G)
                         {
-                            neighbor.G = tempG; // Update to the better (shorter) path cost
+                            // Update to the better (shorter) path cost
+                            neighbor.G = G; 
                             newPath = true;
                         }
                     }
                     else // Neighbor has not been discovered yet
                     {
-                        neighbor.G = tempG; // Set initial path cost
+                        neighbor.G = G; // Set initial path cost
                         newPath = true;
                         OpenSet.Add(neighbor); // Add to nodes to be evaluated
                     }
@@ -208,7 +210,7 @@ public class ThetaStar
     /// Calculates the total cost of moving from node a to node b,
     /// by summing the traversal cost of all nodes along the path
     /// </summary>
-    private int CalculatePathCost(Node a, Node b)
+    private float CalculatePathCost(Node a, Node b)
     {
         if (a == null || b == null) return int.MaxValue;
         if (a == b) return 0;
@@ -219,7 +221,7 @@ public class ThetaStar
         // Sum up the traversal cost of nodes along the path
         // Skip index 0 (node 'a') because its cost is already in a.G
         // We only pay the cost for nodes we're entering, not the node we're leaving from
-        int traversalCost = 0;
+        float traversalCost = 0;
         for (int i = 1; i < hexLine.Count; i++)
         {
             var hex = hexLine[i];
