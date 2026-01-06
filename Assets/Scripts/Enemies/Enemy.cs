@@ -5,12 +5,14 @@ using UnityEngine.Tilemaps;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] private float radius = 2f;
+    [SerializeField] private float speed = 1f;
+    [SerializeField] private GameObject spriteObject;
+    [SerializeField] private HealthBar healthBar;
+
     private World world;
     private Target target;
-    
     private float angle = 0f;
-    public float radius = 2f;
-    public float speed = 1f;
     private ThetaStar thetaStar;
     private Coroutine moveCoroutine;
 
@@ -23,12 +25,12 @@ public class Enemy : MonoBehaviour
         target = GameObject.FindWithTag("Target").GetComponent<Target>();
         world = GameObject.FindWithTag("World").GetComponent<World>();
 
-
         Debug.Log("Moving to target at position: " + target.transform.position);
         
         thetaStar = new ThetaStar();
 
         world.OnGridUpdated += OnUpdateGrid;
+        MoveToTarget();
     }
 
     void Update()
@@ -54,6 +56,12 @@ public class Enemy : MonoBehaviour
 
     public void MoveToTarget()
     {
+        if (target == null)
+        {
+            Debug.LogWarning("Target not set for Enemy.");
+            return;
+        }
+
         Vector3Int targetPos = world.WorldToCell(target.transform.position);
         MoveToLocation(new Vector2Int(targetPos.x, targetPos.y));
     }
@@ -99,6 +107,9 @@ public class Enemy : MonoBehaviour
                     targetWorldPos, 
                     speed * Time.deltaTime
                 );
+                Vector3 direction = (targetWorldPos - transform.position).normalized;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                spriteObject.transform.rotation = Quaternion.Euler(0, 0, angle - 90f);
                 yield return null;
             }
             

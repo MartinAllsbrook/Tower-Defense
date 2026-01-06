@@ -70,6 +70,7 @@
     "dotnet.defaultSolution": "Tower-Defense.slnx",
     "cSpell.words": [
         "Behaviour",
+        "Cooldown",
         "Mathf",
         "pathfinding",
         "Scriptable",
