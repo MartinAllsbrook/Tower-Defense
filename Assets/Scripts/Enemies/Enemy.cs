@@ -15,7 +15,6 @@ public class Enemy : MonoBehaviour
     private World world;
     private Target target;
     private float angle = 0f;
-    private ThetaStar thetaStar;
     private Coroutine moveCoroutine;
 
     void Awake()
@@ -26,9 +25,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {   
-        thetaStar = new ThetaStar();
-
-        world.OnGridUpdated += OnUpdateGrid;
+        world.OnWorldUpdate += OnUpdateGrid;
         MoveToTarget();
     }
 
@@ -46,7 +43,7 @@ public class Enemy : MonoBehaviour
         healthBar.SetFill(health / maxHealth);
         if (health <= 0)
         {
-            world.OnGridUpdated -= OnUpdateGrid;
+            world.OnWorldUpdate -= OnUpdateGrid;
             Destroy(gameObject);
         }
     }
@@ -57,12 +54,12 @@ public class Enemy : MonoBehaviour
         if (distanceToTarget < radius)
         {
             target.DealDamage(50f);
-            world.OnGridUpdated -= OnUpdateGrid;
+            world.OnWorldUpdate -= OnUpdateGrid;
             Destroy(gameObject);
         }
     }
 
-    private void OnUpdateGrid(GridCell[,] updatedGrid)
+    private void OnUpdateGrid()
     {
         Debug.Log("World grid updated, recalculating path.");
         if (moveCoroutine != null)
@@ -90,7 +87,7 @@ public class Enemy : MonoBehaviour
         Vector3Int start = world.WorldToCell(transform.position);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        List<Node> path = thetaStar.CreatePath(world.grid, world.bounds, new Vector2Int(start.x, start.y), end);
+        List<Node> path = world.GetThetaStar().CreatePath(new Vector2Int(start.x, start.y), end);
         stopwatch.Stop();
         Debug.Log($"Path creation took {stopwatch.ElapsedMilliseconds} ms.");
 

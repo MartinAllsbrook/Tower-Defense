@@ -7,24 +7,22 @@ using UnityEngine.Tilemaps;
 
 public class World : MonoBehaviour
 {
-    [SerializeField] Tilemap floorTilemap;
-    [SerializeField] Tilemap worldTilemap; // PUBLIC FOR DEBUGGING
-
     public enum WorldSizeOption { Size15 = 15, Size31 = 31, Size63 = 63, Size127 = 127, Size255 = 255 }
-    [SerializeField] private WorldSizeOption worldSize = WorldSizeOption.Size63;
-    [SerializeField] private BiomeTile[] backgroundTiles;
-    [SerializeField] private WorldTile mountainTile;
-    [SerializeField] private WorldTile enemySpawnerTile;
+
+    [SerializeField] Tilemap floorTilemap;
+    [SerializeField] Tilemap worldTilemap; 
+    [SerializeField] WorldSizeOption worldSize = WorldSizeOption.Size63;
+    [SerializeField] BiomeTile[] backgroundTiles;
+    [SerializeField] WorldTile mountainTile;
+    [SerializeField] WorldTile enemySpawnerTile;
 
     // Event that passes the updated grid to subscribers
-    public event Action<GridCell[,]> OnGridUpdated;
+    public event Action OnWorldUpdate;
 
-    public GridCell[,] grid;
-
-    public BoundsInt bounds;
-
-    private BiomeID[,] biomeMap;
-
+    ThetaStar thetaStar;
+    GridCell[,] grid;
+    BiomeID[,] biomeMap;
+    BoundsInt bounds;
 
     void Start()
     {
@@ -37,6 +35,7 @@ public class World : MonoBehaviour
         GenerateBiomeTiles();
         GenerateTerrain();
         PlacePOI();
+        thetaStar = new ThetaStar();
     }
 
     void GenerateBiomeTiles()
@@ -159,13 +158,24 @@ public class World : MonoBehaviour
 
     public void UpdateTilemap()
     {
+        // TODO: Do we need to get the tilemap each time?
         worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
         worldTilemap.CompressBounds(); // Optional: compress bounds to fit tiles
+        
         bounds = worldTilemap.cellBounds;
         grid = CreateGrid(worldTilemap);
 
+        thetaStar.UpdateNavGrid(grid, bounds);
+
+        // Debugging Grid
+        GridDebug gridDebug = GetComponent<GridDebug>();
+        if (gridDebug != null)
+        {
+            gridDebug.HandleGridUpdate(grid, bounds);
+        }
+
         // Notify all subscribers with the updated grid
-        OnGridUpdated?.Invoke(grid);
+        OnWorldUpdate?.Invoke();
     }
 
     GridCell[,] CreateGrid(Tilemap tilemap)
@@ -209,5 +219,10 @@ public class World : MonoBehaviour
     public Vector3 CellToWorld(Vector3Int cellPosition)
     {
         return worldTilemap.CellToWorld(cellPosition);
+    }
+
+    public ThetaStar GetThetaStar()
+    {
+        return thetaStar;
     }
 }

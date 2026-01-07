@@ -12,13 +12,7 @@ public class GridDebug : MonoBehaviour
 
     private List<GameObject> labels = new List<GameObject>();
 
-    void Awake()
-    {
-        world = GetComponent<World>();
-        world.OnGridUpdated += HandleGridUpdate;
-    }
-
-    void HandleGridUpdate(GridCell[,] grid)
+    public void HandleGridUpdate(GridCell[,] grid, BoundsInt bounds)
     {
         // Clear existing labels
         foreach (var label in labels)
@@ -28,8 +22,6 @@ public class GridDebug : MonoBehaviour
 
         if (!showGrid)
             return;
-
-        BoundsInt bounds = world.bounds;
 
         for (int x = bounds.xMin; x < bounds.xMax; x++)
         {

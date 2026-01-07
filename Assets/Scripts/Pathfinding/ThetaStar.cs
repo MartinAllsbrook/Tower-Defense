@@ -5,59 +5,65 @@ using UnityEngine.UIElements;
 
 public class ThetaStar
 {
-    public Node[,] NodeGrid;
+    Node[,] baseNodeGrid;
+
     BoundsInt bounds;
-
-    public ThetaStar()
-    {
-        
-    }
+    int columns;
+    int rows;
     
-    private bool IsValidPath(Node start, Node end)
+    /// <summary>
+    /// Initializes or updates the navigation grid based on the provided GridCell array and bounds
+    /// </summary>
+    /// <param name="grid"></param>
+    /// <param name="bounds"></param>
+    public void UpdateNavGrid(GridCell[,] grid, BoundsInt bounds)
     {
-        if (end == null)
-            return false;
-        if (start == null)
-            return false;
-        if (!end.T)
-            return false;
-        return true;
-    }
-
-    public List<Node> CreatePath(GridCell[,] grid, BoundsInt bounds, Vector2Int start, Vector2Int end)
-    {
-        // Initialize nodes
-        Node End = null;
-        Node Start = null;
         this.bounds = bounds;
-        int columns = bounds.size.x;
-        int rows = bounds.size.y;
-        NodeGrid = new Node[columns, rows];
+        columns = bounds.size.x;
+        rows = bounds.size.y;
 
-        // Create nodes based on grid data
+        baseNodeGrid = new Node[columns, rows];
         for (int i = 0; i < columns; i++)
         {
             for (int j = 0; j < rows; j++)
             {
                 GridCell cell = grid[i, j];
-                NodeGrid[i, j] = new Node(cell.Position.x, cell.Position.y, cell.Cost, cell.Traversable);
+                baseNodeGrid[i, j] = new Node(cell.Position.x, cell.Position.y, cell.Cost, cell.Traversable);
             }
         }
 
-        // Add neighbors 
         for (int i = 0; i < columns; i++)
         {
             for (int j = 0; j < rows; j++)
             {
-                NodeGrid[i, j].AddNeighbors(NodeGrid, bounds);
+                baseNodeGrid[i, j].AddNeighbors(baseNodeGrid, bounds);
             }
         }
+    }
+
+    public List<Node> CreatePath(Vector2Int start, Vector2Int end)
+    {
+        // Create a copy of the base node grid to work with
+        Node[,] nodeGrid = new Node[columns, rows];
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                Node original = baseNodeGrid[i, j];
+                nodeGrid[i, j] = new Node(original.X, original.Y, original.C, original.T);
+            }
+        }
+
+
+        // Initialize nodes
+        Node End = null;
+        Node Start = null;
 
         // Identify start/end nodes
         Vector2Int startGrid = TilemapToGrid(start);
         Vector2Int endGrid = TilemapToGrid(end);
-        Start = NodeGrid[startGrid.x, startGrid.y];
-        End = NodeGrid[endGrid.x, endGrid.y];
+        Start = nodeGrid[startGrid.x, startGrid.y];
+        End = nodeGrid[endGrid.x, endGrid.y];
 
         // Validate start and end nodes+
         if (!IsValidPath(Start, End))
@@ -113,10 +119,10 @@ public class ThetaStar
                     
                     // Check if there is line of sight from current's previous to this neighbor
                     Node previous = current.previous;
-                    if (previous != null && LineOfSight(previous, neighbor))
+                    if (previous != null && LineOfSight(nodeGrid, previous, neighbor))
                     {
                         // Calculate cost via line of sight path (Theta* optimization)
-                        float costViaLOS = previous.G + CalculatePathCost(previous, neighbor);
+                        float costViaLOS = previous.G + CalculatePathCost(nodeGrid, previous, neighbor);
                         
                         // Choose the path with lower cost
                         if (costViaLOS <= costViaCurrent)
@@ -169,6 +175,8 @@ public class ThetaStar
         return null;
     }
 
+    #region General A* / Theta* Helpers
+
     private int Heuristic(Node a, Node b)
     {
         // For hex grids with node traversal costs, use hex distance
@@ -179,8 +187,16 @@ public class ThetaStar
         return (Math.Abs(cubeA.x - cubeB.x) + Math.Abs(cubeA.y - cubeB.y) + Math.Abs(cubeA.z - cubeB.z)) / 2;
     }
 
-
-    #region General A* / Theta* Helpers
+    private bool IsValidPath(Node start, Node end)
+    {
+        if (end == null)
+            return false;
+        if (start == null)
+            return false;
+        if (!end.T)
+            return false;
+        return true;
+    }
 
     private List<Node> RetracePath(Node startNode, Node endNode)
     {
@@ -201,7 +217,7 @@ public class ThetaStar
     /// <summary>
     /// Checks if there is a clear line of sight between two nodes on a hexagonal grid
     /// </summary>
-    private bool LineOfSight(Node a, Node b)
+    private bool LineOfSight(Node[,] nodeGrid, Node a, Node b)
     {
         if (a == null || b == null) return false;
         if (a == b) return true;
@@ -213,7 +229,7 @@ public class ThetaStar
         foreach (var hex in hexLine)
         {
             // Find the node with these coordinates
-            Node node = FindNodeByCoordinates(hex.x, hex.y);
+            Node node = FindNodeByCoordinates(nodeGrid, hex.x, hex.y);
             if (node == null || !node.T)
                 return false;
         }
@@ -225,7 +241,7 @@ public class ThetaStar
     /// Calculates the total cost of moving from node a to node b,
     /// by summing the traversal cost of all nodes along the path
     /// </summary>
-    private float CalculatePathCost(Node a, Node b)
+    private float CalculatePathCost(Node[,] nodeGrid, Node a, Node b)
     {
         if (a == null || b == null) return int.MaxValue;
         if (a == b) return 0;
@@ -240,7 +256,7 @@ public class ThetaStar
         for (int i = 1; i < hexLine.Count; i++)
         {
             var hex = hexLine[i];
-            Node node = FindNodeByCoordinates(hex.x, hex.y);
+            Node node = FindNodeByCoordinates(nodeGrid, hex.x, hex.y);
             if (node != null)
             {
                 traversalCost += node.C;
@@ -269,13 +285,13 @@ public class ThetaStar
     /// <summary>
     /// Finds a node in the grid by its actual X,Y coordinates
     /// </summary>
-    private Node FindNodeByCoordinates(int x, int y)
+    private Node FindNodeByCoordinates(Node[,] nodeGrid, int x, int y)
     {
         Vector2Int gridPos = TilemapToGrid(new Vector2Int(x, y));
-        if (gridPos.x >= 0 && gridPos.x < NodeGrid.GetLength(0) &&
-            gridPos.y >= 0 && gridPos.y < NodeGrid.GetLength(1))
+        if (gridPos.x >= 0 && gridPos.x < nodeGrid.GetLength(0) &&
+            gridPos.y >= 0 && gridPos.y < nodeGrid.GetLength(1))
         {
-            return NodeGrid[gridPos.x, gridPos.y];
+            return nodeGrid[gridPos.x, gridPos.y];
         }
         return null;
     }

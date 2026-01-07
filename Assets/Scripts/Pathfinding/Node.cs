@@ -17,7 +17,7 @@ public class Node
     public List<Node> Neighbors;
     public Node previous = null;
 
-    public Node(int x, int y, int cost, bool traversable)
+    public Node(int x, int y, float cost, bool traversable)
     {
         X = x;
         Y = y;
