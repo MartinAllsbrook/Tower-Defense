@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e6a8cfbb804671488bb1b2ba45bd2e8, type: 3}
   m_Name: Wall 3
   m_EditorClassIdentifier: Assembly-CSharp::TaggedTile
-  m_DefaultSprite: {fileID: -931799299, guid: 9706e7c3206748b4daf31513600d9383, type: 3}
-  m_DefaultGameObject: {fileID: 0}
+  m_DefaultSprite: {fileID: 3957654611500732591, guid: 6ec2c66c84c8e8445bd6dfbdd24c084d, type: 3}
+  m_DefaultGameObject: {fileID: 6378844025828366655, guid: 397b40166dbd25b409ec219c268b6e92, type: 3}
   m_DefaultColliderType: 1
   m_TilingRules: []
   m_FlatTop: 1
