@@ -6,7 +6,8 @@ using UnityEngine.Tilemaps;
 
 public enum StructureType
 {
-    Wall = 0,
+    Base = 0,
+    Wall = 10,
     Turret = 100,
 }
 
@@ -30,10 +31,15 @@ public class StructurePlacer : MonoBehaviour
     
     private Mode mode = Mode.None;
 
-    void Start()
+    void Awake()
     {
         previewTilemap = GameObject.FindWithTag("Preview Tilemap").GetComponent<Tilemap>();
         worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
+    }
+
+    void Start()
+    {
+        EnterPlaceMode((int)StructureType.Base);
     }
 
     void Update()
@@ -95,6 +101,10 @@ public class StructurePlacer : MonoBehaviour
                 Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
                 worldTilemap.SetTile(cellPosition, currentStructure.tile);
                 mapChanged = true;
+                if (currentStructure.objectType == StructureType.Base)
+                {
+                    FindFirstObjectByType<GameController>().PlaceBase();
+                }
             }
             else if (mode == Mode.Removing)
             {

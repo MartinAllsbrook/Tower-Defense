@@ -18,13 +18,14 @@ public class Enemy : MonoBehaviour
     private ThetaStar thetaStar;
     private Coroutine moveCoroutine;
 
-    void Start()
+    void Awake()
     {
-        target = GameObject.FindWithTag("Target").GetComponent<Target>();
-        world = GameObject.FindWithTag("World").GetComponent<World>();
+        target = FindFirstObjectByType<Target>();
+        world = FindFirstObjectByType<World>();
+    }
 
-        // Debug.Log("Moving to target at position: " + target.transform.position);
-        
+    void Start()
+    {   
         thetaStar = new ThetaStar();
 
         world.OnGridUpdated += OnUpdateGrid;
