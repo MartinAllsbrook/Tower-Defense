@@ -70,8 +70,6 @@ public class World : MonoBehaviour
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(0.1f);
         int halfSize = (int)worldSize / 2;
-
-        biomeMap = new BiomeID[(int)worldSize, (int)worldSize];
         
         for (int x = -halfSize, i = 0; i < (int)worldSize; i++, x++)
         {
@@ -82,7 +80,6 @@ public class World : MonoBehaviour
                 if (value < 0.2f)
                 {
                     tilemap.SetTile(new Vector3Int(x, y, 0), mountainTile);
-                    continue;
                 }  
             }
         }
@@ -91,6 +88,7 @@ public class World : MonoBehaviour
     // Currently just places enemy spawners
     void PlacePOI()
     {
+        Debug.Log("Placing Points of Interest...");
         int numPoints;
         switch (worldSize)
         {
@@ -117,8 +115,11 @@ public class World : MonoBehaviour
         List<Vector2Int> points = FindPointsInBiome(BiomeID.cursed, numPoints, 5);
         foreach (var point in points)
         {
-            Vector3Int cellPos = new Vector3Int(point.x, point.y, 0);
-            tilemap.SetTile(cellPos, enemySpawnerTile);
+            if (!tilemap.HasTile(new Vector3Int(point.x, point.y, 0)))
+            {
+                Vector3Int cellPos = new Vector3Int(point.x, point.y, 0);
+                tilemap.SetTile(cellPos, enemySpawnerTile);
+            }
         }
     }
 
