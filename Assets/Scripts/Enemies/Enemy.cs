@@ -5,19 +5,19 @@ using UnityEngine.Tilemaps;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float radius = 2f;
-    [SerializeField] private float speed = 1f;
-    [SerializeField] private GameObject spriteObject;
-    [SerializeField] private HealthBar healthBar;
-    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] float radius = 2f;
+    [SerializeField] float speed = 1f;
+    [SerializeField] GameObject spriteObject;
+    [SerializeField] HealthBar healthBar;
+    [SerializeField] float maxHealth = 100f;
+    [SerializeField] GameObject[] legObjects;
 
-    private float health = 100f;
-    private World world;
-    private Target target;
-    private float angle = 0f;
-    private Coroutine moveCoroutine;
-
-    public bool gameOver = false;
+    float health = 100f;
+    World world;
+    Target target;
+    float angle = 0f;
+    Coroutine moveCoroutine;
+    bool gameOver = false;
 
     void Awake()
     {
@@ -32,6 +32,17 @@ public class Enemy : MonoBehaviour
     {   
         world.OnWorldUpdate += OnUpdateGrid;
         MoveToTarget();
+
+        // Randomize leg animation starting points
+        foreach (GameObject leg in legObjects)
+        {
+            Animation anim = leg.GetComponent<Animation>();
+            if (anim != null && anim.clip != null)
+            {
+                anim[anim.clip.name].time = Random.Range(0f, anim.clip.length);
+                anim.Play();
+            }
+        }
     }
 
     void Update()
