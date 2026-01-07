@@ -87,7 +87,7 @@ public class ThetaStar
         }
 
         // Theta* Algorithm
-        List<Node> OpenSet = new List<Node>();
+        MinHeap<Node> OpenSet = new MinHeap<Node>((a, b) => a.F.CompareTo(b.F));
         HashSet<Node> ClosedSet = new HashSet<Node>();
 
         OpenSet.Add(Start);
@@ -98,17 +98,8 @@ public class ThetaStar
             if (enablePerformanceDebugging && OpenSet.Count > openSetPeakSize)
                 openSetPeakSize = OpenSet.Count;
             
-            // Find smallest F within the open set
-            int winnerIndex = 0;
-            for (int i = 0; i < OpenSet.Count; i++)
-                if (OpenSet[i].F < OpenSet[winnerIndex].F)
-                    winnerIndex = i;
-                else if (OpenSet[i].F == OpenSet[winnerIndex].F) // TODO: Make this tie breaking for faster routing better
-                    if (OpenSet[i].H < OpenSet[winnerIndex].H)
-                        winnerIndex = i;
-
-            // The node in openSet with the lowest F value
-            Node current = OpenSet[winnerIndex];
+            // The node in openSet with the lowest F value (MinHeap automatically maintains minimum at root)
+            Node current = OpenSet.RemoveMin();
             
             // Track nodes explored
             if (enablePerformanceDebugging)
@@ -139,7 +130,6 @@ public class ThetaStar
             }
 
             // If not at the end, continue searching
-            OpenSet.Remove(current);
             ClosedSet.Add(current);
             
             // Track closed set size
@@ -214,6 +204,10 @@ public class ThetaStar
                         neighbor.H = Heuristic(neighbor, End); // Calculate heuristic (estimated cost to goal)
                         neighbor.F = neighbor.G + neighbor.H; // Total estimated cost (actual cost + heuristic)
                         neighbor.previous = pathParent; // Track the path (may skip current node if LOS exists)
+                        
+                        // If we updated an existing node in the heap, reheapify to maintain heap property
+                        if (OpenSet.Contains(neighbor))
+                            OpenSet.UpdatePriority(neighbor);
                     }
                 }
             }
