@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Structure
   objectType: 0
   structureName: Turret
-  structurePrefab: {fileID: 0}
-  tile: {fileID: 11400000, guid: b3ecd175a19e1d5419d145a83cbd1590, type: 2}
+  tile: {fileID: 11400000, guid: a42de028c43dcaf4790f0a5a817af42e, type: 2}

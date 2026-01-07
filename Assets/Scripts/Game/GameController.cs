@@ -7,8 +7,6 @@ public class GameController: MonoBehaviour
     public event Action OnRoundStart;
     public event Action OnRoundEnd;
 
-    [SerializeField] private Player player;
-
     public void PlaceBase()
     {
         // Logic to place the base

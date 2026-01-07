@@ -5,6 +5,5 @@ public class Structure : ScriptableObject
 {
     [SerializeField] public StructureType objectType;
     [SerializeField] public string structureName;
-    [SerializeField] public GameObject structurePrefab;
     [SerializeField] public RuleTile tile;
 }

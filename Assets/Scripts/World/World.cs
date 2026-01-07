@@ -15,8 +15,8 @@ public class World : MonoBehaviour
     public enum WorldSizeOption { Size15 = 15, Size31 = 31, Size63 = 63, Size127 = 127, Size255 = 255 }
     [SerializeField] private WorldSizeOption worldSize = WorldSizeOption.Size63;
     [SerializeField] private BiomeTile[] backgroundTiles;
-    [SerializeField] private TaggedTile mountainTile;
-    [SerializeField] private TaggedTile enemySpawnerTile;
+    [SerializeField] private WorldTile mountainTile;
+    [SerializeField] private WorldTile enemySpawnerTile;
 
     // Event that passes the updated grid to subscribers
     public event Action<GridCell[,]> OnGridUpdated;
@@ -179,7 +179,7 @@ public class World : MonoBehaviour
             for (int y = bounds.yMin, j = 0; j < bounds.size.y; y++, j++)
             {
                 TileBase tile = tilemap.GetTile(new Vector3Int(x, y, 0));
-                if (tile is TaggedTile taggedTile)
+                if (tile is WorldTile taggedTile)
                 {
                     grid[i, j] = new GridCell
                     {

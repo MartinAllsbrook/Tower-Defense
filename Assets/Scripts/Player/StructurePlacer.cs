@@ -26,10 +26,9 @@ public class StructurePlacer : MonoBehaviour
 
     Tilemap previewTilemap;
     Tilemap worldTilemap;
-
-    private Structure currentStructure;
-    
-    private Mode mode = Mode.None;
+    Structure currentStructure;
+    Mode mode = Mode.None;
+    bool basePlaced = false; // To ensure only one base is placed
 
     void Awake()
     {
@@ -84,11 +83,14 @@ public class StructurePlacer : MonoBehaviour
     public void ExitMode(InputAction.CallbackContext context)
     {
         if (context.performed)
-        {
-            previewTilemap.ClearAllTiles();
-            currentStructure = null;
-            mode = Mode.None;
-        }
+            ExitMode();
+    }
+
+    public void ExitMode()
+    {
+        previewTilemap.ClearAllTiles();
+        currentStructure = null;
+        mode = Mode.None;
     }
 
     public void PlaceStructure(InputAction.CallbackContext context)
@@ -97,13 +99,29 @@ public class StructurePlacer : MonoBehaviour
         {
             bool mapChanged = false;
             if (mode == Mode.Placing && currentStructure != null)
-            {    
-                Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
-                worldTilemap.SetTile(cellPosition, currentStructure.tile);
-                mapChanged = true;
+            {
+                // Special case for placing the base
                 if (currentStructure.objectType == StructureType.Base)
                 {
+                    if (basePlaced)
+                    {
+                        Debug.LogWarning("Base has already been placed.");
+                        return;
+                    }
+
+                    Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
+                    worldTilemap.SetTile(cellPosition, currentStructure.tile);
+                    mapChanged = true;
+
                     FindFirstObjectByType<GameController>().PlaceBase();
+                    basePlaced = true;
+                    ExitMode();
+                }
+                else
+                {
+                    Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
+                    worldTilemap.SetTile(cellPosition, currentStructure.tile);
+                    mapChanged = true;
                 }
             }
             else if (mode == Mode.Removing)
@@ -112,10 +130,9 @@ public class StructurePlacer : MonoBehaviour
                 worldTilemap.SetTile(cellPosition, null);
                 mapChanged = true;
             }
+
             if (mapChanged)
-            {
                 world.UpdateTilemap();
-            }
         } 
     }
 

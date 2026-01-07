@@ -10,7 +10,7 @@ public enum TileTag
 }
 
 [CreateAssetMenu(fileName = "New Tagged Tile", menuName = "Tiles/Tagged Tile")]
-public class TaggedTile : HexagonalRuleTile
+public class WorldTile : HexagonalRuleTile
 {    
     public TileTag tag;
 }
