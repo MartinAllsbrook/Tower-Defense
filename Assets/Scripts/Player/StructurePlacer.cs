@@ -25,7 +25,6 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] RuleTile removeIconTile;
 
     Tilemap previewTilemap;
-    Tilemap worldTilemap;
     Structure currentStructure;
     Mode mode = Mode.None;
     bool basePlaced = false; // To ensure only one base is placed
@@ -33,7 +32,6 @@ public class StructurePlacer : MonoBehaviour
     void Awake()
     {
         previewTilemap = GameObject.FindWithTag("Preview Tilemap").GetComponent<Tilemap>();
-        worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
     }
 
     void Start()
@@ -104,31 +102,25 @@ public class StructurePlacer : MonoBehaviour
                 if (currentStructure.objectType == StructureType.Base)
                 {
                     if (basePlaced)
-                    {
-                        Debug.LogWarning("Base has already been placed.");
                         return;
+
+                    mapChanged = world.SetTileAt(GetMouseCell(), currentStructure.tile);
+
+                    if (mapChanged)
+                    {    
+                        FindFirstObjectByType<GameController>().PlaceBase();
+                        basePlaced = true;
+                        ExitMode();
                     }
-
-                    Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
-                    worldTilemap.SetTile(cellPosition, currentStructure.tile);
-                    mapChanged = true;
-
-                    FindFirstObjectByType<GameController>().PlaceBase();
-                    basePlaced = true;
-                    ExitMode();
                 }
                 else
                 {
-                    Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
-                    worldTilemap.SetTile(cellPosition, currentStructure.tile);
-                    mapChanged = true;
+                    mapChanged = world.SetTileAt(GetMouseCell(), currentStructure.tile);
                 }
             }
             else if (mode == Mode.Removing)
             {
-                Vector3Int cellPosition = GetMouseGridPosition(worldTilemap);
-                worldTilemap.SetTile(cellPosition, null);
-                mapChanged = true;
+                mapChanged = world.SetTileAt(GetMouseCell(), null);
             }
 
             if (mapChanged)
@@ -150,11 +142,11 @@ public class StructurePlacer : MonoBehaviour
 
     #region Helper Methods
     
-    Vector3Int GetMouseGridPosition(Tilemap tilemap)
+    Vector3Int GetMouseCell()
     {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mouseWorldPos.z = 0f;
-        return tilemap.WorldToCell(mouseWorldPos);
+        return world.WorldToCell(mouseWorldPos);
     }
     
     #endregion

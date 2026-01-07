@@ -11,7 +11,14 @@ public class Target : MonoBehaviour
         healthBar.SetFill(health / 100f);
         if (health <= 0f)
         {
-            Destroy(gameObject);
+            Destroy();
         }
+    }
+
+    void Destroy()
+    {
+        GameController gameController = FindFirstObjectByType<GameController>();
+        gameController.EndGame();
+        Destroy(gameObject);
     }
 }

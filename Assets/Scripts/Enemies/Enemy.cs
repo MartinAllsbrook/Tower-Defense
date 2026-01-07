@@ -17,16 +17,34 @@ public class Enemy : MonoBehaviour
     private float angle = 0f;
     private Coroutine moveCoroutine;
 
+    public bool gameOver = false;
+
     void Awake()
     {
         target = FindFirstObjectByType<Target>();
         world = FindFirstObjectByType<World>();
+
+        GameController gameController = FindFirstObjectByType<GameController>();
+        gameController.OnGameOver += OnGameEnd;
     }
 
     void Start()
     {   
         world.OnWorldUpdate += OnUpdateGrid;
         MoveToTarget();
+    }
+
+    void Update()
+    {
+        if (target == null || gameOver) return;
+
+        float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+        if (distanceToTarget < radius)
+        {
+            target.DealDamage(50f);
+            world.OnWorldUpdate -= OnUpdateGrid;
+            Destroy(gameObject);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -37,23 +55,17 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void OnGameEnd()
+    {
+        gameOver = true;
+    }
+
     void DecreaseHealth(float amount)
     {
         health -= amount;
         healthBar.SetFill(health / maxHealth);
         if (health <= 0)
         {
-            world.OnWorldUpdate -= OnUpdateGrid;
-            Destroy(gameObject);
-        }
-    }
-
-    void Update()
-    {
-        float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
-        if (distanceToTarget < radius)
-        {
-            target.DealDamage(50f);
             world.OnWorldUpdate -= OnUpdateGrid;
             Destroy(gameObject);
         }

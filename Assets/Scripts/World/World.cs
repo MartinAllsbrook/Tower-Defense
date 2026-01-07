@@ -30,6 +30,8 @@ public class World : MonoBehaviour
         UpdateTilemap();
     }
 
+    #region World Generation
+
     private void GenerateWorld()
     {
         GenerateBiomeTiles();
@@ -156,6 +158,37 @@ public class World : MonoBehaviour
         return points;
     }
 
+    #endregion
+
+    #region World Modification
+
+    public bool SetTileAt(Vector3Int cellPosition, WorldTile newTile)
+    {
+        WorldTile existingTile = worldTilemap.GetTile<WorldTile>(cellPosition);
+        if (existingTile == null)
+        {
+            ModifyWorldTile(cellPosition, newTile);
+            return true;
+        }
+        else if (newTile == null)
+        {
+            ModifyWorldTile(cellPosition, null);
+            return true;
+        }
+
+        return false;
+    }
+
+    void ModifyWorldTile(Vector3Int cellPosition, WorldTile newTile)
+    {
+        worldTilemap.SetTile(cellPosition, newTile);
+        UpdateTilemap();
+    }
+
+    #endregion
+
+    #region Pathfinding and Grid Management
+
     public void UpdateTilemap()
     {
         // TODO: Do we need to get the tilemap each time?
@@ -211,6 +244,10 @@ public class World : MonoBehaviour
         return grid;
     }
 
+    #endregion
+
+    #region Utility Methods
+
     public Vector3Int WorldToCell(Vector3 worldPosition)
     {
         return worldTilemap.WorldToCell(worldPosition);
@@ -225,4 +262,6 @@ public class World : MonoBehaviour
     {
         return thetaStar;
     }
+
+    #endregion
 }
