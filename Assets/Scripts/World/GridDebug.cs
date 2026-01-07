@@ -14,6 +14,7 @@ public class GridDebug : MonoBehaviour
 
     void Awake()
     {
+        world = GetComponent<World>();
         world.OnGridUpdated += HandleGridUpdate;
     }
 
@@ -28,14 +29,14 @@ public class GridDebug : MonoBehaviour
         if (!showGrid)
             return;
 
-        BoundsInt bounds = world.tilemap.cellBounds;
+        BoundsInt bounds = world.bounds;
 
         for (int x = bounds.xMin; x < bounds.xMax; x++)
         {
             for (int y = bounds.yMin; y < bounds.yMax; y++)
             {
                 Vector3Int cellPos = new Vector3Int(x, y, 0);
-                Vector3 worldPos = world.tilemap.CellToWorld(cellPos);
+                Vector3 worldPos = world.CellToWorld(cellPos);
                 Vector2Int gridPos = new Vector2Int(x - bounds.xMin, y - bounds.yMin);
 
                 TileDebug tileLabel = Instantiate(tileDebugPrefab, worldPos, Quaternion.identity, this.transform);
@@ -56,15 +57,5 @@ public class GridDebug : MonoBehaviour
                 labels.Add(tileLabel.gameObject);
             }
         }
-    }
-
-    List<Vector2Int> HexBresenhamTest()
-    {
-        List<Vector2Int> line = HexBresenham.HexLineDraw(-5, 4, 3, -7);
-        foreach (var hex in line)
-        {
-            Debug.Log($"Hex: {hex}");
-        }
-        return line;
     }
 }

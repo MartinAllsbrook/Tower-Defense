@@ -744,12 +744,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c14ef7c42835b774aa8ba7857f068d04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  defensePrefab: {fileID: 7921548123535380769, guid: d55eb66f3f4406a4f8db8d6a4ae5aa3b, type: 3}
-  defensePreviewPrefab: {fileID: 5285683454197146236, guid: 1e23a9ff074e0d84ebe3254c9667a90f, type: 3}
   hexTilemap: {fileID: 925936650}
   hexagonHighlightPrefab: {fileID: 8647291759628355241, guid: e21bbd68bdd99ee4e8860c9a03d5b7e7, type: 3}
-  enemy: {fileID: 0}
-  wallTile: {fileID: 11400000, guid: b3ecd175a19e1d5419d145a83cbd1590, type: 2}
 --- !u!4 &707805974
 Transform:
   m_ObjectHideFlags: 0
@@ -1482,8 +1478,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13dd9f4659a9a6145880f46fcc6ba11f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::World
-  backgroundTilemap: {fileID: 835494806}
-  tilemap: {fileID: 925936650}
+  floorTilemap: {fileID: 835494806}
+  worldTilemap: {fileID: 925936650}
   worldSize: 63
   backgroundTiles:
   - {fileID: 11400000, guid: 5aa5f712e11f4eb4188b6d9638f06cae, type: 2}

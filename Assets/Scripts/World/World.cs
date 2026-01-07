@@ -5,12 +5,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-
-
 public class World : MonoBehaviour
 {
-    [SerializeField] private Tilemap backgroundTilemap;
-    [SerializeField] public Tilemap tilemap; // PUBLIC FOR DEBUGGING
+    [SerializeField] Tilemap floorTilemap;
+    [SerializeField] Tilemap worldTilemap; // PUBLIC FOR DEBUGGING
 
     public enum WorldSizeOption { Size15 = 15, Size31 = 31, Size63 = 63, Size127 = 127, Size255 = 255 }
     [SerializeField] private WorldSizeOption worldSize = WorldSizeOption.Size63;
@@ -57,7 +55,7 @@ public class World : MonoBehaviour
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
 
                 BiomeTile tile = backgroundTiles[(int)(value * backgroundTiles.Length)];
-                backgroundTilemap.SetTile(new Vector3Int(x, y, 0), tile);    
+                floorTilemap.SetTile(new Vector3Int(x, y, 0), tile);    
 
                 biomeMap[i, j] = tile.tag;
             }
@@ -79,7 +77,7 @@ public class World : MonoBehaviour
 
                 if (value < 0.2f)
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), mountainTile);
+                    worldTilemap.SetTile(new Vector3Int(x, y, 0), mountainTile);
                 }  
             }
         }
@@ -115,10 +113,10 @@ public class World : MonoBehaviour
         List<Vector2Int> points = FindPointsInBiome(BiomeID.cursed, numPoints, 5);
         foreach (var point in points)
         {
-            if (!tilemap.HasTile(new Vector3Int(point.x, point.y, 0)))
+            if (!worldTilemap.HasTile(new Vector3Int(point.x, point.y, 0)))
             {
                 Vector3Int cellPos = new Vector3Int(point.x, point.y, 0);
-                tilemap.SetTile(cellPos, enemySpawnerTile);
+                worldTilemap.SetTile(cellPos, enemySpawnerTile);
             }
         }
     }
@@ -161,10 +159,10 @@ public class World : MonoBehaviour
 
     public void UpdateTilemap()
     {
-        tilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
-        tilemap.CompressBounds(); // Optional: compress bounds to fit tiles
-        bounds = tilemap.cellBounds;
-        grid = CreateGrid(tilemap);
+        worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
+        worldTilemap.CompressBounds(); // Optional: compress bounds to fit tiles
+        bounds = worldTilemap.cellBounds;
+        grid = CreateGrid(worldTilemap);
 
         // Notify all subscribers with the updated grid
         OnGridUpdated?.Invoke(grid);
@@ -205,11 +203,11 @@ public class World : MonoBehaviour
 
     public Vector3Int WorldToCell(Vector3 worldPosition)
     {
-        return tilemap.WorldToCell(worldPosition);
+        return worldTilemap.WorldToCell(worldPosition);
     }
 
     public Vector3 CellToWorld(Vector3Int cellPosition)
     {
-        return tilemap.CellToWorld(cellPosition);
+        return worldTilemap.CellToWorld(cellPosition);
     }
 }
