@@ -1,15 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class ThetaStar
 {
-    Node[,] baseNodeGrid;
+    Node[,] nodeGrid;
 
     BoundsInt bounds;
     int columns;
     int rows;
+    
+    // Performance debugging
+    public bool enablePerformanceDebugging = true;
+    private int nodesExplored;
+    private int losChecks;
+    private int losChecksPassed;
+    private int openSetPeakSize;
+    private int closedSetSize;
     
     /// <summary>
     /// Initializes or updates the navigation grid based on the provided GridCell array and bounds
@@ -22,13 +31,13 @@ public class ThetaStar
         columns = bounds.size.x;
         rows = bounds.size.y;
 
-        baseNodeGrid = new Node[columns, rows];
+        nodeGrid = new Node[columns, rows];
         for (int i = 0; i < columns; i++)
         {
             for (int j = 0; j < rows; j++)
             {
                 GridCell cell = grid[i, j];
-                baseNodeGrid[i, j] = new Node(cell.Position.x, cell.Position.y, cell.Cost, cell.Traversable);
+                nodeGrid[i, j] = new Node(cell.Position.x, cell.Position.y, i, j, cell.Cost, cell.Traversable);
             }
         }
 
@@ -36,25 +45,26 @@ public class ThetaStar
         {
             for (int j = 0; j < rows; j++)
             {
-                baseNodeGrid[i, j].AddNeighbors(baseNodeGrid, bounds);
+                nodeGrid[i, j].AddNeighbors(nodeGrid, bounds);
             }
         }
     }
 
     public List<Node> CreatePath(Vector2Int start, Vector2Int end)
     {
-        // Create a copy of the base node grid to work with
-        Node[,] nodeGrid = new Node[columns, rows];
-        for (int i = 0; i < columns; i++)
-        {
-            for (int j = 0; j < rows; j++)
-            {
-                Node original = baseNodeGrid[i, j];
-                nodeGrid[i, j] = new Node(original.X, original.Y, original.C, original.T);
-            }
-        }
-
-
+        // Reset performance counters
+        nodesExplored = 0;
+        losChecks = 0;
+        losChecksPassed = 0;
+        openSetPeakSize = 0;
+        closedSetSize = 0;
+        
+        // Start performance timer
+        Stopwatch stopwatch = enablePerformanceDebugging ? Stopwatch.StartNew() : null;
+        
+        // Reset nodes instead of copying
+        ResetNodeGrid();
+        
         // Initialize nodes
         Node End = null;
         Node Start = null;
@@ -67,16 +77,27 @@ public class ThetaStar
 
         // Validate start and end nodes+
         if (!IsValidPath(Start, End))
+        {
+            if (enablePerformanceDebugging && stopwatch != null)
+            {
+                stopwatch.Stop();
+                UnityEngine.Debug.LogWarning($"[Theta*] Invalid path - Time: {stopwatch.ElapsedMilliseconds}ms");
+            }
             return null;
+        }
 
         // Theta* Algorithm
         List<Node> OpenSet = new List<Node>();
-        List<Node> ClosedSet = new List<Node>();
+        HashSet<Node> ClosedSet = new HashSet<Node>();
 
         OpenSet.Add(Start);
 
         while (OpenSet.Count > 0)
         {
+            // Track peak open set size
+            if (enablePerformanceDebugging && OpenSet.Count > openSetPeakSize)
+                openSetPeakSize = OpenSet.Count;
+            
             // Find smallest F within the open set
             int winnerIndex = 0;
             for (int i = 0; i < OpenSet.Count; i++)
@@ -87,18 +108,43 @@ public class ThetaStar
                         winnerIndex = i;
 
             // The node in openSet with the lowest F value
-            Node current = OpenSet[winnerIndex]; 
+            Node current = OpenSet[winnerIndex];
+            
+            // Track nodes explored
+            if (enablePerformanceDebugging)
+                nodesExplored++;
 
             // If we reached the end node, reconstruct and return the path
             if (End != null && current == End)
             {
-                Debug.Log("Path found, cost: " + current.G);
-                return RetracePath(Start, End);
+                List<Node> path = RetracePath(Start, End);
+                
+                // Log performance metrics
+                if (enablePerformanceDebugging && stopwatch != null)
+                {
+                    stopwatch.Stop();
+                    UnityEngine.Debug.Log($"[Theta*] Path found!\n" +
+                        $"  Time: {stopwatch.ElapsedMilliseconds}ms ({stopwatch.ElapsedTicks} ticks)\n" +
+                        $"  Time / Length: {(path.Count > 0 ? (stopwatch.ElapsedTicks / (float)path.Count) : 0):F2} ticks/length\n" +
+                        $"  Path Length: {path.Count} nodes\n" +
+                        $"  Path Cost: {current.G:F2}\n" +
+                        $"  Nodes Explored: {nodesExplored}\n" +
+                        $"  Closed Set Size: {closedSetSize}\n" +
+                        $"  Open Set Peak: {openSetPeakSize}\n" +
+                        $"  LOS Checks: {losChecks} ({losChecksPassed} passed, {(losChecks > 0 ? (losChecksPassed * 100f / losChecks) : 0):F1}% success)\n" +
+                        $"  Efficiency: {(nodesExplored > 0 ? (path.Count * 100f / nodesExplored) : 0):F1}% (path/explored)");
+                }
+                
+                return path;
             }
 
             // If not at the end, continue searching
             OpenSet.Remove(current);
             ClosedSet.Add(current);
+            
+            // Track closed set size
+            if (enablePerformanceDebugging)
+                closedSetSize++;
 
             // Examine each neighbor of the current node (Theta* algorithm)
             List<Node> neighbors = current.Neighbors;
@@ -119,7 +165,8 @@ public class ThetaStar
                     
                     // Check if there is line of sight from current's previous to this neighbor
                     Node previous = current.previous;
-                    if (previous != null && LineOfSight(nodeGrid, previous, neighbor))
+                    bool hasLOS = previous != null && LineOfSight(nodeGrid, previous, neighbor);
+                    if (hasLOS)
                     {
                         // Calculate cost via line of sight path (Theta* optimization)
                         float costViaLOS = previous.G + CalculatePathCost(nodeGrid, previous, neighbor);
@@ -172,18 +219,47 @@ public class ThetaStar
             }
 
         }
+        
+        // No path found - log performance metrics
+        if (enablePerformanceDebugging && stopwatch != null)
+        {
+            stopwatch.Stop();
+            UnityEngine.Debug.LogWarning($"[Theta*] No path found!\n" +
+                $"  Time: {stopwatch.ElapsedMilliseconds}ms ({stopwatch.ElapsedTicks} ticks)\n" +
+                $"  Nodes Explored: {nodesExplored}\n" +
+                $"  Closed Set Size: {closedSetSize}\n" +
+                $"  Open Set Peak: {openSetPeakSize}\n" +
+                $"  LOS Checks: {losChecks} ({losChecksPassed} passed)");
+        }
+        
         return null;
     }
 
     #region General A* / Theta* Helpers
+
+    // Reset nodes instead of copying
+    private void ResetNodeGrid()
+    {
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                Node node = nodeGrid[i, j];
+                node.F = 0;
+                node.G = 0;
+                node.H = 0;
+                node.previous = null;
+            }
+        }
+    }
 
     private int Heuristic(Node a, Node b)
     {
         // For hex grids with node traversal costs, use hex distance
         // This provides an admissible heuristic (never overestimates)
         // Convert to cube coordinates and calculate hex distance
-        Vector3Int cubeA = HexBresenham.OffsetToCube(a.X, a.Y);
-        Vector3Int cubeB = HexBresenham.OffsetToCube(b.X, b.Y);
+        Vector3Int cubeA = HexBresenham.OffsetToCube(a.CellX, a.CellY);
+        Vector3Int cubeB = HexBresenham.OffsetToCube(b.CellX, b.CellY);
         return (Math.Abs(cubeA.x - cubeB.x) + Math.Abs(cubeA.y - cubeB.y) + Math.Abs(cubeA.z - cubeB.z)) / 2;
     }
 
@@ -219,11 +295,15 @@ public class ThetaStar
     /// </summary>
     private bool LineOfSight(Node[,] nodeGrid, Node a, Node b)
     {
+        // Track LOS check count
+        if (enablePerformanceDebugging)
+            losChecks++;
+        
         if (a == null || b == null) return false;
         if (a == b) return true;
         
         // Get all hexes along the line between a and b
-        List<Vector2Int> hexLine = HexBresenham.HexLineDraw(a.X, a.Y, b.X, b.Y);
+        List<Vector2Int> hexLine = HexBresenham.HexLineDraw(a.CellX, a.CellY, b.CellX, b.CellY);
         
         // Check if all hexes along the line are traversable
         foreach (var hex in hexLine)
@@ -233,6 +313,10 @@ public class ThetaStar
             if (node == null || !node.T)
                 return false;
         }
+        
+        // Track successful LOS checks
+        if (enablePerformanceDebugging)
+            losChecksPassed++;
         
         return true;
     }
@@ -247,7 +331,7 @@ public class ThetaStar
         if (a == b) return 0;
         
         // Get all hexes along the line between a and b
-        List<Vector2Int> hexLine = HexBresenham.HexLineDraw(a.X, a.Y, b.X, b.Y);
+        List<Vector2Int> hexLine = HexBresenham.HexLineDraw(a.CellX, a.CellY, b.CellX, b.CellY);
 
         // Sum up the traversal cost of nodes along the path
         // Skip index 0 (node 'a') because its cost is already in a.G
@@ -268,10 +352,10 @@ public class ThetaStar
         float hexWidth = 1.5f; // Horizontal distance between hex centers (normalized)
         float hexHeight = Mathf.Sqrt(3); // Vertical distance (normalized)
         
-        float x1 = a.X * hexWidth;
-        float y1 = a.Y * hexHeight + (a.X % 2) * (hexHeight * 0.5f);
-        float x2 = b.X * hexWidth;
-        float y2 = b.Y * hexHeight + (b.X % 2) * (hexHeight * 0.5f);
+        float x1 = a.CellX * hexWidth;
+        float y1 = a.CellY * hexHeight + (a.CellX % 2) * (hexHeight * 0.5f);
+        float x2 = b.CellX * hexWidth;
+        float y2 = b.CellY * hexHeight + (b.CellX % 2) * (hexHeight * 0.5f);
         
         float distance = Mathf.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         traversalCost += distance;

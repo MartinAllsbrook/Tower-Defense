@@ -7,8 +7,10 @@ using UnityEngine;
 /// </summary>
 public class Node
 {
-    public int X;
-    public int Y;
+    public int CellX;
+    public int CellY;
+    public int GridX;
+    public int GridY;
     public float F; // F = G + H
     public float G; // Cost from start to current node
     public float H; // Heuristic cost estimate to end node
@@ -17,10 +19,13 @@ public class Node
     public List<Node> Neighbors;
     public Node previous = null;
 
-    public Node(int x, int y, float cost, bool traversable)
+    public Node(int cellX, int cellY, int gridX, int gridY, float cost, bool traversable)
     {
-        X = x;
-        Y = y;
+        CellX = cellX;
+        CellY = cellY;
+        GridX = gridX;
+        GridY = gridY;
+
         F = 0;
         G = 0;
         H = 0;
@@ -56,12 +61,13 @@ public class Node
         };
         
         // Use the actual Y coordinate of THIS node, not the array index
-        int[][] offsets = (this.Y % 2 == 0) ? evenColOffsets : oddColOffsets;
+        int[][] offsets = (CellY % 2 == 0) ? evenColOffsets : oddColOffsets;
 
         foreach (var offset in offsets)
         {
             // Calculate neighbor's tilemap coordinates
-            Vector2Int neighborPos = new Vector2Int(X + offset[0], Y + offset[1]);
+            // TODO: We could just use GridX and GridY here and skip the offset calculation
+            Vector2Int neighborPos = new Vector2Int(CellX + offset[0], CellY + offset[1]);
 
             // Correct bounds check: ensure neighborPos is within bounds
             if (neighborPos.x >= bounds.xMin && neighborPos.x < bounds.xMax &&
@@ -87,7 +93,7 @@ public class Node
         // Debug.Assert(x >= 0 && x < grid.GetLength(0) && y >= 0 && y < grid.GetLength(1), $"Target position ({x}, {y}) is out of grid bounds. Grid bounds: xMin={grid.GetLowerBound(0)}, xMax={grid.GetUpperBound(0)}, yMin={grid.GetLowerBound(1)}, yMax={grid.GetUpperBound(1)}");
         Node node = grid[x, y];
 
-        if (node.X == target.x && node.Y == target.y)
+        if (node.CellX == target.x && node.CellY == target.y)
         {
             return grid[x, y];
         }

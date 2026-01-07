@@ -86,10 +86,7 @@ public class Enemy : MonoBehaviour
     {
         Vector3Int start = world.WorldToCell(transform.position);
 
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         List<Node> path = world.GetThetaStar().CreatePath(new Vector2Int(start.x, start.y), end);
-        stopwatch.Stop();
-        Debug.Log($"Path creation took {stopwatch.ElapsedMilliseconds} ms.");
 
         if (path != null && path.Count > 0)
         {
@@ -112,7 +109,7 @@ public class Enemy : MonoBehaviour
         foreach (var node in path)
         {
             // Convert grid coordinates to world position (flat-top hex grid)
-            Vector3 targetWorldPos = world.CellToWorld(new Vector3Int(node.X, node.Y, 0));
+            Vector3 targetWorldPos = world.CellToWorld(new Vector3Int(node.CellX, node.CellY, 0));
             
             // Move towards the target position
             while (Vector3.Distance(transform.position, targetWorldPos) > 0.01f)
@@ -132,6 +129,6 @@ public class Enemy : MonoBehaviour
             transform.position = targetWorldPos;
         }
         
-        Debug.Log("Enemy reached destination.");
+        // Debug.Log("Enemy reached destination.");
     }
 }
