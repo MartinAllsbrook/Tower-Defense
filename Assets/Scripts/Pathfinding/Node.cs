@@ -18,6 +18,10 @@ public class Node
     public bool T; // Whether the node is traversable at all
     public List<Node> Neighbors;
     public Node previous = null;
+    
+    // State tracking for pathfinding (avoids expensive Contains() calls)
+    public bool InOpenSet;
+    public bool InClosedSet;
 
     public Node(int cellX, int cellY, int gridX, int gridY, float cost, bool traversable)
     {
@@ -31,6 +35,9 @@ public class Node
         H = 0;
         C = cost;
         T = traversable;
+
+        InOpenSet = false;
+        InClosedSet = false;
 
         Neighbors = new List<Node>();
     }
@@ -102,5 +109,13 @@ public class Node
         return null;
     }
 
-
+    public void ResetPathfindingData()
+    {
+        F = 0;
+        G = 0;
+        H = 0;
+        previous = null;
+        InOpenSet = false;
+        InClosedSet = false;
+    }
 }

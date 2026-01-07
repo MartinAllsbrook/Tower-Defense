@@ -91,6 +91,8 @@ public class ThetaStar
         HashSet<Node> ClosedSet = new HashSet<Node>();
 
         OpenSet.Add(Start);
+        Start.InOpenSet = true;
+        Start.InOpenSet = true;
 
         while (OpenSet.Count > 0)
         {
@@ -130,6 +132,8 @@ public class ThetaStar
             }
 
             // If not at the end, continue searching
+            current.InOpenSet = false;
+            current.InClosedSet = true;
             ClosedSet.Add(current);
             
             // Track closed set size
@@ -142,7 +146,7 @@ public class ThetaStar
             {
                 Node neighbor = neighbors[i];
                 // Skip if neighbor is already evaluated (in ClosedSet) or is not traversable
-                if (!ClosedSet.Contains(neighbor) && neighbor.T)
+                if (!neighbor.InClosedSet && neighbor.T)
                 {
                     // Calculate cost via current node (standard A* path)
                     float distance = 1; // Approximate distance between adjacent hexes
@@ -182,7 +186,7 @@ public class ThetaStar
 
                     bool newPath = false;
                     // If the neighbor is already discovered
-                    if (OpenSet.Contains(neighbor)) 
+                    if (neighbor.InOpenSet) 
                     {
                         // Check if this path to the neighbor is better than the previously found path
                         if (G < neighbor.G)
@@ -197,6 +201,7 @@ public class ThetaStar
                         neighbor.G = G; // Set initial path cost
                         newPath = true;
                         OpenSet.Add(neighbor); // Add to nodes to be evaluated
+                        neighbor.InOpenSet = true;
                     }
                     
                     if (newPath) // If we found a better or new path to this neighbor
@@ -206,7 +211,7 @@ public class ThetaStar
                         neighbor.previous = pathParent; // Track the path (may skip current node if LOS exists)
                         
                         // If we updated an existing node in the heap, reheapify to maintain heap property
-                        if (OpenSet.Contains(neighbor))
+                        if (neighbor.InOpenSet)
                             OpenSet.UpdatePriority(neighbor);
                     }
                 }
@@ -239,10 +244,7 @@ public class ThetaStar
             for (int j = 0; j < rows; j++)
             {
                 Node node = nodeGrid[i, j];
-                node.F = 0;
-                node.G = 0;
-                node.H = 0;
-                node.previous = null;
+                node.ResetPathfindingData();
             }
         }
     }
