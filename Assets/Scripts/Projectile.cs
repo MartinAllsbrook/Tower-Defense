@@ -1,13 +1,22 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] private float speed = 10f;
-    
-    private Vector3 startPosition;
-    private float maxRange;
-    private bool isInitialized = false;
+    [SerializeField] ParticleSystem impactEffectPrefab;
+    private ParticleSystem impactEffect;
+
+    [SerializeField] float speed = 10f;
+    Vector3 startPosition;
+    float maxRange;
+    bool isInitialized = false;
+
+    void Awake()
+    {
+        impactEffect = Instantiate(impactEffectPrefab);
+        impactEffect.gameObject.SetActive(false);
+    }
 
     public void Initialize(Vector3 startPos, float range)
     {
@@ -34,7 +43,18 @@ public class Projectile : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        impactEffect.transform.position = transform.position;
+        impactEffect.gameObject.SetActive(true);
+        impactEffect.Play();
+        StartCoroutine(DisableImpactEffectAfterDuration(impactEffect.main.duration));
+        
         isInitialized = false;
         gameObject.SetActive(false);
+    }
+
+    IEnumerator DisableImpactEffectAfterDuration(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        impactEffect.gameObject.SetActive(false);
     }
 }
