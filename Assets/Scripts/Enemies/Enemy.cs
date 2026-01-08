@@ -11,12 +11,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] float maxHealth = 100f;
     [SerializeField] GameObject[] legObjects;
 
-    EnemyMovement movement;
-
     float health = 100f;
     World world;
     Target target;
-    float angle = 0f;
     Coroutine moveCoroutine;
     bool gameOver = false;
 
@@ -28,21 +25,10 @@ public class Enemy : MonoBehaviour
         GameController gameController = FindFirstObjectByType<GameController>();
         gameController.OnGameOver += OnGameEnd;
         world.OnWorldUpdate += OnUpdateGrid;
-        movement = GetComponent<EnemyMovement>();
     }
 
     void Start()
     {   
-        // MoveToTarget();
-        List<Vector2> path = new List<Vector2>
-        {
-            new Vector2(0, 0),
-            new Vector2(1, 1),
-            new Vector2(2, 0)
-        };
-        movement.SetPath(path);
-        movement.StartMoving();
-
         AnimateLegs();
     }
 
@@ -118,7 +104,6 @@ public class Enemy : MonoBehaviour
         Vector3Int targetPos = world.WorldToCell(target.transform.position);
         MoveToLocation(new Vector2Int(targetPos.x, targetPos.y));
     }
-
 
     public void MoveToLocation(Vector2Int end)
     {
