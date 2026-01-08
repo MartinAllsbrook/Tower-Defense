@@ -67,13 +67,14 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Tower Defense.slnx",
+    "dotnet.defaultSolution": "Tower-Defense.slnx",
     "cSpell.words": [
         "Behaviour",
         "Cooldown",
         "interactable",
         "Mathf",
         "pathfinding",
+        "Rigidbody",
         "Scriptable",
         "Tilemap"
     ]

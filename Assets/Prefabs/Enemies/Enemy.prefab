@@ -510,6 +510,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8607992153932832088}
   - component: {fileID: 4565356992051795417}
+  - component: {fileID: 7206824754580517996}
   - component: {fileID: 2675474381764475046}
   - component: {fileID: 2311559584009982639}
   m_Layer: 6
@@ -560,7 +561,18 @@ MonoBehaviour:
   - {fileID: 8672291820378282963}
   - {fileID: 1375411496839372440}
   - {fileID: 386667861408369208}
-  gameOver: 0
+--- !u!114 &7206824754580517996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3862966811575854548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e44c74c670c92c44896945416dacd217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
 --- !u!58 &2675474381764475046
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -6,11 +6,12 @@ using UnityEngine.Tilemaps;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] float radius = 2f;
-    [SerializeField] float speed = 1f;
     [SerializeField] GameObject spriteObject;
     [SerializeField] HealthBar healthBar;
     [SerializeField] float maxHealth = 100f;
     [SerializeField] GameObject[] legObjects;
+
+    EnemyMovement movement;
 
     float health = 100f;
     World world;
@@ -26,13 +27,27 @@ public class Enemy : MonoBehaviour
 
         GameController gameController = FindFirstObjectByType<GameController>();
         gameController.OnGameOver += OnGameEnd;
+        world.OnWorldUpdate += OnUpdateGrid;
+        movement = GetComponent<EnemyMovement>();
     }
 
     void Start()
     {   
-        world.OnWorldUpdate += OnUpdateGrid;
-        MoveToTarget();
+        // MoveToTarget();
+        List<Vector2> path = new List<Vector2>
+        {
+            new Vector2(0, 0),
+            new Vector2(1, 1),
+            new Vector2(2, 0)
+        };
+        movement.SetPath(path);
+        movement.StartMoving();
 
+        AnimateLegs();
+    }
+
+    void AnimateLegs()
+    {
         // Randomize leg animation starting points
         foreach (GameObject leg in legObjects)
         {
@@ -140,7 +155,7 @@ public class Enemy : MonoBehaviour
                 transform.position = Vector3.MoveTowards(
                     transform.position, 
                     targetWorldPos, 
-                    speed * Time.deltaTime
+                    Time.deltaTime
                 );
                 Vector3 direction = (targetWorldPos - transform.position).normalized;
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;

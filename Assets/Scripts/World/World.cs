@@ -35,14 +35,14 @@ public class World : MonoBehaviour
     private void GenerateWorld()
     {
         GenerateBiomeTiles();
-        GenerateTerrain();
+        // GenerateTerrain();
         PlacePOI();
         thetaStar = new ThetaStar();
     }
 
     void GenerateBiomeTiles()
     {
-        FastNoiseLite noise = new FastNoiseLite();
+        FastNoiseLite noise = new FastNoiseLite(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(0.05f);
         int halfSize = (int)worldSize / 2;
@@ -65,7 +65,7 @@ public class World : MonoBehaviour
 
     void GenerateTerrain()
     {
-        FastNoiseLite noise = new FastNoiseLite();
+        FastNoiseLite noise = new FastNoiseLite(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(0.1f);
         int halfSize = (int)worldSize / 2;
