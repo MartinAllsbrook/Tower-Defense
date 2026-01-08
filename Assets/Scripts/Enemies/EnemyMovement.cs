@@ -5,11 +5,13 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] float speed = 1f;
-    [SerializeField] float rotationSpeed = 180f;
     [SerializeField] float maxOffset = 0.1f;
+    [SerializeField] float rotationSmoothing = 1f;
+    [SerializeField] float velocitySmoothing = 1f;
+    
     List<Vector2> path;
     Rigidbody2D rb;
-
+    Vector2 velocity;
 
     void Awake()
     {
@@ -36,10 +38,14 @@ public class EnemyMovement : MonoBehaviour
             Vector2 targetPosition = waypoint;
             while (Vector2.Distance(rb.position, targetPosition) > maxOffset)
             {
-                Vector2 newPosition = Vector2.MoveTowards(rb.position, targetPosition, speed * Time.deltaTime);
+                velocity = Vector2.Lerp(velocity, (targetPosition - rb.position).normalized * speed, velocitySmoothing * Time.deltaTime);
+
+                Vector2 newPosition = rb.position + velocity * Time.deltaTime;
+
                 rb.MovePosition(newPosition);
+
                 float targetAngle = Mathf.Atan2(targetPosition.y - rb.position.y, targetPosition.x - rb.position.x) * Mathf.Rad2Deg;
-                float angle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.deltaTime);
+                float angle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSmoothing * Time.deltaTime);
                 rb.MoveRotation(angle);
                 yield return null;
             }

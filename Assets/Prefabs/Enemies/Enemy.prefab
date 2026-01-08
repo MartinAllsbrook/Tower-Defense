@@ -550,7 +550,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   radius: 2
-  speed: 1
   spriteObject: {fileID: 4601083877690610282}
   healthBar: {fileID: 4001359603497208410}
   maxHealth: 100
@@ -573,6 +572,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44c74c670c92c44896945416dacd217, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  speed: 1
+  maxOffset: 0.1
+  rotationSmoothing: 6
+  velocitySmoothing: 6
 --- !u!58 &2675474381764475046
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -583,7 +586,7 @@ CircleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c115430c7c465c64986e5ad7db5c0342, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -625,7 +628,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c115430c7c465c64986e5ad7db5c0342, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
