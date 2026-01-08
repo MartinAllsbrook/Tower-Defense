@@ -1488,9 +1488,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 74c782c16be152346b5d71248343ff84, type: 2}
   mountainTile: {fileID: 11400000, guid: 91c2170fe975d4744b0e1b8220d29eb0, type: 2}
   enemySpawnerTile: {fileID: 11400000, guid: 788b92c38fad61047aec9168d04db829, type: 2}
-  bounds:
-    m_Position: {x: 0, y: 0, z: 0}
-    m_Size: {x: 0, y: 0, z: 0}
 --- !u!1 &1113621066
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ public class Defense : MonoBehaviour
 {
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float detectionRange = 5f;
+    [SerializeField] private float projectileRange = 10f;
     [SerializeField] private float fireRateHz = 10f;
     [SerializeField] private GameObject projectilePrefab; 
 
@@ -12,8 +13,7 @@ public class Defense : MonoBehaviour
     private int projectileIndex = 0;
     private int projectilePoolSize = 64;
     private float fireCooldown = 0f;
-
-
+    
     void Start()
     {
         projectiles = new GameObject[projectilePoolSize];
@@ -61,6 +61,14 @@ public class Defense : MonoBehaviour
             GameObject proj = projectiles[projectileIndex];
             proj.transform.position = transform.position;
             proj.transform.rotation = transform.rotation;
+            
+            // Set the projectile's max range
+            Projectile projectileScript = proj.GetComponent<Projectile>();
+            if (projectileScript != null)
+            {
+                projectileScript.Initialize(transform.position, projectileRange);
+            }
+            
             proj.SetActive(true);
 
             // Update index and reset cooldown
