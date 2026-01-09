@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
-public struct NodeNew
+public class NodeNew
 {
     public int X;
     public int Y;

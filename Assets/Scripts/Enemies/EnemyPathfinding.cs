@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using UnityEngine;
 
 class EnemyPathfinding : MonoBehaviour
@@ -27,10 +28,13 @@ class EnemyPathfinding : MonoBehaviour
             // Switch to background thread for pathfinding computation
             await Awaitable.BackgroundThreadAsync();
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
             // Do pathfinding
             ThetaStarNew thetaStar = new ThetaStarNew(grid, offset);
             Path path = thetaStar.CreatePath(startCell, targetCell);
 
+            stopwatch.Stop();
+            UnityEngine.Debug.Log($"Pathfinding took {stopwatch.ElapsedMilliseconds} ms.");
             // Switch back to main thread before returning
             await Awaitable.MainThreadAsync();
             return path;

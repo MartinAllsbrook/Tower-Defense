@@ -42,8 +42,6 @@ class ThetaStarNew
 
     public Path CreatePath(Vector2Int startPos, Vector2Int endPos)
     {
-        Debug.Log($"Creating path size {width}x{height}");
-
         NodeNew startNode = grid[startPos.x - gridOffset.x, startPos.y - gridOffset.y];
         NodeNew endNode = grid[endPos.x - gridOffset.x, endPos.y - gridOffset.y];
 
@@ -52,6 +50,9 @@ class ThetaStarNew
         MinHeap<NodeNew> openSet = new MinHeap<NodeNew>((a, b) => a.F.CompareTo(b.F));
         HashSet<NodeNew> closedSet = new HashSet<NodeNew>();
 
+        startNode.G = 0;
+        startNode.H = Heuristic(startNode, endNode);
+        startNode.F = startNode.G + startNode.H;
         openSet.Add(startNode);
         startNode.InOpenSet = true;
 
@@ -59,8 +60,12 @@ class ThetaStarNew
         {
             NodeNew current = openSet.RemoveMin();
             current.InOpenSet = false;
-
-            Debug.Log($"Evaluating node at ({current.X}, {current.Y}). Looking for ({endNode.X}, {endNode.Y}). F={current.F}, G={current.G}, H={current.H}, C={current.C}, T={current.T}");
+            
+            if (current.InClosedSet)
+                continue; // Already processed this node
+            
+            closedSet.Add(current);
+            current.InClosedSet = true;
 
             // If we reached the end, reconstruct path
             if (current.X == endNode.X && current.Y == endNode.Y)
@@ -70,7 +75,7 @@ class ThetaStarNew
                 while (temp.previous.x != -1 && temp.previous.y != -1)
                 {
                     path.Add(temp);
-                    temp = grid[temp.previous.x - gridOffset.x, temp.previous.y - gridOffset.y];
+                    temp = grid[temp.previous.x, temp.previous.y];
                 }
                 path.Add(startNode);
                 path.Reverse();
@@ -84,9 +89,6 @@ class ThetaStarNew
                 };
             }
 
-            closedSet.Add(current);
-            current.InClosedSet = true;
-
             NodeNew[] neighbors = current.Neighbors;
             for (int i = 0; i < neighbors.Length; i++)
             {
@@ -98,30 +100,24 @@ class ThetaStarNew
 
                 float tentativeG = current.G + neighbor.C;
 
-                bool newPath = false;
                 if (!neighbor.InOpenSet)
                 {
                     neighbor.G = tentativeG;
+                    neighbor.H = Heuristic(neighbor, endNode);
+                    neighbor.F = neighbor.G + neighbor.H;
+                    neighbor.previous = new Vector2Int(current.X, current.Y);
+                    
                     openSet.Add(neighbor);
                     neighbor.InOpenSet = true;
-
-                    newPath = true;
                 }
                 else if (tentativeG < neighbor.G)
                 {
                     neighbor.G = tentativeG;
-
-                    newPath = true;
-                }
-
-                if (newPath)
-                {
                     neighbor.H = Heuristic(neighbor, endNode);
                     neighbor.F = neighbor.G + neighbor.H;
                     neighbor.previous = new Vector2Int(current.X, current.Y);
-
-                    if (neighbor.InOpenSet)
-                        openSet.UpdatePriority(neighbor);
+                    
+                    openSet.UpdatePriority(neighbor);
                 }
             }
         }
@@ -181,7 +177,7 @@ class ThetaStarNew
             new int[] {+1, -1}  // NW
         };
 
-        int tilemapX = position.x - gridOffset.x;
+        int tilemapX = position.x + gridOffset.x;
         int[][] offsets = (tilemapX % 2 == 0) ? evenColOffsets : oddColOffsets;
 
         List<NodeNew> neighbors = new List<NodeNew>();
