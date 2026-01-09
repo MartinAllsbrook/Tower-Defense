@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Structure
   objectType: 0
   structureName: Turret
+  priority: 200
   tile: {fileID: 11400000, guid: a42de028c43dcaf4790f0a5a817af42e, type: 2}

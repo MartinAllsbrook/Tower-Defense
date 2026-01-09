@@ -225,8 +225,8 @@ public class World : MonoBehaviour
                     grid[i, j] = new GridCell
                     {
                         Position = new Vector2Int(x, y),
-                        Cost = taggedTile.tag == TileTag.Structure ? 15 : 1,
-                        Traversable = taggedTile.tag != TileTag.Terrain,
+                        Cost = taggedTile.Tag == TileTag.Structure ? 15 : 1,
+                        Traversable = taggedTile.Tag != TileTag.Terrain,
                     };
                 }
                 else
@@ -261,6 +261,21 @@ public class World : MonoBehaviour
     public ThetaStar GetThetaStar()
     {
         return thetaStar;
+    }
+
+    /// <summary>
+    /// Returns the Structure ScriptableObject at the given cell position, or null if none exists.
+    /// </summary>
+    public Structure GetStructureAtCell(Vector2Int cellPosition)
+    {
+        Vector3Int cellPos = new Vector3Int(cellPosition.x, cellPosition.y, 0);
+        TileBase tile = worldTilemap.GetTile(cellPos);
+        if (tile is StructureTile structureTile)
+        {
+            Structure structure = structureTile.Structure;
+            return structure;
+        }
+        return null;
     }
 
     #endregion

@@ -1,6 +1,4 @@
-using UnityEditor.Build;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public enum TileTag
 {
@@ -9,8 +7,13 @@ public enum TileTag
     Terrain,
 }
 
-[CreateAssetMenu(fileName = "New Tagged Tile", menuName = "Tiles/Tagged Tile")]
+[CreateAssetMenu(fileName = "New World Tile", menuName = "Tiles/World Tile")]
 public class WorldTile : HexagonalRuleTile
 {    
-    public TileTag tag;
+    [SerializeField] private TileTag tag;
+
+    public TileTag Tag
+    {
+        get { return tag; }
+    }
 }

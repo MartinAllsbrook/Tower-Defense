@@ -50,7 +50,7 @@ public class ThetaStar
         }
     }
 
-    public List<Node> CreatePath(Vector2Int start, Vector2Int end)
+    public Path CreatePath(Vector2Int start, Vector2Int end)
     {
         // Reset performance counters
         nodesExplored = 0;
@@ -83,7 +83,11 @@ public class ThetaStar
                 stopwatch.Stop();
                 UnityEngine.Debug.LogWarning($"[Theta*] Invalid path - Time: {stopwatch.ElapsedMilliseconds}ms");
             }
-            return null;
+            return new Path { 
+                valid = false, 
+                cost = float.MaxValue, 
+                nodes = null 
+            };
         }
 
         // Theta* Algorithm
@@ -128,7 +132,11 @@ public class ThetaStar
                         $"  Efficiency: {(nodesExplored > 0 ? (path.Count * 100f / nodesExplored) : 0):F1}% (path/explored)");
                 }
                 
-                return path;
+                return new Path { 
+                    valid = true, 
+                    cost = current.G, 
+                    nodes = path 
+                };
             }
 
             // If not at the end, continue searching
@@ -231,7 +239,11 @@ public class ThetaStar
                 $"  LOS Checks: {losChecks} ({losChecksPassed} passed)");
         }
         
-        return null;
+        return new Path { 
+            valid = false, 
+            cost = float.MaxValue, 
+            nodes = null 
+        };
     }
 
     #region General A* / Theta* Helpers

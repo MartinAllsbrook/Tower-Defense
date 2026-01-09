@@ -36,11 +36,22 @@ class EnemyBrain : MonoBehaviour
         // Create path to target
         Target target = FindFirstObjectByType<Target>();
         Vector3Int targetCell = world.WorldToCell(target.transform.position);
-        Queue<Vector2> pathToTarget = GetPathToCell(new Vector2Int(targetCell.x, targetCell.y)); // Example target cell
+        Path path = GetPathToCell(new Vector2Int(targetCell.x, targetCell.y)); // Example target cell
+
+        // TODO: This is unused right now but eventually we can compare it to other potential targets
+        float priority = CalculatePriority(path);
+
+        Queue<Vector2> worldPath = new Queue<Vector2>();
+        foreach (Node node in path.nodes)
+        {
+            Vector3Int cellPos = new Vector3Int(node.CellX, node.CellY, 0);
+            Vector3 worldPos = world.CellToWorld(cellPos);
+            worldPath.Enqueue(new Vector2(worldPos.x, worldPos.y));
+        }
 
         // Create move action
         MoveAction moveAction = new MoveAction();
-        moveAction.SetPath(pathToTarget);
+        moveAction.SetPath(worldPath);
 
         // Add actions to the queue
         newActionQueue.Enqueue(moveAction);
@@ -48,20 +59,41 @@ class EnemyBrain : MonoBehaviour
         return newActionQueue;
     }
 
-    Queue<Vector2> GetPathToCell(Vector2Int cellPosition)
+    Vector2Int FindObstacleOnPath(Path path)
     {
-        Vector3Int start = world.WorldToCell(transform.position);
-        List<Node> path = world.GetThetaStar().CreatePath(new Vector2Int(start.x, start.y), cellPosition);
-
-        Queue<Vector2> worldPath = new Queue<Vector2>();
-        foreach (Node node in path)
+        foreach (Node node in path.nodes)
         {
-            Vector3Int cellPos = new Vector3Int(node.CellX, node.CellY, 0);
-            Vector3 worldPos = world.CellToWorld(cellPos);
-            worldPath.Enqueue(new Vector2(worldPos.x, worldPos.y));
+            // MAJOR TODO: We should just know if the node is a structure and then get the first one
+            Structure structure = world.GetStructureAtCell(new Vector2Int(node.CellX, node.CellY));
+            if (structure != null)
+            {
+                return new Vector2Int(node.CellX, node.CellY);
+            }
+        }
+        return new Vector2Int(-1, -1); // No obstacle found
+    }
+
+    float CalculatePriority(Path path)
+    {
+        float cost = 0f;
+
+        cost += path.cost;
+
+        Node lastNode = path.nodes[path.nodes.Count - 1];
+        Structure target = world.GetStructureAtCell(new Vector2Int(lastNode.CellX, lastNode.CellY));
+        if (target != null)
+        {
+            cost += target.priority;
         }
 
-        return worldPath;
+        return cost;
+    }
+
+    Path GetPathToCell(Vector2Int cellPosition)
+    {
+        Vector3Int start = world.WorldToCell(transform.position);
+
+        return world.GetThetaStar().CreatePath(new Vector2Int(start.x, start.y), cellPosition);
     }
 }
 
