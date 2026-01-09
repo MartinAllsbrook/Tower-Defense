@@ -46,7 +46,7 @@ class EnemyBrain : MonoBehaviour
         float priority = CalculatePriority(path);
 
         Queue<Vector2> worldPath = new Queue<Vector2>();
-        foreach (NodeNew node in path.nodes)
+        foreach (Node node in path.nodes)
         {
             BoundsInt bounds = world.GetBounds();
             Vector3Int cellPos = new Vector3Int(node.X + bounds.xMin, node.Y + bounds.yMin, 0);
@@ -66,7 +66,7 @@ class EnemyBrain : MonoBehaviour
 
     Vector2Int FindObstacleOnPath(Path path)
     {
-        foreach (NodeNew node in path.nodes)
+        foreach (Node node in path.nodes)
         {
             // MAJOR TODO: We should just know if the node is a structure and then get the first one
             BoundsInt bounds = world.GetBounds();
@@ -85,7 +85,7 @@ class EnemyBrain : MonoBehaviour
 
         cost += path.cost;
 
-        NodeNew lastNode = path.nodes[path.nodes.Count - 1];
+        Node lastNode = path.nodes[path.nodes.Count - 1];
         BoundsInt bounds = world.GetBounds();
         Structure target = world.GetStructureAtCell(new Vector2Int(lastNode.X + bounds.xMin, lastNode.Y + bounds.yMin));
         if (target != null)

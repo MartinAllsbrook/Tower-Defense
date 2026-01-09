@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using NUnit.Framework.Internal.Commands;
 using UnityEngine;
 
-class ThetaStarNew
+class ThetaStar
 {
-    NodeNew[,] grid;
+    Node[,] grid;
     int width;
     int height;
     /// <summary>
@@ -14,13 +14,13 @@ class ThetaStarNew
     /// </summary>
     Vector2Int gridOffset;
 
-    public ThetaStarNew(GridCell[,] worldGrid, Vector2Int offset)
+    public ThetaStar(GridCell[,] worldGrid, Vector2Int offset)
     {
         gridOffset = offset;
 
         width = worldGrid.GetLength(0);
         height = worldGrid.GetLength(1);
-        grid = new NodeNew[width, height];
+        grid = new Node[width, height];
         for (int x = 0; x < worldGrid.GetLength(0); x++)
         {
             for (int y = 0; y < worldGrid.GetLength(1); y++)
@@ -42,13 +42,13 @@ class ThetaStarNew
 
     public Path CreatePath(Vector2Int startPos, Vector2Int endPos)
     {
-        NodeNew startNode = grid[startPos.x - gridOffset.x, startPos.y - gridOffset.y];
-        NodeNew endNode = grid[endPos.x - gridOffset.x, endPos.y - gridOffset.y];
+        Node startNode = grid[startPos.x - gridOffset.x, startPos.y - gridOffset.y];
+        Node endNode = grid[endPos.x - gridOffset.x, endPos.y - gridOffset.y];
 
         // TODO: Validation?
 
-        MinHeap<NodeNew> openSet = new MinHeap<NodeNew>((a, b) => a.F.CompareTo(b.F));
-        HashSet<NodeNew> closedSet = new HashSet<NodeNew>();
+        MinHeap<Node> openSet = new MinHeap<Node>((a, b) => a.F.CompareTo(b.F));
+        HashSet<Node> closedSet = new HashSet<Node>();
 
         startNode.G = 0;
         startNode.H = Heuristic(startNode, endNode);
@@ -58,7 +58,7 @@ class ThetaStarNew
 
         while (openSet.Count > 0)
         {
-            NodeNew current = openSet.RemoveMin();
+            Node current = openSet.RemoveMin();
             current.InOpenSet = false;
             
             if (current.InClosedSet)
@@ -70,8 +70,8 @@ class ThetaStarNew
             // If we reached the end, reconstruct path
             if (current.X == endNode.X && current.Y == endNode.Y)
             {
-                List<NodeNew> path = new List<NodeNew>();
-                NodeNew temp = current;
+                List<Node> path = new List<Node>();
+                Node temp = current;
                 while (temp.previous.x != -1 && temp.previous.y != -1)
                 {
                     path.Add(temp);
@@ -89,10 +89,10 @@ class ThetaStarNew
                 };
             }
 
-            NodeNew[] neighbors = current.Neighbors;
+            Node[] neighbors = current.Neighbors;
             for (int i = 0; i < neighbors.Length; i++)
             {
-                NodeNew neighbor = neighbors[i];
+                Node neighbor = neighbors[i];
                 if (neighbor.InClosedSet || !neighbor.T)
                 {
                     continue; // Skip if already evaluated or not traversable
@@ -132,15 +132,15 @@ class ThetaStarNew
         };
     }
 
-    float Heuristic(NodeNew a, NodeNew b)
+    float Heuristic(Node a, Node b)
     {
         // Using Euclidean distance as heuristic
         return Vector2Int.Distance(new Vector2Int(a.X, a.Y), new Vector2Int(b.X, b.Y));
     }
 
-    NodeNew InitializeNode(int x, int y, float cost, bool traversable)
+    Node InitializeNode(int x, int y, float cost, bool traversable)
     {
-        return new NodeNew
+        return new Node
         {
             X = x,
             Y = y,
@@ -149,7 +149,7 @@ class ThetaStarNew
             F = 0f,
             G = 0f,
             H = 0f,
-            Neighbors = new NodeNew[0],
+            Neighbors = new Node[0],
             previous = new Vector2Int(-1, -1),
             InOpenSet = false,
             InClosedSet = false
@@ -177,10 +177,10 @@ class ThetaStarNew
             new int[] {+1, -1}  // NW
         };
 
-        int tilemapX = position.x + gridOffset.x;
-        int[][] offsets = (tilemapX % 2 == 0) ? evenColOffsets : oddColOffsets;
+        int tilemapY = position.y + gridOffset.y;
+        int[][] offsets = (tilemapY % 2 == 0) ? evenColOffsets : oddColOffsets;
 
-        List<NodeNew> neighbors = new List<NodeNew>();
+        List<Node> neighbors = new List<Node>();
         foreach (int[] offset in offsets)
         {
             int neighborX = position.x + offset[0];

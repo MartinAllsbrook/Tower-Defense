@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
-public class NodeNew
+public class Node
 {
     public int X;
     public int Y;
@@ -13,7 +13,7 @@ public class NodeNew
     public float G;
     public float H;
 
-    public NodeNew[] Neighbors;
+    public Node[] Neighbors;
     public Vector2Int previous;
     public bool InOpenSet;
     public bool InClosedSet;
