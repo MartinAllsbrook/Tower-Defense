@@ -82,6 +82,8 @@ public class ThetaStar
             {
                 stopwatch.Stop();
                 UnityEngine.Debug.LogWarning($"[Theta*] Invalid path - Time: {stopwatch.ElapsedMilliseconds}ms");
+                UnityEngine.Debug.LogWarning($"  Start Node: {(Start != null ? (Start.T ? "Valid" : "Not Traversable") : "Null")}");
+                UnityEngine.Debug.LogWarning($"  End Node: {(End != null ? (End.T ? "Valid" : "Not Traversable") : "Null")}");
             }
             return new Path { 
                 valid = false, 
@@ -110,6 +112,11 @@ public class ThetaStar
             // Track nodes explored
             if (enablePerformanceDebugging)
                 nodesExplored++;
+
+            if (current.CellX == End.CellX && current.CellY == End.CellY)
+            {
+                UnityEngine.Debug.Log("Reached end node.");
+            }
 
             // If we reached the end node, reconstruct and return the path
             if (End != null && current == End)

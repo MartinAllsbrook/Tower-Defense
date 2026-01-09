@@ -514,6 +514,7 @@ GameObject:
   - component: {fileID: 7653750364039619512}
   - component: {fileID: 2675474381764475046}
   - component: {fileID: 2311559584009982639}
+  - component: {fileID: 1429455573527520755}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
@@ -652,6 +653,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1429455573527520755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3862966811575854548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46fb26b548ebdd94786cb78b434e1e2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyPathfinding
 --- !u!1 &4601083877690610282
 GameObject:
   m_ObjectHideFlags: 0

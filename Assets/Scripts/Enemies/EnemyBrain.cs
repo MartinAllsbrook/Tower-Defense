@@ -5,16 +5,18 @@ class EnemyBrain : MonoBehaviour
 {
     Queue<EnemyAction> actionQueue;
     World world;
+    EnemyPathfinding pathfinding;
 
     void Awake()
     {
         world = FindFirstObjectByType<World>();
+        pathfinding = GetComponent<EnemyPathfinding>();
         actionQueue = new Queue<EnemyAction>();
     }
 
-    void Start()
+    async void Start()
     {
-        actionQueue = EvaluateStrategy();
+        actionQueue = await EvaluateStrategy();
         EnemyAction nextAction = actionQueue.Dequeue();
         if (nextAction is MoveAction moveAction)
         {
@@ -28,7 +30,7 @@ class EnemyBrain : MonoBehaviour
     /// <summary>
     /// Incomplete method to evaluate and create a strategy for the enemy. Currently just generates a move action to the target.
     /// </summary>
-    Queue<EnemyAction> EvaluateStrategy()
+    async Awaitable<Queue<EnemyAction>> EvaluateStrategy()
     {
         // Make a new action queue
         Queue<EnemyAction> newActionQueue = new Queue<EnemyAction>();
@@ -36,7 +38,8 @@ class EnemyBrain : MonoBehaviour
         // Create path to target
         Target target = FindFirstObjectByType<Target>();
         Vector3Int targetCell = world.WorldToCell(target.transform.position);
-        Path path = GetPathToCell(new Vector2Int(targetCell.x, targetCell.y)); // Example target cell
+        Path path = await pathfinding.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y)); // Example target cell
+
 
         // TODO: This is unused right now but eventually we can compare it to other potential targets
         float priority = CalculatePriority(path);
@@ -87,13 +90,6 @@ class EnemyBrain : MonoBehaviour
         }
 
         return cost;
-    }
-
-    Path GetPathToCell(Vector2Int cellPosition)
-    {
-        Vector3Int start = world.WorldToCell(transform.position);
-
-        return world.GetThetaStar().CreatePath(new Vector2Int(start.x, start.y), cellPosition);
     }
 }
 
