@@ -42,12 +42,14 @@ class EnemyBrain : MonoBehaviour
 
 
         // TODO: This is unused right now but eventually we can compare it to other potential targets
+        Debug.Log($"Path: {path.nodes}");
         float priority = CalculatePriority(path);
 
         Queue<Vector2> worldPath = new Queue<Vector2>();
-        foreach (Node node in path.nodes)
+        foreach (NodeNew node in path.nodes)
         {
-            Vector3Int cellPos = new Vector3Int(node.CellX, node.CellY, 0);
+            BoundsInt bounds = world.GetBounds();
+            Vector3Int cellPos = new Vector3Int(node.X + bounds.xMin, node.Y + bounds.yMin, 0);
             Vector3 worldPos = world.CellToWorld(cellPos);
             worldPath.Enqueue(new Vector2(worldPos.x, worldPos.y));
         }
@@ -64,13 +66,14 @@ class EnemyBrain : MonoBehaviour
 
     Vector2Int FindObstacleOnPath(Path path)
     {
-        foreach (Node node in path.nodes)
+        foreach (NodeNew node in path.nodes)
         {
             // MAJOR TODO: We should just know if the node is a structure and then get the first one
-            Structure structure = world.GetStructureAtCell(new Vector2Int(node.CellX, node.CellY));
+            BoundsInt bounds = world.GetBounds();
+            Structure structure = world.GetStructureAtCell(new Vector2Int(node.X + bounds.xMin, node.Y + bounds.yMin));
             if (structure != null)
             {
-                return new Vector2Int(node.CellX, node.CellY);
+                return new Vector2Int(node.X + bounds.xMin, node.Y + bounds.yMin);
             }
         }
         return new Vector2Int(-1, -1); // No obstacle found
@@ -82,8 +85,9 @@ class EnemyBrain : MonoBehaviour
 
         cost += path.cost;
 
-        Node lastNode = path.nodes[path.nodes.Count - 1];
-        Structure target = world.GetStructureAtCell(new Vector2Int(lastNode.CellX, lastNode.CellY));
+        NodeNew lastNode = path.nodes[path.nodes.Count - 1];
+        BoundsInt bounds = world.GetBounds();
+        Structure target = world.GetStructureAtCell(new Vector2Int(lastNode.X + bounds.xMin, lastNode.Y + bounds.yMin));
         if (target != null)
         {
             cost += target.priority;

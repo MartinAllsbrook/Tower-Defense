@@ -19,7 +19,7 @@ public class World : MonoBehaviour
     // Event that passes the updated grid to subscribers
     public event Action OnWorldUpdate;
 
-    ThetaStar thetaStar;
+    // ThetaStar thetaStar;
     GridCell[,] grid;
     BiomeID[,] biomeMap;
     BoundsInt bounds;
@@ -37,7 +37,7 @@ public class World : MonoBehaviour
         GenerateBiomeTiles();
         // GenerateTerrain();
         PlacePOI();
-        thetaStar = new ThetaStar();
+        // thetaStar = new ThetaStar();
     }
 
     void GenerateBiomeTiles()
@@ -198,7 +198,7 @@ public class World : MonoBehaviour
         bounds = worldTilemap.cellBounds;
         grid = CreateGrid(worldTilemap);
 
-        thetaStar.UpdateNavGrid(grid, bounds);
+        // thetaStar.UpdateNavGrid(grid, bounds);
 
         // Debugging Grid
         GridDebug gridDebug = GetComponent<GridDebug>();
@@ -258,10 +258,20 @@ public class World : MonoBehaviour
         return worldTilemap.CellToWorld(cellPosition);
     }
 
-    public ThetaStar GetThetaStar()
+    public GridCell[,] GetGrid()
     {
-        return thetaStar;
+        return grid;
     }
+
+    public BoundsInt GetBounds()
+    {
+        return bounds;
+    }
+
+    // public ThetaStar GetThetaStar()
+    // {
+    //     return thetaStar;
+    // }
 
     /// <summary>
     /// Returns the Structure ScriptableObject at the given cell position, or null if none exists.
