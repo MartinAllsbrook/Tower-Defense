@@ -48,15 +48,7 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (target == null || gameOver) return;
-
-        float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
-        if (distanceToTarget < radius)
-        {
-            target.DealDamage(50f);
-            world.OnWorldUpdate -= OnUpdateGrid;
-            Destroy(gameObject);
-        }
+        
     }
 
     void OnCollisionEnter2D(Collision2D collision)

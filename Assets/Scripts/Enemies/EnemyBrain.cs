@@ -17,13 +17,20 @@ class EnemyBrain : MonoBehaviour
     async void Start()
     {
         actionQueue = await EvaluateStrategy();
-        EnemyAction nextAction = actionQueue.Dequeue();
-        if (nextAction is MoveAction moveAction)
+        OnActionComplete();
+    }
+
+    void OnActionComplete()
+    {
+        if (actionQueue.Count > 0)
         {
-            Queue<Vector2> path = moveAction.GetPath();
-            EnemyMovement movement = GetComponent<EnemyMovement>();
-            movement.SetPath(path);
-            movement.StartMoving();
+            EnemyAction nextAction = actionQueue.Dequeue();
+            nextAction.onComplete += OnActionComplete;
+            nextAction.Execute();
+        } 
+        else
+        {
+            Debug.Log("Enemy has completed all actions in its queue.");
         }
     }
 
@@ -40,7 +47,6 @@ class EnemyBrain : MonoBehaviour
         Vector3Int targetCell = world.WorldToCell(target.transform.position);
         Path path = await pathfinding.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y)); // Example target cell
 
-
         // TODO: This is unused right now but eventually we can compare it to other potential targets
         Debug.Log($"Path: {path.nodes}");
         float priority = CalculatePriority(path);
@@ -53,10 +59,17 @@ class EnemyBrain : MonoBehaviour
             Vector3 worldPos = world.CellToWorld(cellPos);
             worldPath.Enqueue(new Vector2(worldPos.x, worldPos.y));
         }
+        // Remove the last item from worldPath if it exists
+        if (worldPath.Count > 0)
+        {
+            // Convert to list, remove last, and rebuild queue
+            var tempList = new List<Vector2>(worldPath);
+            tempList.RemoveAt(tempList.Count - 1);
+            worldPath = new Queue<Vector2>(tempList);
+        }
 
         // Create move action
-        MoveAction moveAction = new MoveAction();
-        moveAction.SetPath(worldPath);
+        MoveAction moveAction = new MoveAction(this, worldPath);
 
         // Add actions to the queue
         newActionQueue.Enqueue(moveAction);

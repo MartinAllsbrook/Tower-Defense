@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,12 +24,18 @@ public class EnemyMovement : MonoBehaviour
         path = newPath;
     }
 
-    public void StartMoving()
+    public void StartMoving(Action onComplete = null)
     {
-        StartCoroutine(FollowPath());
+        StartCoroutine(FollowPathCoroutine(onComplete));
     }
 
-    public IEnumerator FollowPath()
+    private IEnumerator FollowPathCoroutine(Action onComplete)
+    {
+        yield return FollowPath();
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator FollowPath()
     {
         if (path == null || path.Count == 0)
             yield break;

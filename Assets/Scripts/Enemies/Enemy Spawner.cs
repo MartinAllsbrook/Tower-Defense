@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private float spawnInterval = 3f;
+    [SerializeField] private float spawnInterval = 10;
 
     void Awake()
     {
