@@ -21,11 +21,11 @@ public class StructurePlacer : MonoBehaviour
     }
 
     [SerializeField] World world;
-    [SerializeField] Structure[] structures;
+    [SerializeField] StructureData[] structures;
     [SerializeField] RuleTile removeIconTile;
 
     Tilemap previewTilemap;
-    Structure currentStructure;
+    StructureData currentStructure;
     Mode mode = Mode.None;
     bool basePlaced = false; // To ensure only one base is placed
 
@@ -128,7 +128,7 @@ public class StructurePlacer : MonoBehaviour
         } 
     }
 
-    Structure GetStructureByType(StructureType type)
+    StructureData GetStructureByType(StructureType type)
     {
         foreach (var structure in structures)
         {

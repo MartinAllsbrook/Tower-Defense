@@ -225,7 +225,7 @@ public class World : MonoBehaviour
                     grid[i, j] = new GridCell
                     {
                         Position = new Vector2Int(x, y),
-                        Cost = taggedTile.Tag == TileTag.Structure ? 15 : 1,
+                        Cost = taggedTile.Tag == TileTag.StructureData ? 15 : 1,
                         Traversable = taggedTile.Tag != TileTag.Terrain,
                     };
                 }
@@ -274,15 +274,15 @@ public class World : MonoBehaviour
     // }
 
     /// <summary>
-    /// Returns the Structure ScriptableObject at the given cell position, or null if none exists.
+    /// Returns the StructureData ScriptableObject at the given cell position, or null if none exists.
     /// </summary>
-    public Structure GetStructureAtCell(Vector2Int cellPosition)
+    public StructureData GetStructureAtCell(Vector2Int cellPosition)
     {
         Vector3Int cellPos = new Vector3Int(cellPosition.x, cellPosition.y, 0);
         TileBase tile = worldTilemap.GetTile(cellPos);
         if (tile is StructureTile structureTile)
         {
-            Structure structure = structureTile.Structure;
+            StructureData structure = structureTile.StructureData;
             return structure;
         }
         return null;

@@ -83,7 +83,7 @@ class EnemyBrain : MonoBehaviour
         {
             // MAJOR TODO: We should just know if the node is a structure and then get the first one
             BoundsInt bounds = world.GetBounds();
-            Structure structure = world.GetStructureAtCell(new Vector2Int(node.X + bounds.xMin, node.Y + bounds.yMin));
+            StructureData structure = world.GetStructureAtCell(new Vector2Int(node.X + bounds.xMin, node.Y + bounds.yMin));
             if (structure != null)
             {
                 return new Vector2Int(node.X + bounds.xMin, node.Y + bounds.yMin);
@@ -100,7 +100,7 @@ class EnemyBrain : MonoBehaviour
 
         Node lastNode = path.nodes[path.nodes.Count - 1];
         BoundsInt bounds = world.GetBounds();
-        Structure target = world.GetStructureAtCell(new Vector2Int(lastNode.X + bounds.xMin, lastNode.Y + bounds.yMin));
+        StructureData target = world.GetStructureAtCell(new Vector2Int(lastNode.X + bounds.xMin, lastNode.Y + bounds.yMin));
         if (target != null)
         {
             cost += target.priority;

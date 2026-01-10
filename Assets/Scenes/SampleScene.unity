@@ -1506,7 +1506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::World
   floorTilemap: {fileID: 835494806}
   worldTilemap: {fileID: 925936650}
-  worldSize: 63
+  worldSize: 15
   backgroundTiles:
   - {fileID: 11400000, guid: 5aa5f712e11f4eb4188b6d9638f06cae, type: 2}
   - {fileID: 11400000, guid: 970cf6b7c0689654480c9c7fa95939ba, type: 2}

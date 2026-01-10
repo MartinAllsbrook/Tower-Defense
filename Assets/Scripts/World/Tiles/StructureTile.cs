@@ -1,11 +1,11 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Structure Tile", menuName = "Tiles/Structure Tile")]
+[CreateAssetMenu(fileName = "New StructureData Tile", menuName = "Tiles/StructureData Tile")]
 public class StructureTile : WorldTile
 {
-    [SerializeField] private Structure structure;
+    [SerializeField] private StructureData structure;
 
-    public Structure Structure
+    public StructureData StructureData
     {
         get { return structure; }
     }

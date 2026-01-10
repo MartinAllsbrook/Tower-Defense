@@ -188,7 +188,7 @@ SubShader {
 			float2 maskUV = (vert.xy - clampedRect.xy) / (clampedRect.zw - clampedRect.xy);
 			const half2 maskSoftness = half2(max(_UIMaskSoftnessX, _MaskSoftnessX), max(_UIMaskSoftnessY, _MaskSoftnessY));
 
-			// Structure for pixel shader
+			// StructureData for pixel shader
 			pixel_t output = {
 				vPosition,
 				faceColor,
