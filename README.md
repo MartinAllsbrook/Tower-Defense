@@ -1,5 +1,5 @@
 # Unnamed Tower Defense Game
-This is an tower defense game where you fight evil bugs trying to stop you from taking their land.
+This is a tower defense game where you fight evil bugs trying to stop you from taking their land.
 
 Those dang bugs!
 
