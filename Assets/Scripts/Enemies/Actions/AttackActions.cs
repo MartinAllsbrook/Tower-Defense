@@ -12,6 +12,9 @@ class AttackAction : EnemyAction
 
     public override IEnumerator Execute()
     {
+        EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
+        movement.SetLookAtTarget(targetStructure.transform.position);
+
         while (targetStructure != null && !targetStructure.IsDestroyed)
         {
             targetStructure.DealDamage(enemy.AttackDamage);
@@ -19,6 +22,7 @@ class AttackAction : EnemyAction
         }
 
         // Finish
+        movement.ClearLookAtTarget();
         Complete();
         yield return null;
     }
