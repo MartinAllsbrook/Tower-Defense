@@ -18,6 +18,7 @@ public class World : MonoBehaviour
 
     // Event that passes the updated grid to subscribers
     public event Action OnWorldUpdate;
+    public int WorldSize => (int)worldSize;
 
     // ThetaStar thetaStar;
     GridCell[,] grid;
@@ -26,6 +27,14 @@ public class World : MonoBehaviour
 
     void Start()
     {
+        worldTilemap.origin = new Vector3Int(-(WorldSize / 2), -(WorldSize / 2), 0);
+        worldTilemap.size = new Vector3Int(WorldSize, WorldSize, 1);
+        worldTilemap.ResizeBounds();
+
+        floorTilemap.origin = new Vector3Int(-(WorldSize / 2), -(WorldSize / 2), 0);
+        floorTilemap.size = new Vector3Int(WorldSize, WorldSize, 1);
+        floorTilemap.ResizeBounds();
+
         GenerateWorld();
         UpdateTilemap();
     }
@@ -45,13 +54,13 @@ public class World : MonoBehaviour
         FastNoiseLite noise = new FastNoiseLite(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(0.05f);
-        int halfSize = (int)worldSize / 2;
+        int halfSize = WorldSize / 2;
 
-        biomeMap = new BiomeID[(int)worldSize, (int)worldSize];
+        biomeMap = new BiomeID[WorldSize, WorldSize];
         
-        for (int x = -halfSize, i = 0; i < (int)worldSize; i++, x++)
+        for (int x = -halfSize, i = 0; i < WorldSize; i++, x++)
         {
-            for (int y = -halfSize, j = 0; j < (int)worldSize; j++, y++)
+            for (int y = -halfSize, j = 0; j < WorldSize; j++, y++)
             {
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
 
@@ -68,11 +77,11 @@ public class World : MonoBehaviour
         FastNoiseLite noise = new FastNoiseLite(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(0.1f);
-        int halfSize = (int)worldSize / 2;
+        int halfSize = WorldSize / 2;
         
-        for (int x = -halfSize, i = 0; i < (int)worldSize; i++, x++)
+        for (int x = -halfSize, i = 0; i < WorldSize; i++, x++)
         {
-            for (int y = -halfSize, j = 0; j < (int)worldSize; j++, y++)
+            for (int y = -halfSize, j = 0; j < WorldSize; j++, y++)
             {
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
 
@@ -124,14 +133,14 @@ public class World : MonoBehaviour
 
     List<Vector2Int> FindPointsInBiome(BiomeID biome, int count, int minSpacing, int maxAttempts = 1000)
     {
-        int halfSize = (int)worldSize / 2;
+        int halfSize = WorldSize / 2;
         System.Random rand = new System.Random();
         List<Vector2Int> points = new List<Vector2Int>();
         while (points.Count < count && maxAttempts > 0)
         {
             maxAttempts--;
-            int x = rand.Next(0, (int)worldSize);
-            int y = rand.Next(0, (int)worldSize);
+            int x = rand.Next(0, WorldSize);
+            int y = rand.Next(0, WorldSize);
 
             if (biomeMap[x, y] != biome)
                 continue;
@@ -162,8 +171,18 @@ public class World : MonoBehaviour
 
     #region World Modification
 
+    public bool IsWithinBounds(Vector3Int cellPosition)
+    {
+        int halfSize = WorldSize / 2;
+        return cellPosition.x >= -halfSize && cellPosition.x < halfSize &&
+               cellPosition.y >= -halfSize && cellPosition.y < halfSize;
+    }
+
     public bool SetTileAt(Vector3Int cellPosition, WorldTile newTile)
     {
+        if (!IsWithinBounds(cellPosition))
+            return false;
+
         WorldTile existingTile = worldTilemap.GetTile<WorldTile>(cellPosition);
         if (existingTile == null)
         {
@@ -181,12 +200,18 @@ public class World : MonoBehaviour
 
     public void RemoveTileAt(Vector3Int cellPosition)
     {
+        if (!IsWithinBounds(cellPosition))
+            return;
+
         worldTilemap.SetTile(cellPosition, null);
         UpdateTilemap();
     }
 
     void ModifyWorldTile(Vector3Int cellPosition, WorldTile newTile)
     {
+        if (!IsWithinBounds(cellPosition))
+            return;
+
         worldTilemap.SetTile(cellPosition, newTile);
         UpdateTilemap();
     }
@@ -199,7 +224,8 @@ public class World : MonoBehaviour
     {
         // TODO: Do we need to get the tilemap each time?
         worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
-        worldTilemap.CompressBounds(); // Optional: compress bounds to fit tiles
+        // worldTilemap.CompressBounds();
+        
         
         bounds = worldTilemap.cellBounds;
         grid = CreateGrid(worldTilemap);

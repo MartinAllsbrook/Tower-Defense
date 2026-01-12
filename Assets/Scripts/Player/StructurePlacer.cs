@@ -50,7 +50,10 @@ public class StructurePlacer : MonoBehaviour
 
             // Update preview tilemap
             previewTilemap.ClearAllTiles();
-            previewTilemap.SetTile(mouseGridPos, currentStructure.tile);
+            if (world.IsWithinBounds(mouseGridPos))
+            {
+                previewTilemap.SetTile(mouseGridPos, currentStructure.tile);
+            }
         }
         else if (mode == Mode.Removing)
         {
@@ -61,7 +64,10 @@ public class StructurePlacer : MonoBehaviour
 
             // Update preview tilemap
             previewTilemap.ClearAllTiles();
-            previewTilemap.SetTile(mouseGridPos, removeIconTile);
+            if (world.IsWithinBounds(mouseGridPos))
+            {
+                previewTilemap.SetTile(mouseGridPos, removeIconTile);
+            }
         }
     }
 
@@ -95,6 +101,12 @@ public class StructurePlacer : MonoBehaviour
     {
         if (context.performed)
         {
+            Vector3Int mouseCell = GetMouseCell();
+            
+            // Don't place anything outside bounds
+            if (!world.IsWithinBounds(mouseCell))
+                return;
+
             bool mapChanged = false;
             if (mode == Mode.Placing && currentStructure != null)
             {
@@ -104,7 +116,7 @@ public class StructurePlacer : MonoBehaviour
                     if (basePlaced)
                         return;
 
-                    mapChanged = world.SetTileAt(GetMouseCell(), currentStructure.tile);
+                    mapChanged = world.SetTileAt(mouseCell, currentStructure.tile);
 
                     if (mapChanged)
                     {    
@@ -115,12 +127,12 @@ public class StructurePlacer : MonoBehaviour
                 }
                 else
                 {
-                    mapChanged = world.SetTileAt(GetMouseCell(), currentStructure.tile);
+                    mapChanged = world.SetTileAt(mouseCell, currentStructure.tile);
                 }
             }
             else if (mode == Mode.Removing)
             {
-                mapChanged = world.SetTileAt(GetMouseCell(), null);
+                mapChanged = world.SetTileAt(mouseCell, null);
             }
 
             if (mapChanged)
