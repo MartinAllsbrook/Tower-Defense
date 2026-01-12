@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Defense : MonoBehaviour
+public class Defense : Structure
 {
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float detectionRange = 5f;

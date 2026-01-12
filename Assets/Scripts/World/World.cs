@@ -276,15 +276,25 @@ public class World : MonoBehaviour
     /// <summary>
     /// Returns the StructureData ScriptableObject at the given cell position, or null if none exists.
     /// </summary>
-    public StructureData GetStructureAtCell(Vector2Int cellPosition)
+    public Structure GetStructureAtCell(Vector2Int cellPosition)
     {
         Vector3Int cellPos = new Vector3Int(cellPosition.x, cellPosition.y, 0);
         TileBase tile = worldTilemap.GetTile(cellPos);
-        if (tile is StructureTile structureTile)
+        if (tile is WorldTile worldTile && worldTile.Tag == TileTag.StructureData)
         {
-            StructureData structure = structureTile.StructureData;
-            return structure;
+            GameObject structureObj = worldTilemap.GetInstantiatedObject(cellPos);
+            if (structureObj != null)
+            {
+                Structure structure = structureObj.GetComponent<Structure>();
+                return structure;
+            }
         }
+
+        // if (tile is StructureTile structureTile)
+        // {
+        //     Structure structure = structureTile.GameObject().GetComponent<Structure>();
+        //     return structure;
+        // }
         return null;
     }
 

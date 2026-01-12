@@ -10,7 +10,7 @@ public enum TileTag
 [CreateAssetMenu(fileName = "New World Tile", menuName = "Tiles/World Tile")]
 public class WorldTile : HexagonalRuleTile
 {    
-    [SerializeField] private TileTag tag;
+    [SerializeField] protected TileTag tag;
 
     public TileTag Tag
     {

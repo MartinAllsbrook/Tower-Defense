@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Structure : MonoBehaviour
 {
-    [SerializeField] StructureData structureData;
-    float health;
+    [SerializeField] protected StructureData structureData;
+    protected float health;
 
     void Awake()
     {

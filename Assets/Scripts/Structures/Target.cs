@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public class Target : MonoBehaviour
+public class Target : Structure
 {
-    [SerializeField] private float health = 100f;
     [SerializeField] private HealthBar healthBar;
 
     public void DealDamage(float damage)

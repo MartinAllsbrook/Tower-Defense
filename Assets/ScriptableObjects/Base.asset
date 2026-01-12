@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Structure
   objectType: 0
   structureName: Base
-  tile: {fileID: 11400000, guid: e77313976bfd6f042bc0219b16179259, type: 2}
+  priority: 0
+  tile: {fileID: 11400000, guid: 70b2edd31bdc4284282b7299b7bffab7, type: 2}
+  maxHealth: 100

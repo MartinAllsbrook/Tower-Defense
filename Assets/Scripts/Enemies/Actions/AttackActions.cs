@@ -2,8 +2,11 @@ using UnityEngine;
 
 class AttackAction : EnemyAction
 {
-    public AttackAction(EnemyBrain brain) : base(brain)
+    Structure targetStructure;
+
+    public AttackAction(EnemyBrain brain, Structure targetStructure) : base(brain)
     {
+        this.targetStructure = targetStructure;
     }
 
     public override void Execute()

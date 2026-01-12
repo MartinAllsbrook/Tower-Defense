@@ -913,7 +913,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 27ec7722b9dd7f640a682477a78874ce, type: 2}
   - {fileID: 11400000, guid: 8ba4d9e251663e14c91077de49edc1d2, type: 2}
   - {fileID: 11400000, guid: 2457d5bb4ce99244eb98a0232d6f887f, type: 2}
-  removeIconTile: {fileID: 11400000, guid: 818dfdd6f083b2445bd192c63e9e778c, type: 2}
+  removeIconTile: {fileID: 11400000, guid: 4002a3ddd5f965e41a0901c0af7a3d9b, type: 2}
 --- !u!114 &707805977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2265,7 +2265,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 10
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

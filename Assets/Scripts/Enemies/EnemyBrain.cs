@@ -45,18 +45,42 @@ class EnemyBrain : MonoBehaviour
         // Create path to target
         Target target = FindFirstObjectByType<Target>();
         Vector3Int targetCell = world.WorldToCell(target.transform.position);
-        Path path = await pathfinding.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y)); // Example target cell
-
-        // TODO: This is unused right now but eventually we can compare it to other potential targets
-        Debug.Log($"Path: {path.tilePath}");
-
+        Path path = await pathfinding.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y));
         
+        List<int> structureIndices = new List<int>();
+        List<Structure> structuresOnPath = new List<Structure>();
+        for (int i = 0; i < path.tilePath.Length; i++)
+        {
+            Vector2Int tile = path.tilePath[i];
+            Structure structure = world.GetStructureAtCell(tile);
+            if (structure != null)
+            {
+                structureIndices.Add(i);
+                structuresOnPath.Add(structure);
+            }
+        }
 
-        // Create move action
-        MoveAction moveAction = new MoveAction(this, path.GetMinusOne());
+        Debug.Log($"Enemy found {structuresOnPath.Count} structures on its path.");
 
-        // Add actions to the queue
-        newActionQueue.Enqueue(moveAction);
+        Path[] subPaths = path.SplitAtIndices(structureIndices);
+        for (int i = 0; i < subPaths.Length; i++)
+        {
+            Path subPath = subPaths[i];
+
+            // Create move action to next structure or target
+            MoveAction moveAction = new MoveAction(this, subPath.GetMinusOne());
+            newActionQueue.Enqueue(moveAction);
+
+            // If there's a structure at the end of this subpath, add an attack action
+            if (i < structuresOnPath.Count)
+            {
+                Structure targetStructure = structuresOnPath[i];
+                AttackAction attackAction = new AttackAction(this, targetStructure);
+                newActionQueue.Enqueue(attackAction);
+            }
+        }
+
+        newActionQueue.Enqueue(new AttackAction(this, target));
 
         return newActionQueue;
     }
