@@ -20,8 +20,7 @@ class MoveAction : EnemyAction
     public override IEnumerator Execute()
     {
         EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
-        movement.SetPath(path);
-        yield return movement.FollowPath();
+        yield return movement.FollowPath(path);
 
         // Finish
         Complete();

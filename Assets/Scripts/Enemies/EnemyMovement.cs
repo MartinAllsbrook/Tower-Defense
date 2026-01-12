@@ -13,38 +13,61 @@ public class EnemyMovement : MonoBehaviour
     Vector2[] path;
     Rigidbody2D rb;
     Vector2 velocity;
+    int currentPathIndex = -1;
+    bool isFollowingPath = false;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void SetPath(Vector2[] newPath)
+    void FixedUpdate()
+    {
+        if (!isFollowingPath || path == null || currentPathIndex < 0 || currentPathIndex >= path.Length)
+            return;
+
+        Vector2 nextPos = path[currentPathIndex];
+        
+        if (Vector2.Distance(rb.position, nextPos) <= maxOffset)
+        {
+            // Reached current waypoint, move to next
+            currentPathIndex++;
+            if (currentPathIndex >= path.Length)
+            {
+                // Path complete
+                isFollowingPath = false;
+                velocity = Vector2.zero;
+            }
+            return;
+        }
+
+        // Move toward current waypoint
+        velocity = Vector2.Lerp(velocity, (nextPos - rb.position).normalized * speed, velocitySmoothing * Time.fixedDeltaTime);
+        Vector2 newPosition = rb.position + velocity * Time.fixedDeltaTime;
+        rb.MovePosition(newPosition);
+
+        // Rotate toward target
+        float targetAngle = Mathf.Atan2(nextPos.y - rb.position.y, nextPos.x - rb.position.x) * Mathf.Rad2Deg;
+        float angle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSmoothing * Time.fixedDeltaTime);
+        rb.MoveRotation(angle);
+    }
+    
+    public IEnumerator FollowPath(Vector2[] newPath)
     {
         path = newPath;
-    }
 
-    public IEnumerator FollowPath()
-    {
         if (path == null || path.Length == 0)
             yield break;
 
-        for (int i = 0; i < path.Length; i++)
+        currentPathIndex = 0;
+        isFollowingPath = true;
+
+        // Wait until path following is complete
+        while (isFollowingPath)
         {
-            Vector2 nextPos = path[i];
-            while (Vector2.Distance(rb.position, nextPos) > maxOffset)
-            {
-                velocity = Vector2.Lerp(velocity, (nextPos - rb.position).normalized * speed, velocitySmoothing * Time.deltaTime);
-
-                Vector2 newPosition = rb.position + velocity * Time.deltaTime;
-
-                rb.MovePosition(newPosition);
-
-                float targetAngle = Mathf.Atan2(nextPos.y - rb.position.y, nextPos.x - rb.position.x) * Mathf.Rad2Deg;
-                float angle = Mathf.LerpAngle(rb.rotation, targetAngle, rotationSmoothing * Time.deltaTime);
-                rb.MoveRotation(angle);
-                yield return null;
-            }
+            yield return null;
         }
+
+        yield return null;
     }
 }
