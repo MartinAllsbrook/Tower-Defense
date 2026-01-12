@@ -40,7 +40,13 @@ class ThetaStar
         }
     }
 
-    public Path CreatePath(Vector2Int startPos, Vector2Int endPos)
+    /// <summary>
+    /// Creates a path from startPos to endPos using the Theta* algorithm.
+    /// </summary>
+    /// <param name="startPos">The start point of the path in tilemap space</param>
+    /// <param name="endPos">The end point of the path in tilemap space</param>
+    /// <returns>A list of nodes, representing the path. Node coordinates are in grid space (need to be converted)</returns>
+    public List<Vector2Int> CreatePath(Vector2Int startPos, Vector2Int endPos)
     {
         Node startNode = grid[startPos.x - gridOffset.x, startPos.y - gridOffset.y];
         Node endNode = grid[endPos.x - gridOffset.x, endPos.y - gridOffset.y];
@@ -81,12 +87,13 @@ class ThetaStar
                 path.Reverse();
                 Debug.Log($"Path {path} found with {path.Count} nodes.");
 
-                return new Path
+                List<Vector2Int> tilemapPath = new List<Vector2Int>();
+                foreach (Node node in path)
                 {
-                    valid = true,
-                    cost = current.G,
-                    nodes = path
-                };
+                    tilemapPath.Add(new Vector2Int(node.X + gridOffset.x, node.Y + gridOffset.y));
+                }
+
+                return tilemapPath;
             }
 
             Node[] neighbors = current.Neighbors;
@@ -124,12 +131,7 @@ class ThetaStar
 
         // No path found
         Debug.LogWarning($"No path found from {startPos} to {endPos}.");
-        return new Path
-        {
-            valid = false,
-            cost = float.MaxValue,
-            nodes = null
-        };
+        return null;
     }
 
     float Heuristic(Node a, Node b)

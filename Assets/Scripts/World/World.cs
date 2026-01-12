@@ -253,7 +253,7 @@ public class World : MonoBehaviour
         return worldTilemap.WorldToCell(worldPosition);
     }
 
-    public Vector3 CellToWorld(Vector3Int cellPosition)
+    public Vector2 CellToWorld(Vector3Int cellPosition)
     {
         return worldTilemap.CellToWorld(cellPosition);
     }

@@ -4,14 +4,14 @@ using UnityEngine;
 
 class MoveAction : EnemyAction
 {
-    Queue<Vector2> path;
+    Vector2[] path;
 
-    public MoveAction(EnemyBrain brain, Queue<Vector2> path) : base(brain)
+    public MoveAction(EnemyBrain brain, Vector2[] path) : base(brain)
     {
         this.path = path;
     }
 
-    public void SetPath(Queue<Vector2> newPath)
+    public void SetPath(Vector2[] newPath)
     {
         path = newPath;
     }
@@ -23,7 +23,7 @@ class MoveAction : EnemyAction
         movement.StartMoving(() => Complete());
     }
 
-    public Queue<Vector2> GetPath()
+    public Vector2[] GetPath()
     {
         return path;
     }

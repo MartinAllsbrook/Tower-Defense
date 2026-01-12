@@ -10,7 +10,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float rotationSmoothing = 6f;
     [SerializeField] float velocitySmoothing = 6f;
     
-    Queue<Vector2> path;
+    Vector2[] path;
     Rigidbody2D rb;
     Vector2 velocity;
 
@@ -19,7 +19,7 @@ public class EnemyMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void SetPath(Queue<Vector2> newPath)
+    public void SetPath(Vector2[] newPath)
     {
         path = newPath;
     }
@@ -37,12 +37,12 @@ public class EnemyMovement : MonoBehaviour
 
     private IEnumerator FollowPath()
     {
-        if (path == null || path.Count == 0)
+        if (path == null || path.Length == 0)
             yield break;
 
-        while (path.Count > 0)
+        for (int i = 0; i < path.Length; i++)
         {
-            Vector2 nextPos = path.Dequeue();
+            Vector2 nextPos = path[i];
             while (Vector2.Distance(rb.position, nextPos) > maxOffset)
             {
                 velocity = Vector2.Lerp(velocity, (nextPos - rb.position).normalized * speed, velocitySmoothing * Time.deltaTime);

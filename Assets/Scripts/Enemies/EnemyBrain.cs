@@ -48,28 +48,12 @@ class EnemyBrain : MonoBehaviour
         Path path = await pathfinding.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y)); // Example target cell
 
         // TODO: This is unused right now but eventually we can compare it to other potential targets
-        Debug.Log($"Path: {path.nodes}");
-        float priority = CalculatePriority(path);
+        Debug.Log($"Path: {path.tilePath}");
 
-        Queue<Vector2> worldPath = new Queue<Vector2>();
-        foreach (Node node in path.nodes)
-        {
-            BoundsInt bounds = world.GetBounds();
-            Vector3Int cellPos = new Vector3Int(node.X + bounds.xMin, node.Y + bounds.yMin, 0);
-            Vector3 worldPos = world.CellToWorld(cellPos);
-            worldPath.Enqueue(new Vector2(worldPos.x, worldPos.y));
-        }
-        // Remove the last item from worldPath if it exists
-        if (worldPath.Count > 0)
-        {
-            // Convert to list, remove last, and rebuild queue
-            var tempList = new List<Vector2>(worldPath);
-            tempList.RemoveAt(tempList.Count - 1);
-            worldPath = new Queue<Vector2>(tempList);
-        }
+        
 
         // Create move action
-        MoveAction moveAction = new MoveAction(this, worldPath);
+        MoveAction moveAction = new MoveAction(this, path.GetMinusOne());
 
         // Add actions to the queue
         newActionQueue.Enqueue(moveAction);
@@ -77,6 +61,7 @@ class EnemyBrain : MonoBehaviour
         return newActionQueue;
     }
 
+    /*
     Vector2Int FindObstacleOnPath(Path path)
     {
         foreach (Node node in path.nodes)
@@ -91,7 +76,9 @@ class EnemyBrain : MonoBehaviour
         }
         return new Vector2Int(-1, -1); // No obstacle found
     }
+    */
 
+    /*
     float CalculatePriority(Path path)
     {
         float cost = 0f;
@@ -108,6 +95,7 @@ class EnemyBrain : MonoBehaviour
 
         return cost;
     }
+    */
 }
 
 // void EvaluateStrategy()
