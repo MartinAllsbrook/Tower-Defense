@@ -10,6 +10,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] HealthBar healthBar;
     [SerializeField] float maxHealth = 100f;
     [SerializeField] GameObject[] legObjects;
+    [SerializeField] float attackDamage = 10f;
+    public float AttackDamage => attackDamage;
+    [SerializeField] float attackInterval = 1f;
+    public float AttackInterval => attackInterval;
 
     float health = 100f;
     World world;

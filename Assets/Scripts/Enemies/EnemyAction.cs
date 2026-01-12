@@ -1,14 +1,15 @@
 using System;
+using System.Collections;
 
 abstract class EnemyAction
 {
-    protected EnemyBrain brain;
+    protected Enemy enemy;
 
     public event Action onComplete;
 
-    public EnemyAction(EnemyBrain brain)
+    public EnemyAction(Enemy enemy)
     {
-        this.brain = brain;
+        this.enemy = enemy;
     }
 
     protected void Complete()
@@ -16,5 +17,5 @@ abstract class EnemyAction
         onComplete?.Invoke();
     }
 
-    abstract public void Execute();
+    abstract public IEnumerator Execute();
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -6,7 +7,7 @@ class MoveAction : EnemyAction
 {
     Vector2[] path;
 
-    public MoveAction(EnemyBrain brain, Vector2[] path) : base(brain)
+    public MoveAction(Enemy enemy, Vector2[] path) : base(enemy)
     {
         this.path = path;
     }
@@ -16,11 +17,15 @@ class MoveAction : EnemyAction
         path = newPath;
     }
 
-    public override void Execute()
+    public override IEnumerator Execute()
     {
-        EnemyMovement movement = brain.GetComponent<EnemyMovement>();
+        EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
         movement.SetPath(path);
-        movement.StartMoving(() => Complete());
+        yield return movement.FollowPath();
+
+        // Finish
+        Complete();
+        yield return null;
     }
 
     public Vector2[] GetPath()

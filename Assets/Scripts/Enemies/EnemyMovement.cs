@@ -24,18 +24,7 @@ public class EnemyMovement : MonoBehaviour
         path = newPath;
     }
 
-    public void StartMoving(Action onComplete = null)
-    {
-        StartCoroutine(FollowPathCoroutine(onComplete));
-    }
-
-    private IEnumerator FollowPathCoroutine(Action onComplete)
-    {
-        yield return FollowPath();
-        onComplete?.Invoke();
-    }
-
-    private IEnumerator FollowPath()
+    public IEnumerator FollowPath()
     {
         if (path == null || path.Length == 0)
             yield break;

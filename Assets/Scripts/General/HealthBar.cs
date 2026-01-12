@@ -1,10 +1,19 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    [SerializeField] private RectTransform healthFill;
+    [SerializeField] RectTransform healthFillTransform;
+    [SerializeField] Image healthFillImage;
+    [SerializeField] GameObject healthBarContainer;
+    [SerializeField] Gradient healthGradient;
 
-    private float fill = 1f;
+    float fill = 1f;
+
+    void Start()
+    {
+        healthBarContainer.SetActive(false);
+    }
 
     public void SetFill(float value)
     {
@@ -12,11 +21,12 @@ public class HealthBar : MonoBehaviour
         UpdateHealthBar();
     }
 
-    private void UpdateHealthBar()
+    void UpdateHealthBar()
     {
-        if (healthFill != null)
-        {
-            healthFill.localScale = new Vector3(fill, 1f, 1f);
-        }
+        if (fill < 1f && !healthBarContainer.activeSelf)
+            healthBarContainer.SetActive(true);
+        
+        healthFillTransform.localScale = new Vector3(fill, 1f, 1f);
+        healthFillImage.color = healthGradient.Evaluate(fill);
     }
 }

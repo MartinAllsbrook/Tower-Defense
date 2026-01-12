@@ -6,6 +6,7 @@ class EnemyBrain : MonoBehaviour
     Queue<EnemyAction> actionQueue;
     World world;
     EnemyPathfinding pathfinding;
+    Enemy enemy => GetComponent<Enemy>();
 
     void Awake()
     {
@@ -26,7 +27,7 @@ class EnemyBrain : MonoBehaviour
         {
             EnemyAction nextAction = actionQueue.Dequeue();
             nextAction.onComplete += OnActionComplete;
-            nextAction.Execute();
+            StartCoroutine(nextAction.Execute());
         } 
         else
         {
@@ -68,19 +69,19 @@ class EnemyBrain : MonoBehaviour
             Path subPath = subPaths[i];
 
             // Create move action to next structure or target
-            MoveAction moveAction = new MoveAction(this, subPath.GetMinusOne());
+            MoveAction moveAction = new MoveAction(enemy, subPath.GetMinusOne());
             newActionQueue.Enqueue(moveAction);
 
             // If there's a structure at the end of this subpath, add an attack action
             if (i < structuresOnPath.Count)
             {
                 Structure targetStructure = structuresOnPath[i];
-                AttackAction attackAction = new AttackAction(this, targetStructure);
+                AttackAction attackAction = new AttackAction(enemy, targetStructure);
                 newActionQueue.Enqueue(attackAction);
             }
         }
 
-        newActionQueue.Enqueue(new AttackAction(this, target));
+        newActionQueue.Enqueue(new AttackAction(enemy, target));
 
         return newActionQueue;
     }

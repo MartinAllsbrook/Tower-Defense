@@ -1,18 +1,25 @@
+using System.Collections;
 using UnityEngine;
 
 class AttackAction : EnemyAction
 {
     Structure targetStructure;
 
-    public AttackAction(EnemyBrain brain, Structure targetStructure) : base(brain)
+    public AttackAction(Enemy enemy, Structure targetStructure) : base(enemy)
     {
         this.targetStructure = targetStructure;
     }
 
-    public override void Execute()
+    public override IEnumerator Execute()
     {
-        // Implementation of attack logic goes here
-        Debug.Log("Enemy is attacking!");
+        while (targetStructure != null && !targetStructure.IsDestroyed)
+        {
+            targetStructure.DealDamage(enemy.AttackDamage);
+            yield return new WaitForSeconds(enemy.AttackInterval);
+        }
+
+        // Finish
         Complete();
+        yield return null;
     }
 }

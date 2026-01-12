@@ -179,6 +179,12 @@ public class World : MonoBehaviour
         return false;
     }
 
+    public void RemoveTileAt(Vector3Int cellPosition)
+    {
+        worldTilemap.SetTile(cellPosition, null);
+        UpdateTilemap();
+    }
+
     void ModifyWorldTile(Vector3Int cellPosition, WorldTile newTile)
     {
         worldTilemap.SetTile(cellPosition, newTile);
