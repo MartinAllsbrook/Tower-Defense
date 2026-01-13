@@ -44,9 +44,8 @@ public class World : MonoBehaviour
     private void GenerateWorld()
     {
         GenerateBiomeTiles();
-        // GenerateTerrain();
+        GenerateTerrain();
         PlacePOI();
-        // thetaStar = new ThetaStar();
     }
 
     void GenerateBiomeTiles()
@@ -298,11 +297,6 @@ public class World : MonoBehaviour
         return bounds;
     }
 
-    // public ThetaStar GetThetaStar()
-    // {
-    //     return thetaStar;
-    // }
-
     /// <summary>
     /// Returns the StructureData ScriptableObject at the given cell position, or null if none exists.
     /// </summary>
@@ -328,14 +322,16 @@ public class World : MonoBehaviour
         return null;
     }
 
-    public bool HasStructureAt(Vector2Int cellPosition, StructureType type)
+    public bool HasTileAt(Vector2Int cellPosition, TileTag tag)
     {
-        Structure structure = GetStructureAt(cellPosition);
-        if (structure != null && structure.Tile.ID == type)
-        {
-            return true;
-        }
-        return false;
+        TileBase tile = worldTilemap.GetTile(new Vector3Int(cellPosition.x, cellPosition.y, 0));
+        return (tile is WorldTile worldTile && worldTile.Tag == tag);
+    }
+
+    public bool HasStructureAt(Vector2Int cellPosition, StructureType structureID)
+    {
+        TileBase tile = worldTilemap.GetTile(new Vector3Int(cellPosition.x, cellPosition.y, 0));
+        return (tile is StructureTile structureTile && structureTile.ID == structureID);
     }
 
     #endregion

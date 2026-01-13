@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 824591771181576288}
   - component: {fileID: 8961577253439410763}
   - component: {fileID: 1531899614050905005}
-  m_Layer: 0
+  - component: {fileID: -6770277816237116922}
+  m_Layer: 7
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Wall
   healthBar: {fileID: 7401167160217994499}
-  tile: {fileID: 0}
+  tile: {fileID: 11400000, guid: a42de028c43dcaf4790f0a5a817af42e, type: 2}
   wallConnections:
   - {fileID: 6333543671966902959}
   - {fileID: 6785158909175387394}
@@ -120,6 +121,59 @@ MonoBehaviour:
   - {fileID: 8429122300178140199}
   - {fileID: 7761439786310778455}
   - {fileID: 456653115319527963}
+--- !u!60 &-6770277816237116922
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4198051248881407975}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.5078125, y: 0.4453125}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.25, y: 0}
+      - {x: -0.125, y: 0.2165}
+      - {x: 0.125, y: 0.2165}
+      - {x: 0.25, y: 0}
+      - {x: 0.125, y: -0.2165}
+      - {x: -0.125, y: -0.2165}
+  m_UseDelaunayMesh: 1
 --- !u!1001 &391622438937174610
 PrefabInstance:
   m_ObjectHideFlags: 0

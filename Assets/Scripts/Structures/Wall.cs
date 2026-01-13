@@ -24,8 +24,10 @@ public class Wall : Structure
 
         for (int i = 0; i < 6; i++)
         {
-            bool neighboringWall  = world.HasStructureAt(neighbors[i], StructureType.Wall);
-            wallConnections[i].SetActive(neighboringWall);
+            bool neighboringWall = world.HasStructureAt(neighbors[i], StructureType.Wall);
+            bool neighboringTerrain = world.HasTileAt(neighbors[i], TileTag.Terrain);
+            bool connect = neighboringWall || neighboringTerrain;
+            wallConnections[i].SetActive(connect);
         }
     }
 }

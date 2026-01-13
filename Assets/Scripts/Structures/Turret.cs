@@ -3,16 +3,17 @@ using UnityEngine;
 
 public class Defense : Structure
 {
-    [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private float detectionRange = 5f;
-    [SerializeField] private float projectileRange = 10f;
-    [SerializeField] private float fireRateHz = 10f;
-    [SerializeField] private GameObject projectilePrefab; 
+    [SerializeField] LayerMask enemyLayer;
+    [SerializeField] float detectionRange = 5f;
+    [SerializeField] float projectileRange = 10f;
+    [SerializeField] float fireRateHz = 10f;
+    [SerializeField] GameObject projectilePrefab; 
+    [SerializeField] Transform cannonTransform;
 
-    private GameObject[] projectiles;
-    private int projectileIndex = 0;
-    private int projectilePoolSize = 64;
-    private float fireCooldown = 0f;
+    GameObject[] projectiles;
+    int projectileIndex = 0;
+    int projectilePoolSize = 64;
+    float fireCooldown = 0f;
     
     void Start()
     {
@@ -46,7 +47,7 @@ public class Defense : Structure
             // Look at the closest enemy (2D)
             Vector3 direction = closest.transform.position - transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            cannonTransform.rotation = Quaternion.Euler(0, 0, angle);
 
             TryFire();
         }
@@ -59,14 +60,14 @@ public class Defense : Structure
         {
             // Fire a projectile from the pool
             GameObject proj = projectiles[projectileIndex];
-            proj.transform.position = transform.position;
-            proj.transform.rotation = transform.rotation;
+            proj.transform.position = cannonTransform.position;
+            proj.transform.rotation = cannonTransform.rotation;
             
             // Set the projectile's max range
             Projectile projectileScript = proj.GetComponent<Projectile>();
             if (projectileScript != null)
             {
-                projectileScript.Initialize(transform.position, projectileRange);
+                projectileScript.Initialize(cannonTransform.position, projectileRange);
             }
             
             proj.SetActive(true);

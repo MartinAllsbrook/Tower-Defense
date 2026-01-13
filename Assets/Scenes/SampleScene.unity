@@ -736,7 +736,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c14ef7c42835b774aa8ba7857f068d04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  startingMoney: 100
+  startingMoney: 150
+  passiveIncomeInterval: 1
+  passiveIncomeAmount: 10
 --- !u!4 &707805974
 Transform:
   m_ObjectHideFlags: 0

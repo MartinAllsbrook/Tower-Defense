@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3345550294222021452}
-  - component: {fileID: 5001826007330673476}
   - component: {fileID: 6056494087450115009}
-  m_Layer: 0
+  - component: {fileID: 6811888974061470663}
+  m_Layer: 7
   m_Name: Target
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -35,8 +35,22 @@ Transform:
   - {fileID: 454923616400827778}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &5001826007330673476
-CircleCollider2D:
+--- !u!114 &6056494087450115009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020017536399174426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b88ef3b378a98842a02076c5d74d0a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  healthBar: {fileID: 8592080093919854705}
+  tile: {fileID: 0}
+--- !u!60 &6811888974061470663
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -70,21 +84,24 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
---- !u!114 &6056494087450115009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1020017536399174426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b88ef3b378a98842a02076c5d74d0a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  healthBar: {fileID: 8592080093919854705}
-  tile: {fileID: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 0.875}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.5, y: 0}
+      - {x: -0.25, y: 0.433}
+      - {x: 0.25, y: 0.433}
+      - {x: 0.5, y: 0}
+      - {x: 0.25, y: -0.433}
+      - {x: -0.25, y: -0.433}
+  m_UseDelaunayMesh: 1
 --- !u!1 &5908054629878232188
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,7 +113,7 @@ GameObject:
   - component: {fileID: 8615866848146177090}
   - component: {fileID: 6886970209090546928}
   m_Layer: 0
-  m_Name: Target
+  m_Name: Target Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
