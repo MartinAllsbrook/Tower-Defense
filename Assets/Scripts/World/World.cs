@@ -174,8 +174,8 @@ public class World : MonoBehaviour
     public bool IsWithinBounds(Vector3Int cellPosition)
     {
         int halfSize = WorldSize / 2;
-        return cellPosition.x >= -halfSize && cellPosition.x < halfSize &&
-               cellPosition.y >= -halfSize && cellPosition.y < halfSize;
+        return cellPosition.x >= -halfSize && cellPosition.x <= halfSize &&
+               cellPosition.y >= -halfSize && cellPosition.y <= halfSize;
     }
 
     public bool SetTileAt(Vector3Int cellPosition, WorldTile newTile)
@@ -285,6 +285,12 @@ public class World : MonoBehaviour
         return worldTilemap.WorldToCell(worldPosition);
     }
 
+    public Vector2Int WorldToCell2(Vector3 worldPosition)
+    {
+        Vector3Int vector3Int = worldTilemap.WorldToCell(worldPosition);
+        return new Vector2Int(vector3Int.x, vector3Int.y);
+    }
+
     public Vector2 CellToWorld(Vector3Int cellPosition)
     {
         return worldTilemap.CellToWorld(cellPosition);
@@ -308,7 +314,7 @@ public class World : MonoBehaviour
     /// <summary>
     /// Returns the StructureData ScriptableObject at the given cell position, or null if none exists.
     /// </summary>
-    public Structure GetStructureAtCell(Vector2Int cellPosition)
+    public Structure GetStructureAt(Vector2Int cellPosition)
     {
         Vector3Int cellPos = new Vector3Int(cellPosition.x, cellPosition.y, 0);
         TileBase tile = worldTilemap.GetTile(cellPos);
@@ -328,6 +334,57 @@ public class World : MonoBehaviour
         //     return structure;
         // }
         return null;
+    }
+
+    public bool HasStructureAt(Vector2Int cellPosition, StructureType type)
+    {
+        Structure structure = GetStructureAt(cellPosition);
+        if (structure != null && structure.StructureData.id == type)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    #endregion
+
+    #region Static Utility
+
+    /// <summary>
+    /// Returns the six neighboring cell positions for a given cell in an axial hex grid.
+    /// </summary>
+    /// <param name="cellPosition">The position of the cell in tilemap space</param>
+    /// <returns>The positions of neighbors in tilemap space</returns>
+    public static Vector2Int[] GetNeighbors(Vector2Int cellPosition)
+    {
+        // When column (Y coordinate) is even
+        Vector2Int[] evenColOffsets = new Vector2Int[] {
+            new Vector2Int(+1,  0), // N
+            new Vector2Int( 0, +1), // NE
+            new Vector2Int(-1, +1), // SE
+            new Vector2Int(-1,  0), // S
+            new Vector2Int(-1, -1), // SW
+            new Vector2Int( 0, -1)  // NW
+        };
+        // When column (Y coordinate) is odd
+        Vector2Int[] oddColOffsets = new Vector2Int[] {
+            new Vector2Int(+1,  0), // N
+            new Vector2Int(+1, +1), // NE
+            new Vector2Int( 0, +1), // SE
+            new Vector2Int(-1,  0), // S
+            new Vector2Int( 0, -1), // SW
+            new Vector2Int(+1, -1)  // NW
+        };
+
+        Vector2Int[] offsets = (cellPosition.y % 2 == 0) ? evenColOffsets : oddColOffsets;
+
+        Vector2Int[] neighbors = new Vector2Int[6];
+        for (int i = 0; i < offsets.Length; i++)
+        {
+            neighbors[i] = cellPosition + offsets[i];
+        }
+
+        return neighbors;
     }
 
     #endregion

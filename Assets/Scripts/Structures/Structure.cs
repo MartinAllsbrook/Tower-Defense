@@ -6,6 +6,7 @@ public class Structure : MonoBehaviour
     [SerializeField] protected StructureData structureData;
     protected float health;
     public bool IsDestroyed => health <= 0f;
+    public StructureData StructureData => structureData;
 
     void Awake()
     {

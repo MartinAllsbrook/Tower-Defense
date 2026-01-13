@@ -807,7 +807,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 707805976}
         m_TargetAssemblyTypeName: StructurePlacer, Assembly-CSharp
-        m_MethodName: PlaceStructure
+        m_MethodName: OnClick
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

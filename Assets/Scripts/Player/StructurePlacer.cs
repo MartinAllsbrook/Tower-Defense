@@ -97,7 +97,7 @@ public class StructurePlacer : MonoBehaviour
         mode = Mode.None;
     }
 
-    public void PlaceStructure(InputAction.CallbackContext context)
+    public void OnClick(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
@@ -111,7 +111,7 @@ public class StructurePlacer : MonoBehaviour
             if (mode == Mode.Placing && currentStructure != null)
             {
                 // Special case for placing the base
-                if (currentStructure.objectType == StructureType.Base)
+                if (currentStructure.id == StructureType.Base)
                 {
                     if (basePlaced)
                         return;
@@ -140,11 +140,29 @@ public class StructurePlacer : MonoBehaviour
         } 
     }
 
+    bool PlaceStructureAt(Vector3Int cellPosition, StructureData structureData)
+    {
+        bool placed = world.SetTileAt(cellPosition, structureData.tile);
+        if (placed)
+            world.UpdateTilemap();
+            
+        return placed;
+    }
+
+    bool RemoveStructureAt(Vector3Int cellPosition)
+    {
+        bool removed = world.SetTileAt(cellPosition, null);
+        if (removed)
+            world.UpdateTilemap();
+
+        return removed;
+    }
+
     StructureData GetStructureByType(StructureType type)
     {
         foreach (var structure in structures)
         {
-            if (structure.objectType == type)
+            if (structure.id == type)
             {
                 return structure;
             }

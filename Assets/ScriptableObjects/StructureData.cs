@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "StructureData", menuName = "Scriptable Objects/StructureData")]
 public class StructureData : ScriptableObject
 {
-    [SerializeField] public StructureType objectType;
+    [SerializeField] public StructureType id;
 
     [SerializeField] public string structureName;
 

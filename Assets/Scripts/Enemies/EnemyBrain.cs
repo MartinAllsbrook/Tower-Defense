@@ -53,7 +53,7 @@ class EnemyBrain : MonoBehaviour
         for (int i = 0; i < path.tilePath.Length; i++)
         {
             Vector2Int tile = path.tilePath[i];
-            Structure structure = world.GetStructureAtCell(tile);
+            Structure structure = world.GetStructureAt(tile);
             if (structure != null)
             {
                 structureIndices.Add(i);

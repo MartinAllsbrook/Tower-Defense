@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e53a97a48c9bcbd4a9e45e9ebc12eba5, type: 3}
   m_Name: Wall
   m_EditorClassIdentifier: Assembly-CSharp::Structure
-  objectType: 10
+  id: 10
   structureName: Wall
   priority: 200
   tile: {fileID: 11400000, guid: a42de028c43dcaf4790f0a5a817af42e, type: 2}
