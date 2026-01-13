@@ -3,7 +3,7 @@ using UnityEngine;
 public class Structure : MonoBehaviour
 {
     [SerializeField] private HealthBar healthBar;
-    [SerializeField] protected StructureTile tile;
+    protected StructureTile tile;
     public StructureTile Tile => tile;
 
     protected float health;
@@ -12,6 +12,12 @@ public class Structure : MonoBehaviour
     void Awake()
     {
         health = tile.MaxHealth;
+    }
+
+    // Called by StructureTile.GetTileData to automatically set the tile reference
+    public void SetTile(StructureTile structureTile)
+    {
+        tile = structureTile;
     }
 
     public virtual void NeighborChanged()

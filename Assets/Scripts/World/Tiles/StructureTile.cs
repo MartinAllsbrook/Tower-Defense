@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 
 public enum StructureType
@@ -23,5 +24,21 @@ public class StructureTile : WorldTile
     public StructureType ID => id;
     public int Priority => priority;
     public float MaxHealth => maxHealth;
+
+    public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
+    {
+        base.GetTileData(position, tilemap, ref tileData);
+        
+        // When the tile is placed, the GameObject gets instantiated by the Tilemap
+        // We hook into this to automatically set the Structure's tile field
+        if (tileData.gameObject != null)
+        {
+            Structure structure = tileData.gameObject.GetComponent<Structure>();
+            if (structure != null)
+            {
+                structure.SetTile(this);
+            }
+        }
+    }
 }
 

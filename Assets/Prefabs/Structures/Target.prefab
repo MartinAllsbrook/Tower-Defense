@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   healthBar: {fileID: 8592080093919854705}
-  tile: {fileID: 11400000, guid: 70b2edd31bdc4284282b7299b7bffab7, type: 2}
+  tile: {fileID: 0}
 --- !u!1 &5908054629878232188
 GameObject:
   m_ObjectHideFlags: 0
