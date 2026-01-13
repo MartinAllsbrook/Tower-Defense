@@ -41,4 +41,5 @@ public class StructureMenu : MonoBehaviour
         structurePlacer.EnterRemoveMode();
         CloseMenu();
     }
+
 }

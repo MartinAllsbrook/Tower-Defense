@@ -18,7 +18,8 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] RuleTile removeIconTile;
 
     public StructureTile[] Structures => structures;
-
+    
+    Player player;
     Tilemap previewTilemap;
     StructureTile currentStructure;
     Mode mode = Mode.None;
@@ -27,6 +28,7 @@ public class StructurePlacer : MonoBehaviour
 
     void Awake()
     {
+        player = GetComponent<Player>();
         previewTilemap = GameObject.FindWithTag("Preview Tilemap").GetComponent<Tilemap>();
     }
 
@@ -81,7 +83,16 @@ public class StructurePlacer : MonoBehaviour
         }
         
         // For other structures, just place normally
-        return world.SetTileAt(cellPosition, currentStructure);
+        if (!CanAffordStructure(structureData)) // Just a little safety check even though next if should handle it
+            return false;
+
+        if (world.SetTileAt(cellPosition, structureData))
+        {
+            player.SpendMoney(structureData.Cost);
+            return true;
+        }
+
+        return false;
     }
 
     void RemoveUpdate()
@@ -136,6 +147,7 @@ public class StructurePlacer : MonoBehaviour
 
     #endregion
 
+    #region Input Handling
     public void OnClick(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -147,6 +159,9 @@ public class StructurePlacer : MonoBehaviour
             mouseDown = false;
         }
     }
+    #endregion
+
+    #region Utility Methods
 
     Vector3Int GetMouseCell()
     {
@@ -166,5 +181,26 @@ public class StructurePlacer : MonoBehaviour
         }
         return null;
     }
+
+    public bool CanAffordStructure(StructureType type)
+    {
+        StructureTile tile = GetStructureByType(type);
+        if (player != null && tile != null)
+        {
+            return player.GetMoney() >= tile.Cost;
+        }
+        return false;
+    }
+
+    public bool CanAffordStructure(StructureTile tile)
+    {
+        if (player != null && tile != null)
+        {
+            return player.GetMoney() >= tile.Cost;
+        }
+        return false;
+    }
+
+    #endregion
 
 }
