@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Wall
   healthBar: {fileID: 7401167160217994499}
-  structureData: {fileID: 11400000, guid: 2457d5bb4ce99244eb98a0232d6f887f, type: 2}
+  tile: {fileID: 11400000, guid: a42de028c43dcaf4790f0a5a817af42e, type: 2}
   wallConnections:
   - {fileID: 6333543671966902959}
   - {fileID: 6785158909175387394}

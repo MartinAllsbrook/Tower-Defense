@@ -9,12 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e6a8cfbb804671488bb1b2ba45bd2e8, type: 3}
+  m_Script: {fileID: 11500000, guid: 39575863451927843aea5b919ee5992b, type: 3}
   m_Name: Wall
-  m_EditorClassIdentifier: Assembly-CSharp::TaggedTile
-  m_DefaultSprite: {fileID: 7662222670190315892, guid: f6fe7de9bdbab2b48b25a71f07253ae8, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::StructureTile
+  m_DefaultSprite: {fileID: 0}
   m_DefaultGameObject: {fileID: 4198051248881407975, guid: 0e9ccb370819bb24787aa29e602fa8ca, type: 3}
-  m_DefaultColliderType: 1
+  m_DefaultColliderType: 0
   m_TilingRules: []
   m_FlatTop: 1
   tag: 1
+  id: 10
+  priority: 200
+  maxHealth: 100

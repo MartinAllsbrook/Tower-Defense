@@ -83,9 +83,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b88ef3b378a98842a02076c5d74d0a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  structureData: {fileID: 11400000, guid: 27ec7722b9dd7f640a682477a78874ce, type: 2}
-  health: 100
   healthBar: {fileID: 8592080093919854705}
+  tile: {fileID: 11400000, guid: 70b2edd31bdc4284282b7299b7bffab7, type: 2}
 --- !u!1 &5908054629878232188
 GameObject:
   m_ObjectHideFlags: 0

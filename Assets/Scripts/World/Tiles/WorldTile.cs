@@ -3,7 +3,7 @@ using UnityEngine;
 public enum TileTag
 {
     Ground,
-    StructureData,
+    Structure,
     Terrain,
 }
 

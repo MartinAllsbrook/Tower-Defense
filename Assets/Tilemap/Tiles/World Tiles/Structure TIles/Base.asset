@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StructureTile
   m_DefaultSprite: {fileID: -4119334708683220384, guid: 7d25dfa4b83f04c4985a6eca80546853, type: 3}
   m_DefaultGameObject: {fileID: 1020017536399174426, guid: 7b806299f4300fa4280ef11b51f708b7, type: 3}
-  m_DefaultColliderType: 1
+  m_DefaultColliderType: 0
   m_TilingRules: []
   m_FlatTop: 1
   tag: 1
-  structureData: {fileID: 11400000, guid: 27ec7722b9dd7f640a682477a78874ce, type: 2}
+  id: 0
+  priority: 0
+  maxHealth: 100

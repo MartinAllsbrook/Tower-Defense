@@ -249,7 +249,7 @@ public class World : MonoBehaviour
                     grid[i, j] = new GridCell
                     {
                         Position = new Vector2Int(x, y),
-                        Cost = taggedTile.Tag == TileTag.StructureData ? 15 : 1,
+                        Cost = taggedTile.Tag == TileTag.Structure ? 15 : 1,
                         Traversable = taggedTile.Tag != TileTag.Terrain,
                     };
                 }
@@ -310,7 +310,7 @@ public class World : MonoBehaviour
     {
         Vector3Int cellPos = new Vector3Int(cellPosition.x, cellPosition.y, 0);
         TileBase tile = worldTilemap.GetTile(cellPos);
-        if (tile is WorldTile worldTile && worldTile.Tag == TileTag.StructureData)
+        if (tile is WorldTile worldTile && worldTile.Tag == TileTag.Structure)
         {
             GameObject structureObj = worldTilemap.GetInstantiatedObject(cellPos);
             if (structureObj != null)
@@ -331,7 +331,7 @@ public class World : MonoBehaviour
     public bool HasStructureAt(Vector2Int cellPosition, StructureType type)
     {
         Structure structure = GetStructureAt(cellPosition);
-        if (structure != null && structure.StructureData.id == type)
+        if (structure != null && structure.Tile.ID == type)
         {
             return true;
         }

@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Defense
   healthBar: {fileID: 4635558237528989928}
-  structureData: {fileID: 11400000, guid: 8ba4d9e251663e14c91077de49edc1d2, type: 2}
+  tile: {fileID: 11400000, guid: b42dbad104a5f3348810a6d3e36fec73, type: 2}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64

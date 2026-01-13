@@ -910,9 +910,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPlacer
   world: {fileID: 1074162246}
   structures:
-  - {fileID: 11400000, guid: 27ec7722b9dd7f640a682477a78874ce, type: 2}
-  - {fileID: 11400000, guid: 8ba4d9e251663e14c91077de49edc1d2, type: 2}
-  - {fileID: 11400000, guid: 2457d5bb4ce99244eb98a0232d6f887f, type: 2}
+  - {fileID: 11400000, guid: 70b2edd31bdc4284282b7299b7bffab7, type: 2}
+  - {fileID: 11400000, guid: b42dbad104a5f3348810a6d3e36fec73, type: 2}
+  - {fileID: 11400000, guid: a42de028c43dcaf4790f0a5a817af42e, type: 2}
   removeIconTile: {fileID: 11400000, guid: 4002a3ddd5f965e41a0901c0af7a3d9b, type: 2}
 --- !u!114 &707805977
 MonoBehaviour:
@@ -1506,7 +1506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::World
   floorTilemap: {fileID: 835494806}
   worldTilemap: {fileID: 925936650}
-  worldSize: 15
+  worldSize: 31
   backgroundTiles:
   - {fileID: 11400000, guid: 5aa5f712e11f4eb4188b6d9638f06cae, type: 2}
   - {fileID: 11400000, guid: 970cf6b7c0689654480c9c7fa95939ba, type: 2}

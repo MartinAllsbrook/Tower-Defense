@@ -4,13 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
-public enum StructureType
-{
-    Base = 0,
-    Wall = 10,
-    Turret = 100,
-}
-
 public class StructurePlacer : MonoBehaviour
 {
     enum Mode
@@ -21,11 +14,11 @@ public class StructurePlacer : MonoBehaviour
     }
 
     [SerializeField] World world;
-    [SerializeField] StructureData[] structures;
+    [SerializeField] StructureTile[] structures;
     [SerializeField] RuleTile removeIconTile;
 
     Tilemap previewTilemap;
-    StructureData currentStructure;
+    StructureTile currentStructure;
     Mode mode = Mode.None;
     bool basePlaced = false; // To ensure only one base is placed
     bool mouseDown = false;
@@ -58,7 +51,7 @@ public class StructurePlacer : MonoBehaviour
         previewTilemap.ClearAllTiles();
         if (world.IsWithinBounds(mouseGridPos))
         {
-            previewTilemap.SetTile(mouseGridPos, currentStructure.tile);
+            previewTilemap.SetTile(mouseGridPos, currentStructure);
             if (mouseDown)
             {
                 PlaceStructureAt(mouseGridPos, currentStructure);
@@ -66,15 +59,15 @@ public class StructurePlacer : MonoBehaviour
         }
     }
 
-    bool PlaceStructureAt(Vector3Int cellPosition, StructureData structureData)
+    bool PlaceStructureAt(Vector3Int cellPosition, StructureTile structureData)
     {
         // Special case for placing the base
-        if (currentStructure.id == StructureType.Base)
+        if (currentStructure.ID == StructureType.Base)
         {
             if (basePlaced)
                 return false;
 
-            basePlaced = world.SetTileAt(cellPosition, currentStructure.tile);
+            basePlaced = world.SetTileAt(cellPosition, currentStructure);
 
             if (basePlaced)
             {    
@@ -86,7 +79,7 @@ public class StructurePlacer : MonoBehaviour
         }
         
         // For other structures, just place normally
-        return world.SetTileAt(cellPosition, currentStructure.tile);
+        return world.SetTileAt(cellPosition, currentStructure);
     }
 
     void RemoveUpdate()
@@ -161,11 +154,11 @@ public class StructurePlacer : MonoBehaviour
         return world.WorldToCell(mouseWorldPos);
     }
 
-    StructureData GetStructureByType(StructureType type)
+    StructureTile GetStructureByType(StructureType type)
     {
         foreach (var structure in structures)
         {
-            if (structure.id == type)
+            if (structure.ID == type)
             {
                 return structure;
             }

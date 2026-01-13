@@ -1,12 +1,27 @@
+using System;
 using UnityEngine;
+
+
+public enum StructureType
+{
+    Base = 0,
+    Wall = 10,
+    Turret = 100,
+}
 
 [CreateAssetMenu(fileName = "New Structure Tile", menuName = "Tiles/Structure Tile")]
 public class StructureTile : WorldTile
 {
-    [SerializeField] private StructureData structureData;
+    [SerializeField] StructureType id;
 
-    public StructureData StructureData
-    {
-        get { return structureData; }
-    }
-} 
+    [Tooltip("Lower number means higher priority")]
+    [SerializeField] int priority; 
+
+    [SerializeField] float maxHealth;
+
+    // Data accessors
+    public StructureType ID => id;
+    public int Priority => priority;
+    public float MaxHealth => maxHealth;
+}
+

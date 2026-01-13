@@ -3,14 +3,15 @@ using UnityEngine;
 public class Structure : MonoBehaviour
 {
     [SerializeField] private HealthBar healthBar;
-    [SerializeField] protected StructureData structureData;
+    [SerializeField] protected StructureTile tile;
+    public StructureTile Tile => tile;
+
     protected float health;
     public bool IsDestroyed => health <= 0f;
-    public StructureData StructureData => structureData;
 
     void Awake()
     {
-        health = structureData.maxHealth;
+        health = tile.MaxHealth;
     }
 
     public virtual void NeighborChanged()
@@ -21,7 +22,7 @@ public class Structure : MonoBehaviour
     public bool DealDamage(float damage)
     {
         health -= damage;
-        healthBar.SetFill(health / structureData.maxHealth);
+        healthBar.SetFill(health / tile.MaxHealth);
         if (health <= 0)
         {
             DestroyStructure();
