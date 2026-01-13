@@ -171,6 +171,40 @@ public class World : MonoBehaviour
 
     #region World Modification
 
+    public bool SetTileAt(Vector3Int cellPosition, WorldTile newTile)
+    {
+        if (!IsWithinBounds(cellPosition))
+            return false;
+
+        WorldTile existingTile = worldTilemap.GetTile<WorldTile>(cellPosition);
+
+        // Only allow placing on a empty tile or removing an existing tile
+        if (existingTile == null || newTile == null)
+        {
+            worldTilemap.SetTile(cellPosition, newTile);
+            UpdateTilemap();
+            UpdateNeighbors(cellPosition);
+            return true;
+        }
+
+        return false;
+    }
+
+    void UpdateNeighbors(Vector3Int cellPosition)
+    {
+        Vector2Int[] offsets = GetNeighbors(new Vector2Int(cellPosition.x, cellPosition.y));
+
+        foreach (var offset in offsets)
+        {
+            Vector3Int neighborPos = new Vector3Int(offset.x, offset.y, 0);
+            Structure structure = GetStructureAt(new Vector2Int(neighborPos.x, neighborPos.y));
+            if (structure != null)
+            {
+                structure.NeighborChanged();
+            }
+        }
+    }
+
     public bool IsWithinBounds(Vector3Int cellPosition)
     {
         int halfSize = WorldSize / 2;
@@ -178,59 +212,13 @@ public class World : MonoBehaviour
                cellPosition.y >= -halfSize && cellPosition.y <= halfSize;
     }
 
-    public bool SetTileAt(Vector3Int cellPosition, WorldTile newTile)
-    {
-        if (!IsWithinBounds(cellPosition))
-            return false;
-
-        WorldTile existingTile = worldTilemap.GetTile<WorldTile>(cellPosition);
-        if (existingTile == null)
-        {
-            ModifyWorldTile(cellPosition, newTile);
-            return true;
-        }
-        else if (newTile == null)
-        {
-            ModifyWorldTile(cellPosition, null);
-            return true;
-        }
-
-        return false;
-    }
-
-    public void RemoveTileAt(Vector3Int cellPosition)
-    {
-        if (!IsWithinBounds(cellPosition))
-            return;
-
-        worldTilemap.SetTile(cellPosition, null);
-        UpdateTilemap();
-    }
-
-    void ModifyWorldTile(Vector3Int cellPosition, WorldTile newTile)
-    {
-        if (!IsWithinBounds(cellPosition))
-            return;
-
-        worldTilemap.SetTile(cellPosition, newTile);
-        UpdateTilemap();
-    }
-
-    #endregion
-
-    #region Pathfinding and Grid Management
-
     public void UpdateTilemap()
     {
         // TODO: Do we need to get the tilemap each time?
-        worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();
-        // worldTilemap.CompressBounds();
-        
+        worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();        
         
         bounds = worldTilemap.cellBounds;
         grid = CreateGrid(worldTilemap);
-
-        // thetaStar.UpdateNavGrid(grid, bounds);
 
         // Debugging Grid
         GridDebug gridDebug = GetComponent<GridDebug>();
@@ -242,6 +230,10 @@ public class World : MonoBehaviour
         // Notify all subscribers with the updated grid
         OnWorldUpdate?.Invoke();
     }
+
+    #endregion
+
+    #region Pathfinding and Grid Management
 
     GridCell[,] CreateGrid(Tilemap tilemap)
     {

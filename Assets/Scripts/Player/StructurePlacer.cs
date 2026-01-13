@@ -28,6 +28,7 @@ public class StructurePlacer : MonoBehaviour
     StructureData currentStructure;
     Mode mode = Mode.None;
     bool basePlaced = false; // To ensure only one base is placed
+    bool mouseDown = false;
 
     void Awake()
     {
@@ -43,33 +44,39 @@ public class StructurePlacer : MonoBehaviour
     {
         if (mode == Mode.Placing && currentStructure != null)
         {
-            // Get mouse position in world space
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            mouseWorldPos.z = 0f;
-            Vector3Int mouseGridPos = previewTilemap.WorldToCell(mouseWorldPos);
-
-            // Update preview tilemap
-            previewTilemap.ClearAllTiles();
-            if (world.IsWithinBounds(mouseGridPos))
-            {
-                previewTilemap.SetTile(mouseGridPos, currentStructure.tile);
-            }
+            PlaceUpdate();
         }
         else if (mode == Mode.Removing)
         {
-            // Get mouse position in world space
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            mouseWorldPos.z = 0f;
-            Vector3Int mouseGridPos = previewTilemap.WorldToCell(mouseWorldPos);
-
-            // Update preview tilemap
-            previewTilemap.ClearAllTiles();
-            if (world.IsWithinBounds(mouseGridPos))
-            {
-                previewTilemap.SetTile(mouseGridPos, removeIconTile);
-            }
+            RemoveUpdate();
         }
     }
+
+    void PlaceUpdate()
+    {
+        Vector3Int mouseGridPos = GetMouseCell();
+
+        // Update preview tilemap
+        previewTilemap.ClearAllTiles();
+        if (world.IsWithinBounds(mouseGridPos))
+        {
+            previewTilemap.SetTile(mouseGridPos, currentStructure.tile);
+        }
+    }
+
+    void RemoveUpdate()
+    {
+        Vector3Int mouseGridPos = GetMouseCell();
+
+        // Update preview tilemap
+        previewTilemap.ClearAllTiles();
+        if (world.IsWithinBounds(mouseGridPos))
+        {
+            previewTilemap.SetTile(mouseGridPos, removeIconTile);
+        }
+    }
+
+    #region State (Mode) Management
 
     // This method can be called from a Unity UI Button event
     public void EnterPlaceMode(int structureID)
@@ -97,66 +104,71 @@ public class StructurePlacer : MonoBehaviour
         mode = Mode.None;
     }
 
+    #endregion
+
+    #region Placing and Removing Structures
+
     public void OnClick(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        Debug.Log("Click detected in StructurePlacer");
+
+        if (!context.performed)
+            return;
+
+        Vector3Int mouseCell = GetMouseCell();
+        
+        // Don't place anything outside bounds
+        if (!world.IsWithinBounds(mouseCell))
+            return;
+
+        bool mapChanged = false;
+        if (mode == Mode.Placing && currentStructure != null)
+            mapChanged = PlaceStructureAt(mouseCell, currentStructure);
+        else if (mode == Mode.Removing)
+            mapChanged = RemoveStructureAt(mouseCell);
+
+        if (mapChanged)
         {
-            Vector3Int mouseCell = GetMouseCell();
-            
-            // Don't place anything outside bounds
-            if (!world.IsWithinBounds(mouseCell))
-                return;
+            world.UpdateTilemap();
+        }
+    }
 
-            bool mapChanged = false;
-            if (mode == Mode.Placing && currentStructure != null)
-            {
-                // Special case for placing the base
-                if (currentStructure.id == StructureType.Base)
-                {
-                    if (basePlaced)
-                        return;
-
-                    mapChanged = world.SetTileAt(mouseCell, currentStructure.tile);
-
-                    if (mapChanged)
-                    {    
-                        FindFirstObjectByType<GameController>().PlaceBase();
-                        basePlaced = true;
-                        ExitMode();
-                    }
-                }
-                else
-                {
-                    mapChanged = world.SetTileAt(mouseCell, currentStructure.tile);
-                }
-            }
-            else if (mode == Mode.Removing)
-            {
-                mapChanged = world.SetTileAt(mouseCell, null);
-            }
-
-            if (mapChanged)
-                world.UpdateTilemap();
-        } 
+    Vector3Int GetMouseCell()
+    {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        mouseWorldPos.z = 0f;
+        return world.WorldToCell(mouseWorldPos);
     }
 
     bool PlaceStructureAt(Vector3Int cellPosition, StructureData structureData)
     {
-        bool placed = world.SetTileAt(cellPosition, structureData.tile);
-        if (placed)
-            world.UpdateTilemap();
-            
-        return placed;
+        // Special case for placing the base
+        if (currentStructure.id == StructureType.Base)
+        {
+            if (basePlaced)
+                return false;
+
+            basePlaced = world.SetTileAt(cellPosition, currentStructure.tile);
+
+            if (basePlaced)
+            {    
+                FindFirstObjectByType<GameController>().PlaceBase();
+                ExitMode();
+            }
+
+            return basePlaced;
+        }
+        
+        // For other structures, just place normally
+        return world.SetTileAt(cellPosition, currentStructure.tile);
     }
 
     bool RemoveStructureAt(Vector3Int cellPosition)
     {
-        bool removed = world.SetTileAt(cellPosition, null);
-        if (removed)
-            world.UpdateTilemap();
-
-        return removed;
+        return world.SetTileAt(cellPosition, null);
     }
+
+    #endregion
 
     StructureData GetStructureByType(StructureType type)
     {
@@ -170,14 +182,4 @@ public class StructurePlacer : MonoBehaviour
         return null;
     }
 
-    #region Helper Methods
-    
-    Vector3Int GetMouseCell()
-    {
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        mouseWorldPos.z = 0f;
-        return world.WorldToCell(mouseWorldPos);
-    }
-    
-    #endregion
 }

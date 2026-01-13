@@ -13,6 +13,11 @@ public class Structure : MonoBehaviour
         health = structureData.maxHealth;
     }
 
+    public virtual void NeighborChanged()
+    {
+        
+    }
+
     public bool DealDamage(float damage)
     {
         health -= damage;
@@ -31,6 +36,6 @@ public class Structure : MonoBehaviour
         
         // Remove the tile from the tilemap
         Vector3Int cellPosition = world.WorldToCell(transform.position);
-        world.RemoveTileAt(cellPosition);
+        world.SetTileAt(cellPosition, null);
     }
 }
