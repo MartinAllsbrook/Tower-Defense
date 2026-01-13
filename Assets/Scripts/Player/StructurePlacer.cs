@@ -43,14 +43,12 @@ public class StructurePlacer : MonoBehaviour
     void Update()
     {
         if (mode == Mode.Placing && currentStructure != null)
-        {
             PlaceUpdate();
-        }
         else if (mode == Mode.Removing)
-        {
             RemoveUpdate();
-        }
     }
+
+    #region Place & Remove
 
     void PlaceUpdate()
     {
@@ -61,7 +59,34 @@ public class StructurePlacer : MonoBehaviour
         if (world.IsWithinBounds(mouseGridPos))
         {
             previewTilemap.SetTile(mouseGridPos, currentStructure.tile);
+            if (mouseDown)
+            {
+                PlaceStructureAt(mouseGridPos, currentStructure);
+            }
         }
+    }
+
+    bool PlaceStructureAt(Vector3Int cellPosition, StructureData structureData)
+    {
+        // Special case for placing the base
+        if (currentStructure.id == StructureType.Base)
+        {
+            if (basePlaced)
+                return false;
+
+            basePlaced = world.SetTileAt(cellPosition, currentStructure.tile);
+
+            if (basePlaced)
+            {    
+                FindFirstObjectByType<GameController>().PlaceBase();
+                ExitMode();
+            }
+
+            return basePlaced;
+        }
+        
+        // For other structures, just place normally
+        return world.SetTileAt(cellPosition, currentStructure.tile);
     }
 
     void RemoveUpdate()
@@ -73,8 +98,19 @@ public class StructurePlacer : MonoBehaviour
         if (world.IsWithinBounds(mouseGridPos))
         {
             previewTilemap.SetTile(mouseGridPos, removeIconTile);
+            if (mouseDown)
+            {
+                RemoveStructureAt(mouseGridPos);
+            }
         }
     }
+
+    bool RemoveStructureAt(Vector3Int cellPosition)
+    {
+        return world.SetTileAt(cellPosition, null);
+    }
+
+    #endregion
 
     #region State (Mode) Management
 
@@ -106,30 +142,15 @@ public class StructurePlacer : MonoBehaviour
 
     #endregion
 
-    #region Placing and Removing Structures
-
     public void OnClick(InputAction.CallbackContext context)
     {
-        Debug.Log("Click detected in StructurePlacer");
-
-        if (!context.performed)
-            return;
-
-        Vector3Int mouseCell = GetMouseCell();
-        
-        // Don't place anything outside bounds
-        if (!world.IsWithinBounds(mouseCell))
-            return;
-
-        bool mapChanged = false;
-        if (mode == Mode.Placing && currentStructure != null)
-            mapChanged = PlaceStructureAt(mouseCell, currentStructure);
-        else if (mode == Mode.Removing)
-            mapChanged = RemoveStructureAt(mouseCell);
-
-        if (mapChanged)
+        if (context.performed)
         {
-            world.UpdateTilemap();
+            mouseDown = true;
+        }
+        else if (context.canceled)
+        {
+            mouseDown = false;
         }
     }
 
@@ -139,36 +160,6 @@ public class StructurePlacer : MonoBehaviour
         mouseWorldPos.z = 0f;
         return world.WorldToCell(mouseWorldPos);
     }
-
-    bool PlaceStructureAt(Vector3Int cellPosition, StructureData structureData)
-    {
-        // Special case for placing the base
-        if (currentStructure.id == StructureType.Base)
-        {
-            if (basePlaced)
-                return false;
-
-            basePlaced = world.SetTileAt(cellPosition, currentStructure.tile);
-
-            if (basePlaced)
-            {    
-                FindFirstObjectByType<GameController>().PlaceBase();
-                ExitMode();
-            }
-
-            return basePlaced;
-        }
-        
-        // For other structures, just place normally
-        return world.SetTileAt(cellPosition, currentStructure.tile);
-    }
-
-    bool RemoveStructureAt(Vector3Int cellPosition)
-    {
-        return world.SetTileAt(cellPosition, null);
-    }
-
-    #endregion
 
     StructureData GetStructureByType(StructureType type)
     {
