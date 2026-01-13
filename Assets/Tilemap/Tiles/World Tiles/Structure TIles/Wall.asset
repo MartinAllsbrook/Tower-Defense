@@ -21,3 +21,6 @@ MonoBehaviour:
   id: 10
   priority: 200
   maxHealth: 100
+  icon: {fileID: 3957654611500732591, guid: 6ec2c66c84c8e8445bd6dfbdd24c084d, type: 3}
+  structureName: Wall
+  cost: 10

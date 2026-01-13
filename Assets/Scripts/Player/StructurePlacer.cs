@@ -17,6 +17,8 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] StructureTile[] structures;
     [SerializeField] RuleTile removeIconTile;
 
+    public StructureTile[] Structures => structures;
+
     Tilemap previewTilemap;
     StructureTile currentStructure;
     Mode mode = Mode.None;
@@ -107,10 +109,9 @@ public class StructurePlacer : MonoBehaviour
 
     #region State (Mode) Management
 
-    // This method can be called from a Unity UI Button event
-    public void EnterPlaceMode(int structureID)
+    public void EnterPlaceMode(StructureType structureID)
     {
-        currentStructure = GetStructureByType((StructureType)structureID);
+        currentStructure = GetStructureByType(structureID);
         mode = Mode.Placing;
     }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 public class Structure : MonoBehaviour
 {
     [SerializeField] private HealthBar healthBar;
-    protected StructureTile tile;
+    [SerializeField] protected StructureTile tile; // Set by StructureTile when placed, for some reason this only works as a SerializeField
     public StructureTile Tile => tile;
 
     protected float health;

@@ -21,3 +21,6 @@ MonoBehaviour:
   id: 0
   priority: 0
   maxHealth: 100
+  icon: {fileID: -4119334708683220384, guid: 7d25dfa4b83f04c4985a6eca80546853, type: 3}
+  structureName: Base
+  cost: 1500

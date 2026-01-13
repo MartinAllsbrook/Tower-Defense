@@ -76,6 +76,7 @@
         "pathfinding",
         "Rigidbody",
         "Scriptable",
-        "Tilemap"
+        "Tilemap",
+        "UGUI"
     ]
 }

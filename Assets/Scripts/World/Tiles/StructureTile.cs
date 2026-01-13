@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -17,13 +18,18 @@ public class StructureTile : WorldTile
 
     [Tooltip("Lower number means higher priority")]
     [SerializeField] int priority; 
-
     [SerializeField] float maxHealth;
+    [SerializeField] Sprite icon;
+    [SerializeField] string structureName;
+    [SerializeField] int cost;
 
     // Data accessors
     public StructureType ID => id;
     public int Priority => priority;
     public float MaxHealth => maxHealth;
+    public Sprite Icon => icon;
+    public string Name => structureName;
+    public int Cost => cost;
 
     public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
     {

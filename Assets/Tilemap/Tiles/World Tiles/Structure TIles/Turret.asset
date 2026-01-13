@@ -21,3 +21,6 @@ MonoBehaviour:
   id: 100
   priority: 20
   maxHealth: 50
+  icon: {fileID: -4111239514331103643, guid: 715588075ad98a249a16f263cb58c8d4, type: 3}
+  structureName: Turret
+  cost: 150
