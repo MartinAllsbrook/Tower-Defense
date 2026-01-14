@@ -122,11 +122,13 @@ public class World : MonoBehaviour
         List<Vector2Int> points = FindPointsInBiome(BiomeID.cursed, numPoints, 5);
         foreach (var point in points)
         {
-            if (!worldTilemap.HasTile(new Vector3Int(point.x, point.y, 0)))
-            {
-                Vector3Int cellPos = new Vector3Int(point.x, point.y, 0);
-                worldTilemap.SetTile(cellPos, enemySpawnerTile);
-            }
+            SetTileAt(new Vector3Int(point.x, point.y, 0), enemySpawnerTile);
+            
+            // if (!worldTilemap.HasTile(new Vector3Int(point.x, point.y, 0)))
+            // {
+            //     Vector3Int cellPos = new Vector3Int(point.x, point.y, 0);
+            //     worldTilemap.SetTile(cellPos, enemySpawnerTile);
+            // }
         }
     }
 
@@ -141,11 +143,17 @@ public class World : MonoBehaviour
             int x = rand.Next(0, WorldSize);
             int y = rand.Next(0, WorldSize);
 
+            
             if (biomeMap[x, y] != biome)
                 continue;
 
             Vector2Int candidate = new Vector2Int(x - halfSize, y - halfSize);
             bool tooClose = false;
+
+            if (worldTilemap.HasTile(new Vector3Int(candidate.x, candidate.y, 0)))
+            {   
+                continue;
+            }
 
             foreach (var point in points)
             {
@@ -156,11 +164,10 @@ public class World : MonoBehaviour
                 }
             }
 
-            if (!tooClose)
-            {
-                points.Add(candidate);
-                Debug.Log($"Found point in biome {biome} at {candidate}");
-            }
+            if (tooClose)
+                continue;
+            
+            points.Add(candidate);
         }
 
         return points;
