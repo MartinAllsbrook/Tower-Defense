@@ -61,8 +61,6 @@ class EnemyBrain : MonoBehaviour
             }
         }
 
-        Debug.Log($"Enemy found {structuresOnPath.Count} structures on its path.");
-
         Path[] subPaths = path.SplitAtIndices(structureIndices);
         for (int i = 0; i < subPaths.Length; i++)
         {

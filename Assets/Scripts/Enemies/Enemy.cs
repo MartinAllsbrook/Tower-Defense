@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -11,8 +13,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] float maxHealth = 100f;
     [SerializeField] GameObject[] legObjects;
     [SerializeField] float attackDamage = 10f;
-    public float AttackDamage => attackDamage;
     [SerializeField] float attackInterval = 1f;
+
+    public event Action OnEnemyDestroyed;
+    public float AttackDamage => attackDamage;
     public float AttackInterval => attackInterval;
 
     float health = 100f;
@@ -44,7 +48,7 @@ public class Enemy : MonoBehaviour
             Animation anim = leg.GetComponent<Animation>();
             if (anim != null && anim.clip != null)
             {
-                anim[anim.clip.name].time = Random.Range(0f, anim.clip.length);
+                anim[anim.clip.name].time = UnityEngine.Random.Range(0f, anim.clip.length);
                 anim.Play();
             }
         }
@@ -74,9 +78,15 @@ public class Enemy : MonoBehaviour
         healthBar.SetFill(health / maxHealth);
         if (health <= 0)
         {
-            world.OnWorldUpdate -= OnUpdateGrid;
-            Destroy(gameObject);
+            KillEnemy();
         }
+    }
+
+    void KillEnemy()
+    {
+        OnEnemyDestroyed?.Invoke();
+        world.OnWorldUpdate -= OnUpdateGrid;
+        Destroy(gameObject);
     }
 
     private void OnUpdateGrid()
@@ -88,66 +98,4 @@ public class Enemy : MonoBehaviour
             // MoveToTarget();
         }
     }
-
-    // public void MoveToTarget()
-    // {
-    //     if (target == null)
-    //     {
-    //         Debug.LogWarning("Target not set for Enemy.");
-    //         return;
-    //     }
-
-    //     Vector3Int targetPos = world.WorldToCell(target.transform.position);
-    //     MoveToLocation(new Vector2Int(targetPos.x, targetPos.y));
-    // }
-
-    // public void MoveToLocation(Vector2Int end)
-    // {
-    //     Vector3Int start = world.WorldToCell(transform.position);
-
-    //     List<Node> path = world.GetThetaStar().CreatePath(new Vector2Int(start.x, start.y), end);
-
-    //     if (path != null && path.Count > 0)
-    //     {
-    //         // Stop any existing movement
-    //         if (moveCoroutine != null)
-    //         {
-    //             StopCoroutine(moveCoroutine);
-    //         }
-    //         // Start moving along the path
-    //         moveCoroutine = StartCoroutine(MoveAlongPath(path));
-    //     }
-    //     else
-    //     {
-    //         Debug.Log("No valid path found.");
-    //     }
-    // }
-
-    // private IEnumerator MoveAlongPath(List<Node> path)
-    // {
-    //     foreach (var node in path)
-    //     {
-    //         // Convert grid coordinates to world position (flat-top hex grid)
-    //         Vector3 targetWorldPos = world.CellToWorld(new Vector3Int(node.CellX, node.CellY, 0));
-            
-    //         // Move towards the target position
-    //         while (Vector3.Distance(transform.position, targetWorldPos) > 0.01f)
-    //         {
-    //             transform.position = Vector3.MoveTowards(
-    //                 transform.position, 
-    //                 targetWorldPos, 
-    //                 Time.deltaTime
-    //             );
-    //             Vector3 direction = (targetWorldPos - transform.position).normalized;
-    //             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-    //             spriteObject.transform.rotation = Quaternion.Euler(0, 0, angle);
-    //             yield return null;
-    //         }
-            
-    //         // Ensure we're exactly at the target position
-    //         transform.position = targetWorldPos;
-    //     }
-        
-    //     // Debug.Log("Enemy reached destination.");
-    // }
 }

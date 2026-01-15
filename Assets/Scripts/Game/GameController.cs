@@ -3,33 +3,55 @@ using UnityEngine;
 
 public class GameController: MonoBehaviour
 {
-    public event Action OnBasePlaced;
-    public event Action OnRoundStart;
-    public event Action OnRoundEnd;
+    public event Action<int> OnBasePlaced;
+    public event Action<int> OnRoundStart;
+    public event Action<int> OnRoundEnd;
     public event Action OnGameOver;
+
+    bool inRound = false;
+    int currentRound = 0;
+    int spawnersActive = 0;
 
     public void PlaceBase()
     {
-        // Logic to place the base
-        OnBasePlaced?.Invoke();
+        OnBasePlaced?.Invoke(0);
     }
 
     public void StartRound()
     {
-        // Logic to start the round
-        OnRoundStart?.Invoke();
+        Debug.Log("Starting Round " + (currentRound + 1));
+        currentRound++;
+        inRound = true;
+        OnRoundStart?.Invoke(currentRound);
     }
 
     public void EndRound()
     {
-        // Logic to end the round
-        OnRoundEnd?.Invoke();
+        inRound = false;
+        OnRoundEnd?.Invoke(currentRound);
     }
 
     public void EndGame()
     {
-        // Logic to handle end of game
         OnGameOver?.Invoke();
         Debug.Log("Game Over!");
     }
+
+    #region Spawner Management
+
+    public void RegisterSpawner()
+    {
+        spawnersActive++;
+    }
+
+    public void UnregisterSpawner()
+    {
+        spawnersActive = Math.Max(0, spawnersActive - 1);
+        if (spawnersActive == 0)
+        {
+            EndRound();
+        }
+    }
+
+    #endregion
 }

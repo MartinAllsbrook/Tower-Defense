@@ -20,7 +20,7 @@ public class StartRoundButton : MonoBehaviour
         });
     }
 
-    void Enable()
+    void Enable(int roundNumber)
     {
         button.interactable = true;
     }

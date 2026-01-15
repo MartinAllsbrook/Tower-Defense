@@ -33,10 +33,10 @@ public class PlaceStructureButton : MonoBehaviour
         if (costText != null)
             costText.text = $"Cost: {structureTile.Cost}";
 
-        UpdateAffordability();
+        UpdateAffordability(0); // This number doesn't do anything right now
     }
 
-    void UpdateAffordability()
+    void UpdateAffordability(int currentMoney)
     {
         if (structureTile != null && structurePlacer != null)
             {

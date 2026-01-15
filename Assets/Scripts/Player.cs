@@ -10,32 +10,35 @@ public class Player : MonoBehaviour
     [SerializeField] float passiveIncomeInterval = 1f;
     [SerializeField] int passiveIncomeAmount = 10;
 
-    GeneralMenu generalMenu;
     GameController gameController;
     int money;
+    Coroutine passiveIncomeCoroutine;
 
-    public event Action OnMoneyChanged;
+    public event Action<int> OnMoneyChanged;
 
     void Awake()
     {
         money = startingMoney;
-
-        generalMenu = FindFirstObjectByType<GeneralMenu>();
-        generalMenu.SetMoney(money);
 
         gameController = FindFirstObjectByType<GameController>();
         gameController.OnRoundStart += StartPassiveIncome;
         gameController.OnRoundEnd += StopPassiveIncome;
     }
 
-    void StartPassiveIncome()
+    void StartPassiveIncome(int roundNumber)
     {
-        StartCoroutine(PassiveIncomeCoroutine());
+        Debug.Log("Starting passive income");
+        passiveIncomeCoroutine = StartCoroutine(PassiveIncomeCoroutine());
     }
 
-    void StopPassiveIncome()
+    void StopPassiveIncome(int roundNumber)
     {
-        StopCoroutine(PassiveIncomeCoroutine());
+        Debug.Log("Stopping passive income");
+        if (passiveIncomeCoroutine != null)
+        {
+            StopCoroutine(passiveIncomeCoroutine);
+            passiveIncomeCoroutine = null;
+        }
     }
 
     IEnumerator PassiveIncomeCoroutine()
@@ -52,8 +55,7 @@ public class Player : MonoBehaviour
         if (money >= amount)
         {
             money -= amount;
-            generalMenu.SetMoney(money);
-            OnMoneyChanged?.Invoke();
+            OnMoneyChanged?.Invoke(money);
             return true;
         }
         return false;
@@ -62,8 +64,7 @@ public class Player : MonoBehaviour
     public void AddMoney(int amount)
     {
         money += amount;
-        OnMoneyChanged?.Invoke();
-        generalMenu.SetMoney(money);
+        OnMoneyChanged?.Invoke(money);
     }
 
     public int GetMoney()
