@@ -562,6 +562,9 @@ MonoBehaviour:
   - {fileID: 8672291820378282963}
   - {fileID: 1375411496839372440}
   - {fileID: 386667861408369208}
+  attackDamage: 10
+  attackInterval: 1
+  deathParticlesPrefab: {fileID: 5599654003556535459, guid: f86f1ab5846193d45b5454d5d032ca57, type: 3}
 --- !u!114 &7206824754580517996
 MonoBehaviour:
   m_ObjectHideFlags: 0

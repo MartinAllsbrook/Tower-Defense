@@ -14,11 +14,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] GameObject[] legObjects;
     [SerializeField] float attackDamage = 10f;
     [SerializeField] float attackInterval = 1f;
-
+    [SerializeField] PostmortemParticles deathParticlesPrefab;
+    
     public event Action OnEnemyDestroyed;
     public float AttackDamage => attackDamage;
     public float AttackInterval => attackInterval;
 
+    PostmortemParticles deathParticlesInstance;
     float health = 100f;
     World world;
     Target target;
@@ -33,6 +35,8 @@ public class Enemy : MonoBehaviour
         GameController gameController = FindFirstObjectByType<GameController>();
         gameController.OnGameOver += OnGameEnd;
         world.OnWorldUpdate += OnUpdateGrid;
+    
+        deathParticlesInstance = Instantiate(deathParticlesPrefab, this.transform.position, Quaternion.identity);
     }
 
     void Start()
@@ -84,6 +88,9 @@ public class Enemy : MonoBehaviour
 
     void KillEnemy()
     {
+        deathParticlesInstance.transform.position = transform.position;
+        deathParticlesInstance.gameObject.SetActive(true);
+
         OnEnemyDestroyed?.Invoke();
         world.OnWorldUpdate -= OnUpdateGrid;
         Destroy(gameObject);

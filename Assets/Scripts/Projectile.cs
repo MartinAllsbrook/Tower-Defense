@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] ParticleSystem impactEffectPrefab;
-    private ParticleSystem impactEffect;
+    [SerializeField] PostmortemParticles impactEffectPrefab;
+    private PostmortemParticles impactEffect;
 
     [SerializeField] float speed = 10f;
     Vector3 startPosition;
@@ -15,7 +15,6 @@ public class Projectile : MonoBehaviour
     void Awake()
     {
         impactEffect = Instantiate(impactEffectPrefab);
-        impactEffect.gameObject.SetActive(false);
     }
 
     public void Initialize(Vector3 startPos, float range)
@@ -45,16 +44,8 @@ public class Projectile : MonoBehaviour
     {
         impactEffect.transform.position = transform.position;
         impactEffect.gameObject.SetActive(true);
-        impactEffect.Play();
-        StartCoroutine(DisableImpactEffectAfterDuration(impactEffect.main.duration));
-        
+
         isInitialized = false;
         gameObject.SetActive(false);
-    }
-
-    IEnumerator DisableImpactEffectAfterDuration(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        impactEffect.gameObject.SetActive(false);
     }
 }
