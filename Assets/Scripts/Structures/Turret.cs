@@ -26,8 +26,11 @@ public class Defense : Structure
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+        if (isVisualPreview) return;
+
         // Perform a 2D circle cast to find enemies in range
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRange, enemyLayer);
         if (hits.Length > 0)

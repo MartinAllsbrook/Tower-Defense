@@ -56,6 +56,13 @@ public class StructurePlacer : MonoBehaviour
         if (world.IsWithinBounds(mouseGridPos))
         {
             previewTilemap.SetTile(mouseGridPos, currentStructure);
+            Structure structure = previewTilemap.GetInstantiatedObject(mouseGridPos).GetComponent<Structure>();
+            
+            if (structure != null)
+            {
+                structure.SetAsVisualPreview(CanAffordStructure(currentStructure));
+            }
+
             if (mouseDown)
             {
                 PlaceStructureAt(mouseGridPos, currentStructure);
