@@ -86,6 +86,12 @@ public class EnemyMovement : MonoBehaviour
         yield return null;
     }
 
+    public void StopMovement()
+    {
+        isFollowingPath = false;
+        velocity = Vector2.zero;
+    }
+
     public void SetLookAtTarget(Vector2 target)
     {
         lookAtTarget = target;

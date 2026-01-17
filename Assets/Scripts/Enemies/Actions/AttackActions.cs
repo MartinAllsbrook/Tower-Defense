@@ -10,7 +10,7 @@ class AttackAction : EnemyAction
         this.targetStructure = targetStructure;
     }
 
-    public override IEnumerator Execute()
+    public override IEnumerator ExecuteRoutine()
     {
         EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
         movement.SetLookAtTarget(targetStructure.transform.position);
@@ -25,5 +25,13 @@ class AttackAction : EnemyAction
         movement.ClearLookAtTarget();
         Complete();
         yield return null;
+    }
+
+    public override void StopExecution()
+    {
+        base.StopExecution();
+        
+        EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
+        movement.ClearLookAtTarget();
     }
 }

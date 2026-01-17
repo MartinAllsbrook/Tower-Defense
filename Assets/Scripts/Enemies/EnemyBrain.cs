@@ -6,7 +6,9 @@ class EnemyBrain : MonoBehaviour
     Queue<EnemyAction> actionQueue;
     World world;
     EnemyPathfinding pathfinding;
+    EnemyAction currentAction;
     Enemy enemy => GetComponent<Enemy>();
+    bool isEvaluating = false;
 
     void Awake()
     {
@@ -19,15 +21,63 @@ class EnemyBrain : MonoBehaviour
     {
         actionQueue = await EvaluateStrategy();
         OnActionComplete();
+        StartCoroutine(PeriodicStrategyRevaluation());
+    }
+
+    System.Collections.IEnumerator PeriodicStrategyRevaluation()
+    {
+        while (true)
+        {
+            // Wait 3-5 seconds (random)
+            float waitTime = Random.Range(3f, 5f);
+            yield return new WaitForSeconds(waitTime);
+
+            // Don't interrupt if already evaluating
+            if (isEvaluating)
+                continue;
+
+            // Trigger async evaluation
+            EvaluateAndUpdateStrategy();
+
+            // Wait until evaluation completes
+            yield return new WaitUntil(() => !isEvaluating);
+        }
+    }
+
+    async void EvaluateAndUpdateStrategy()
+    {
+        isEvaluating = true;
+        Queue<EnemyAction> newQueue = await EvaluateStrategy();
+        
+        // Replace the action queue with the new strategy
+        // Note: You may want to add logic here to preserve current action if needed
+        actionQueue = newQueue;
+        
+        isEvaluating = false;
+        
+        if (currentAction != null)
+        {
+            currentAction.StopExecution();
+        }
+
+        OnActionComplete(); // Start executing from the new queue
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Structure") && !isEvaluating)
+        {
+            EvaluateAndUpdateStrategy();
+        }
     }
 
     void OnActionComplete()
     {
         if (actionQueue.Count > 0)
         {
-            EnemyAction nextAction = actionQueue.Dequeue();
-            nextAction.onComplete += OnActionComplete;
-            StartCoroutine(nextAction.Execute());
+            currentAction = actionQueue.Dequeue();
+            currentAction.onComplete += OnActionComplete;
+            currentAction.Execute();
         } 
         else
         {

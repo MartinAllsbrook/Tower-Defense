@@ -17,7 +17,7 @@ class MoveAction : EnemyAction
         path = newPath;
     }
 
-    public override IEnumerator Execute()
+    public override IEnumerator ExecuteRoutine()
     {
         EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
         yield return movement.FollowPath(path);
@@ -25,6 +25,14 @@ class MoveAction : EnemyAction
         // Finish
         Complete();
         yield return null;
+    }
+
+    public override void StopExecution()
+    {
+        base.StopExecution();
+
+        EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
+        movement.StopMovement();
     }
 
     public Vector2[] GetPath()
