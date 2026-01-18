@@ -57,4 +57,9 @@ public class EnemySpawner : MonoBehaviour
             gameController.UnregisterSpawner();
         }
     }
+
+    public void UpgradeSpawner()
+    {
+        spawnInterval = Mathf.Max(1, spawnInterval - 1); // Decrease spawn interval to a minimum of 1 second
+    }
 }

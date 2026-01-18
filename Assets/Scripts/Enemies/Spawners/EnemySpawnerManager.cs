@@ -22,13 +22,16 @@ public class EnemySpawnerManager : MonoBehaviour
         spawnersActive = Mathf.Max(0, spawnersActive - 1);
         if (spawnersActive == 0)
         {
-            AllSpawnersFinished();
+            GameController gameController = FindFirstObjectByType<GameController>();
+            gameController.EndRound();
         }
     }
 
-    void AllSpawnersFinished()
+    void UpgradeRandomSpawner()
     {
-        GameController gameController = FindFirstObjectByType<GameController>();
-        gameController.EndRound();
+        if (spawners.Count == 0) return;
+
+        int randomIndex = Random.Range(0, spawners.Count);
+        spawners[randomIndex].UpgradeSpawner();
     }
 }
