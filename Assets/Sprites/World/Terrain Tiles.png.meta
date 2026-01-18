@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2ffdd54c320bde34ab7d54ad0e3d3372
+guid: 86494ebde692c1d44927065bf1479af3
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -162,8 +162,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9b3bd93176594aa4b9d632f775388ba5
-      internalID: -1504135462
+      spriteID: 2a17dafb6cf1e5b409be0bfdaaefd896
+      internalID: -999453178
       vertices: []
       indices: 
       edges: []
@@ -184,8 +184,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: af1d75e8c55ba3d4da75acdd7b98ddbe
-      internalID: -1043891384
+      spriteID: f7f9d217dc776014080343349a270934
+      internalID: -373357625
       vertices: []
       indices: 
       edges: []
@@ -194,7 +194,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: da4cc421540b7204e9c9e92873288bac
+    spriteID: 27921249dce84834c87c65710e28ac6e
     internalID: 0
     vertices: []
     indices: 
@@ -208,8 +208,8 @@ TextureImporter:
     nameFileIdTable:
       Terrain Tiles_0: -5785857229047980075
       Terrain Tiles_1: -7763788838878859299
-      Terrain Tiles_2: -1504135462
-      Terrain Tiles_3: -1043891384
+      Terrain Tiles_2: -999453178
+      Terrain Tiles_3: -373357625
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -7,7 +7,11 @@ public enum BiomeID
     grass,
     sand,
     stone,
-    cursed
+    snow,
+    bug1 = 100,
+    bug2 = 101,
+    bug3 = 102,
+    bug4 = 103,
 }
 
 [CreateAssetMenu(fileName = "New Biome Tile", menuName = "Tiles/Biome Tile")]

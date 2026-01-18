@@ -12,7 +12,7 @@ public class World : MonoBehaviour
     [SerializeField] Tilemap floorTilemap;
     [SerializeField] Tilemap worldTilemap; 
     [SerializeField] WorldSizeOption worldSize = WorldSizeOption.Size63;
-    [SerializeField] BiomeTile[] backgroundTiles;
+    [SerializeField] BiomeTile[] biomeTiles;
     [SerializeField] WorldTile mountainTile;
     [SerializeField] WorldTile enemySpawnerTile;
 
@@ -63,7 +63,7 @@ public class World : MonoBehaviour
             {
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
 
-                BiomeTile tile = backgroundTiles[(int)(value * backgroundTiles.Length)];
+                BiomeTile tile = biomeTiles[(int)(value * 4)]; // We are just using first 4 biomes for now
                 floorTilemap.SetTile(new Vector3Int(x, y, 0), tile);    
 
                 biomeMap[i, j] = tile.tag;
@@ -119,7 +119,7 @@ public class World : MonoBehaviour
                 break;
         }
 
-        List<Vector2Int> points = FindPointsInBiome(BiomeID.cursed, numPoints, 5);
+        List<Vector2Int> points = FindPointsInBiome(numPoints, 5);
         foreach (var point in points)
         {
             SetTileAt(new Vector3Int(point.x, point.y, 0), enemySpawnerTile);
@@ -132,7 +132,7 @@ public class World : MonoBehaviour
         }
     }
 
-    List<Vector2Int> FindPointsInBiome(BiomeID biome, int count, int minSpacing, int maxAttempts = 1000)
+    List<Vector2Int> FindPointsInBiome(int count, int minSpacing, int maxAttempts = 1000)
     {
         int halfSize = WorldSize / 2;
         System.Random rand = new System.Random();
@@ -143,18 +143,21 @@ public class World : MonoBehaviour
             int x = rand.Next(0, WorldSize);
             int y = rand.Next(0, WorldSize);
 
-            
-            if (biomeMap[x, y] != biome)
-                continue;
+            // Check biome
+            // if (biomeMap[x, y] != biome)
+            //     continue;
 
+            // Convert to tilemap coordinates
             Vector2Int candidate = new Vector2Int(x - halfSize, y - halfSize);
             bool tooClose = false;
 
+            // Check if tile is already occupied
             if (worldTilemap.HasTile(new Vector3Int(candidate.x, candidate.y, 0)))
             {   
                 continue;
             }
 
+            // Check spacing
             foreach (var point in points)
             {
                 if (Vector2Int.Distance(point, candidate) < minSpacing)
@@ -171,6 +174,32 @@ public class World : MonoBehaviour
         }
 
         return points;
+    }
+
+    #endregion
+
+    #region Biome Modification
+
+    public void SetBiomeAt(Vector3Int cellPosition, BiomeID newBiome)
+    {
+        if (!IsWithinBounds(cellPosition))
+            return;
+
+        BiomeTile biomeTile = null;
+        foreach (var tile in biomeTiles)
+        {
+            if (tile.tag == newBiome)
+            {
+                biomeTile = tile;
+                break;
+            }
+        }
+
+        if (biomeTile != null)
+        {
+            floorTilemap.SetTile(cellPosition, biomeTile);
+            biomeMap[cellPosition.x + (WorldSize / 2), cellPosition.y + (WorldSize / 2)] = newBiome;
+        }
     }
 
     #endregion

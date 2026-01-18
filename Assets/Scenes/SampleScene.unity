@@ -433,6 +433,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224130951485110974, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224130951485110974, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.000061035156
       objectReference: {fileID: 0}
@@ -1599,11 +1603,15 @@ MonoBehaviour:
   floorTilemap: {fileID: 835494806}
   worldTilemap: {fileID: 925936650}
   worldSize: 31
-  backgroundTiles:
+  biomeTiles:
   - {fileID: 11400000, guid: 5aa5f712e11f4eb4188b6d9638f06cae, type: 2}
   - {fileID: 11400000, guid: 970cf6b7c0689654480c9c7fa95939ba, type: 2}
   - {fileID: 11400000, guid: f5c686afa21a88143b5d176fbdec6514, type: 2}
+  - {fileID: 11400000, guid: b7dc579bdb6c6a34f891eeab8dc73ea4, type: 2}
   - {fileID: 11400000, guid: 74c782c16be152346b5d71248343ff84, type: 2}
+  - {fileID: 11400000, guid: 97fe5cfc344468b4bba5f9c3ec46f68e, type: 2}
+  - {fileID: 11400000, guid: 73cbaec20c776924f93c83e2358a07d1, type: 2}
+  - {fileID: 11400000, guid: ebe3eb945c8e20e4db1eb57cbb56277f, type: 2}
   mountainTile: {fileID: 11400000, guid: 91c2170fe975d4744b0e1b8220d29eb0, type: 2}
   enemySpawnerTile: {fileID: 11400000, guid: 788b92c38fad61047aec9168d04db829, type: 2}
 --- !u!1 &1277166026
@@ -1616,6 +1624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1277166027}
   - component: {fileID: 1277166028}
+  - component: {fileID: 1277166029}
   m_Layer: 0
   m_Name: Game Controller
   m_TagString: Untagged
@@ -1650,6 +1659,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb88ff85f5a7124b96de1d99ccb938c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameController
+--- !u!114 &1277166029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277166026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d330ed030fad4a4aa4f57ce3cf36fa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnerManager
 --- !u!1 &1331522989
 GameObject:
   m_ObjectHideFlags: 0

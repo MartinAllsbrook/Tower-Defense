@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e6a8cfbb804671488bb1b2ba45bd2e8, type: 3}
-  m_Name: Enemy Spawner
-  m_EditorClassIdentifier: Assembly-CSharp::TaggedTile
-  m_DefaultSprite: {fileID: 0}
-  m_DefaultGameObject: {fileID: 5733137936210511589, guid: 7e787adb102fd994b85e1ce1c9cd722c, type: 3}
+  m_Script: {fileID: 11500000, guid: 570281b811ec8754aaeb491435600bef, type: 3}
+  m_Name: Bug 2
+  m_EditorClassIdentifier: Assembly-CSharp::BiomeTile
+  m_DefaultSprite: {fileID: -470064811311613573, guid: 292527a95db1ce64b8efaf7ca7b73c6c, type: 3}
+  m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules: []
   m_FlatTop: 1
-  tag: 0
+  tag: 101

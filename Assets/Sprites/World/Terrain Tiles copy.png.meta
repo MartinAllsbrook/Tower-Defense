@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 9706e7c3206748b4daf31513600d9383
+guid: 292527a95db1ce64b8efaf7ca7b73c6c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6680636140462922044
-    second: Wall Tiles_0
+      213: -470064811311613573
+    second: Terrain Tiles copy_0
   - first:
-      213: 1856363205360370320
-    second: Wall Tiles_1
+      213: -4623412907510429843
+    second: Terrain Tiles copy_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,7 +103,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Wall Tiles_0
+      name: Terrain Tiles copy_0
       rect:
         serializedVersion: 2
         x: 0
@@ -118,14 +118,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c39dde99c2366bc50800000000000000
-      internalID: 6680636140462922044
+      spriteID: b793c5c6b8ef979f0800000000000000
+      internalID: -470064811311613573
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall Tiles_1
+      name: Terrain Tiles copy_1
       rect:
         serializedVersion: 2
         x: 256
@@ -140,14 +140,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0924c95ff7023c910800000000000000
-      internalID: 1856363205360370320
+      spriteID: d6782edd47656dfb0800000000000000
+      internalID: -4623412907510429843
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall Tiles_2
+      name: Terrain Tiles copy_2
       rect:
         serializedVersion: 2
         x: 0
@@ -162,14 +162,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 42bba72e2506c2543ab03cabab592d5f
-      internalID: -794426701
+      spriteID: c17970af600ce024b91776b1d8c1be9e
+      internalID: -490175064
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Wall Tiles_3
+      name: Terrain Tiles copy_3
       rect:
         serializedVersion: 2
         x: 256
@@ -184,8 +184,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a3fe739981e01724a881d9c75b38530d
-      internalID: -931799299
+      spriteID: 61a3cca14fbbb1d439331c7e8d645df2
+      internalID: -879242267
       vertices: []
       indices: 
       edges: []
@@ -194,7 +194,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c66af5222c395a748a12b4681d0bf33b
+    spriteID: c3ff0eb40f2e2d1419f8d637942fb2a9
     internalID: 0
     vertices: []
     indices: 
@@ -206,10 +206,10 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":2.0,"y":2.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Wall Tiles_0: 6680636140462922044
-      Wall Tiles_1: 1856363205360370320
-      Wall Tiles_2: -794426701
-      Wall Tiles_3: -931799299
+      Terrain Tiles copy_0: -470064811311613573
+      Terrain Tiles copy_1: -4623412907510429843
+      Terrain Tiles copy_2: -490175064
+      Terrain Tiles copy_3: -879242267
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

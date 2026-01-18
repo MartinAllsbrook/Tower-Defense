@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 570281b811ec8754aaeb491435600bef, type: 3}
-  m_Name: Sand Biome TIle
+  m_Name: Stone
   m_EditorClassIdentifier: Assembly-CSharp::BiomeTile
-  m_DefaultSprite: {fileID: -7763788838878859299, guid: 2ffdd54c320bde34ab7d54ad0e3d3372, type: 3}
+  m_DefaultSprite: {fileID: -373357625, guid: 86494ebde692c1d44927065bf1479af3, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules: []
   m_FlatTop: 1
-  tag: 1
+  tag: 2
