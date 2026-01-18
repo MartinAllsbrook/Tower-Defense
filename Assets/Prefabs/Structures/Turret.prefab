@@ -147,7 +147,7 @@ MonoBehaviour:
   detectionRange: 5
   projectileRange: 6
   fireRateHz: 10
-  projectilePrefab: {fileID: 3689146483150012035, guid: 5f868cb3c68e45b4fa4eb237e8cb46a7, type: 3}
+  projectilePrefab: {fileID: 3881861150001605543, guid: 5f868cb3c68e45b4fa4eb237e8cb46a7, type: 3}
   cannonTransform: {fileID: 8615121205968531383}
 --- !u!212 &1613448883286207765
 SpriteRenderer:

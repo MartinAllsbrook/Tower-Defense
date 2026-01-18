@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -6,29 +7,30 @@ using UnityEngine;
 /// </summary>
 public class PostmortemParticles : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem particles;
-    private bool isPlaying = false;
+    [SerializeField] ParticleSystem particles;
+    [SerializeField] float autoDisableTime = 2f;
 
-    private void OnEnable()
+    Coroutine coroutine;
+
+    void OnEnable()
     {
+        coroutine = StartCoroutine(Play());
+    }
 
-        if (!isPlaying)
+    void OnDisable()
+    {
+        if (coroutine != null)
         {
-            StartCoroutine(Play());
+            StopCoroutine(coroutine);
+            coroutine = null;
         }
-        else {
-            Debug.Log("PostmortemParticles is already playing.");
-        }
+        particles.Stop();
     }
 
     IEnumerator Play()
     {
-        Debug.Log("Playing PostmortemParticles");
-        isPlaying = true;
         particles.Play();
-        yield return new WaitForSeconds(particles.main.duration);
-        isPlaying = false;
-        Debug.Log("Disabling PostmortemParticles GameObject");
+        yield return new WaitForSeconds(autoDisableTime);
         gameObject.SetActive(false);
         // yield return null;
     }

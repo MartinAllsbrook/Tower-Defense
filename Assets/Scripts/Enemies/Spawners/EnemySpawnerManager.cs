@@ -8,6 +8,15 @@ public class EnemySpawnerManager : MonoBehaviour
 
     int spawnersActive = 0;
 
+    void Awake()
+    {
+        GameController gameController = FindFirstObjectByType<GameController>();
+        gameController.OnRoundEnd += (roundNumber) =>
+        {
+            UpgradeRandomSpawner();
+        };
+    }
+
     public void RegisterSpawner(EnemySpawner spawner)
     {
         spawners.Add(spawner);

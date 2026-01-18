@@ -5,8 +5,23 @@ using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour
 {
+    private struct LevelStats
+    {
+        public int numSpawns;
+    }
+
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private float spawnInterval = 10;
+
+    float spawnDuration = 25f;
+    float spawnInterval => spawnDuration / levelStats[spawnerLevel - 1].numSpawns;
+
+    LevelStats[] levelStats = new LevelStats[]
+    {
+        new LevelStats { numSpawns = 5 }, // Level 1
+        new LevelStats { numSpawns = 8 }, // Level 2
+        new LevelStats { numSpawns = 13 }, // Level 3
+        new LevelStats { numSpawns = 21 }, // Level 4
+    };
 
     GameController gameController;
     EnemySpawnerManager spawnerManager;

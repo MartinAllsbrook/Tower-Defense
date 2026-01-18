@@ -15,11 +15,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] float attackDamage = 10f;
     [SerializeField] float attackInterval = 1f;
     [SerializeField] PostmortemParticles deathParticlesPrefab;
+    [SerializeField] RepeatingAudioSource bugHitSound;
     
     public event Action OnEnemyDestroyed;
     public float AttackDamage => attackDamage;
     public float AttackInterval => attackInterval;
 
+    ObjectPool<RepeatingAudioSource> hitSoundPool;
     PostmortemParticles deathParticlesInstance;
     float health = 100f;
     World world;
@@ -37,6 +39,8 @@ public class Enemy : MonoBehaviour
         world.OnWorldUpdate += OnUpdateGrid;
     
         deathParticlesInstance = Instantiate(deathParticlesPrefab, this.transform.position, Quaternion.identity);
+
+        hitSoundPool = new ObjectPool<RepeatingAudioSource>(bugHitSound.GetComponent<RepeatingAudioSource>(), 8);
     }
 
     void Start()
@@ -80,6 +84,11 @@ public class Enemy : MonoBehaviour
     {
         health -= amount;
         healthBar.SetFill(health / maxHealth);
+        
+        RepeatingAudioSource hitSound = hitSoundPool.Get(transform.position, Quaternion.identity);
+
+        hitSoundPool.ReturnAfterDelay(hitSound, 0.25f);
+
         if (health <= 0)
         {
             KillEnemy();

@@ -93,9 +93,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5074152967204517045}
+  - component: {fileID: -642943296232506536}
   - component: {fileID: 3184287413922223653}
   - component: {fileID: 3997026862826937607}
-  - component: {fileID: -642943296232506536}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -119,6 +119,20 @@ Transform:
   - {fileID: 5503558697669902636}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-642943296232506536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8886065954179876485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7db5df25e7dabf4f8fcfb23a631909e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PostmortemParticles
+  particles: {fileID: 3184287413922223653}
+  autoDisableTime: 0.25
 --- !u!198 &3184287413922223653
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4923,16 +4937,3 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
---- !u!114 &-642943296232506536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8886065954179876485}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7db5df25e7dabf4f8fcfb23a631909e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PostmortemParticles
-  particles: {fileID: 3184287413922223653}

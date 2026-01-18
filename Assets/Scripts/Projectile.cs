@@ -8,18 +8,27 @@ public class Projectile : MonoBehaviour
     private PostmortemParticles impactEffect;
 
     [SerializeField] float speed = 10f;
+    [SerializeField] AudioSource shotSound;
     Vector3 startPosition;
     float maxRange;
     bool isInitialized = false;
+    ObjectPool<Projectile> pool;
 
     void Awake()
     {
         impactEffect = Instantiate(impactEffectPrefab);
     }
 
-    public void Initialize(Vector3 startPos, float range)
+    void OnEnable()
     {
-        startPosition = startPos;
+        shotSound.pitch = Random.Range(0.9f, 1.1f);
+        shotSound.volume = Random.Range(0.4f, 0.5f);
+    }
+
+    public void Initialize(float range, ObjectPool<Projectile> pool)
+    {
+        this.pool = pool;
+        startPosition = transform.position;
         maxRange = range;
         isInitialized = true;
     }
@@ -46,6 +55,6 @@ public class Projectile : MonoBehaviour
         impactEffect.gameObject.SetActive(true);
 
         isInitialized = false;
-        gameObject.SetActive(false);
+        pool.Return(this);
     }
 }

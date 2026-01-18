@@ -7,22 +7,16 @@ public class Defense : Structure
     [SerializeField] float detectionRange = 5f;
     [SerializeField] float projectileRange = 10f;
     [SerializeField] float fireRateHz = 10f;
-    [SerializeField] GameObject projectilePrefab; 
+    [SerializeField] Projectile projectilePrefab; 
     [SerializeField] Transform cannonTransform;
 
-    GameObject[] projectiles;
-    int projectileIndex = 0;
+    ObjectPool<Projectile> projectilePool;
     int projectilePoolSize = 64;
     float fireCooldown = 0f;
     
     void Start()
     {
-        projectiles = new GameObject[projectilePoolSize];
-        for (int i = 0; i < projectiles.Length; i++)
-        {
-            projectiles[i] = Instantiate(projectilePrefab);
-            projectiles[i].SetActive(false);
-        }
+        projectilePool = new ObjectPool<Projectile>(projectilePrefab, projectilePoolSize);
     }
 
     // Update is called once per frame
@@ -61,22 +55,9 @@ public class Defense : Structure
         fireCooldown -= Time.deltaTime;
         if (fireCooldown <= 0f)
         {
-            // Fire a projectile from the pool
-            GameObject proj = projectiles[projectileIndex];
-            proj.transform.position = cannonTransform.position;
-            proj.transform.rotation = cannonTransform.rotation;
+            Projectile projectile = projectilePool.Get(cannonTransform.position, cannonTransform.rotation);
+            projectile.Initialize(projectileRange, projectilePool);
             
-            // Set the projectile's max range
-            Projectile projectileScript = proj.GetComponent<Projectile>();
-            if (projectileScript != null)
-            {
-                projectileScript.Initialize(cannonTransform.position, projectileRange);
-            }
-            
-            proj.SetActive(true);
-
-            // Update index and reset cooldown
-            projectileIndex = (projectileIndex + 1) % projectilePoolSize;
             fireCooldown = 1f / fireRateHz;
         }
     }
