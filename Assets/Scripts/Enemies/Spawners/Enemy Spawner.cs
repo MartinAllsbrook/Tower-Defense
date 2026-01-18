@@ -89,11 +89,16 @@ public class EnemySpawner : MonoBehaviour
         World world = FindFirstObjectByType<World>();
         Vector2Int tilePos = world.WorldToCell2(transform.position);
         
-        // Track which ring each tile belongs to
+        // Set the center tile (spawner position) to the current spawner level's bug type
+        BiomeID centerBiome = BiomeID.bug1 + (spawnerLevel - 1);
+        Debug.Log("Setting center tile at " + tilePos + " to " + centerBiome);
+        world.SetBiomeAt(new Vector3Int(tilePos.x, tilePos.y, 0), centerBiome);
+        
+        // Track which ring each tile belongs to (starting from ring 1, since center is ring 0)
         Dictionary<Vector2Int, int> tileRingLevel = new Dictionary<Vector2Int, int>();
         Vector2Int[] lastNeighbors = { tilePos };
         
-        for (int ring = 0; ring < spawnerLevel; ring++)
+        for (int ring = 1; ring < spawnerLevel; ring++)
         {
             List<Vector2Int> neighbors = new List<Vector2Int>();
             foreach (var pos in lastNeighbors)
@@ -101,7 +106,7 @@ public class EnemySpawner : MonoBehaviour
                 Vector2Int[] nbs = World.GetNeighbors(pos);
                 foreach (var nb in nbs)
                 {
-                    if (!tileRingLevel.ContainsKey(nb))
+                    if (!tileRingLevel.ContainsKey(nb) && nb != tilePos)
                     {
                         neighbors.Add(nb);
                         tileRingLevel[nb] = ring;
@@ -112,14 +117,14 @@ public class EnemySpawner : MonoBehaviour
             lastNeighbors = neighbors.ToArray();
         }
 
-        // Now set the biomes based on ring level (innermost gets highest bug level)
+        // Now set the biomes based on ring level
+        // Center is spawnerLevel bug type, each ring outward decreases by one
         foreach (var kvp in tileRingLevel)
         {
             Vector2Int tilePosition = kvp.Key;
             int ringLevel = kvp.Value;
             
-            // Calculate biome: innermost ring (ring 0) gets the highest bug level for current spawnerLevel
-            // outermost ring gets Bug1
+            // Calculate biome: center has highest, each ring out decreases
             BiomeID biome = BiomeID.bug1 + (spawnerLevel - ringLevel - 1);
             
             Debug.Log("Setting biome at " + tilePosition + " (ring " + ringLevel + ") to " + biome);
