@@ -9,7 +9,16 @@ public class ResourcesUI : MonoBehaviour
     void Awake()
     {
         player = FindFirstObjectByType<Player>();
+    }
+
+    void OnEnable()
+    {
         player.OnMoneyChanged += UpdateMoneyUI;
+    }
+
+    void OnDisable()
+    {
+        player.OnMoneyChanged -= UpdateMoneyUI;
     }
 
     void UpdateMoneyUI(int amount)

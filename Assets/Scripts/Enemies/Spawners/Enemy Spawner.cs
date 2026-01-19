@@ -33,12 +33,21 @@ public class EnemySpawner : MonoBehaviour
     void Awake()
     {
         gameController = FindFirstObjectByType<GameController>();
-        gameController.OnRoundStart += StartRound;
 
         spawnerManager = FindFirstObjectByType<EnemySpawnerManager>();
         spawnerManager.RegisterSpawner(this);
 
         world = FindFirstObjectByType<World>();
+    }
+
+    void OnEnable()
+    {
+        gameController.OnRoundStart += StartRound;
+    }
+
+    void OnDisable()
+    {
+        gameController.OnRoundStart -= StartRound;
     }
 
     void Start()
@@ -81,13 +90,14 @@ public class EnemySpawner : MonoBehaviour
         enemy.OnEnemyDestroyed += OnEnemyDestroyed;
     }
 
-    void OnEnemyDestroyed()
+    void OnEnemyDestroyed(Enemy enemy)
     {
         numActiveEnemies--;
         if (numActiveEnemies <= 0 && !isSpawning)
         {
             gameController.UnregisterSpawner();
         }
+        enemy.OnEnemyDestroyed -= OnEnemyDestroyed;
     }
 
     public bool UpgradeSpawner()

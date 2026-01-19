@@ -11,14 +11,26 @@ public class PlaceStructureButton : MonoBehaviour
     StructureTile structureTile;
     StructurePlacer structurePlacer;
 
+    Player player;
+
+
     void Awake()
     {
-        Player player = FindFirstObjectByType<Player>();
+        player = FindFirstObjectByType<Player>();
         if (player != null)
         {
             structurePlacer = player.GetComponent<StructurePlacer>();
         }
+    }
+
+    void OnEnable()
+    {
         player.OnMoneyChanged += UpdateAffordability;
+    }
+
+    void OnDisable()
+    {
+        player.OnMoneyChanged -= UpdateAffordability;
     }
 
     public void Initialize(StructureTile structureTile, StructurePlacer structurePlacer)

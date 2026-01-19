@@ -21,8 +21,19 @@ public class Player : MonoBehaviour
         money = startingMoney;
 
         gameController = FindFirstObjectByType<GameController>();
+        
+    }
+
+    void OnEnable()
+    {
         gameController.OnRoundStart += StartPassiveIncome;
         gameController.OnRoundEnd += StopPassiveIncome;
+    }
+
+    void OnDisable()
+    {
+        gameController.OnRoundStart -= StartPassiveIncome;
+        gameController.OnRoundEnd -= StopPassiveIncome;
     }
 
     void StartPassiveIncome(int roundNumber)

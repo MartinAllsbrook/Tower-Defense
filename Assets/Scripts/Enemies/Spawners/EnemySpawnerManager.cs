@@ -7,14 +7,22 @@ public class EnemySpawnerManager : MonoBehaviour
     List<EnemySpawner> spawners = new List<EnemySpawner>();
 
     int spawnersActive = 0;
+    GameController gameController;
 
     void Awake()
     {
-        GameController gameController = FindFirstObjectByType<GameController>();
-        gameController.OnRoundEnd += (roundNumber) =>
-        {
-            UpgradeRandomSpawner();
-        };
+        gameController = FindFirstObjectByType<GameController>();
+        
+    }
+
+    void OnEnable()
+    {
+        gameController.OnRoundEnd += UpgradeRandomSpawner;
+    }
+
+    void OnDisable()
+    {
+        gameController.OnRoundEnd -= UpgradeRandomSpawner;
     }
 
     public void RegisterSpawner(EnemySpawner spawner)
@@ -37,7 +45,7 @@ public class EnemySpawnerManager : MonoBehaviour
         }
     }
 
-    void UpgradeRandomSpawner()
+    void UpgradeRandomSpawner(int roundNumber)
     {
         if (spawners.Count == 0) return;
 
@@ -63,6 +71,6 @@ public class EnemySpawnerManager : MonoBehaviour
             Debug.LogWarning("No EnemySpawnerManager found in the scene.");
             return;
         }
-        manager.UpgradeRandomSpawner();
+        manager.UpgradeRandomSpawner(0);
     }
 }

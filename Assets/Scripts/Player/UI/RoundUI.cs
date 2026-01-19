@@ -12,10 +12,22 @@ public class RoundUI : MonoBehaviour
     void Awake()
     {
         gameController = FindFirstObjectByType<GameController>();
+    }
+
+    void OnEnable()
+    {
+        button.onClick.AddListener(OnClick);
+
         gameController.OnBasePlaced += OnRoundReady;
         gameController.OnRoundEnd += OnRoundReady;
+    }
 
+    void OnDisable()
+    {
         button.onClick.AddListener(OnClick);
+
+        gameController.OnBasePlaced -= OnRoundReady;
+        gameController.OnRoundEnd -= OnRoundReady;
     }
 
     void OnClick()

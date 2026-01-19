@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] PostmortemParticles deathParticlesPrefab;
     [SerializeField] RepeatingAudioSource bugHitSound;
     
-    public event Action OnEnemyDestroyed;
+    public event Action<Enemy> OnEnemyDestroyed;
     public float AttackDamage => attackDamage;
     public float AttackInterval => attackInterval;
 
@@ -28,19 +28,31 @@ public class Enemy : MonoBehaviour
     Target target;
     Coroutine moveCoroutine;
     bool gameOver = false;
+    GameController gameController;
 
     void Awake()
     {
         target = FindFirstObjectByType<Target>();
         world = FindFirstObjectByType<World>();
 
-        GameController gameController = FindFirstObjectByType<GameController>();
-        gameController.OnGameOver += OnGameEnd;
-        world.OnWorldUpdate += OnUpdateGrid;
+        gameController = FindFirstObjectByType<GameController>();
+        
     
         deathParticlesInstance = Instantiate(deathParticlesPrefab, this.transform.position, Quaternion.identity);
 
         hitSoundPool = new ObjectPool<RepeatingAudioSource>(bugHitSound.GetComponent<RepeatingAudioSource>(), 8);
+    }
+
+    void OnEnable()
+    {
+        gameController.OnGameOver += OnGameEnd;
+        world.OnWorldUpdate += OnUpdateGrid;
+    }
+
+    void OnDisable()
+    {
+        gameController.OnGameOver -= OnGameEnd;
+        world.OnWorldUpdate -= OnUpdateGrid;
     }
 
     void Start()
@@ -100,7 +112,7 @@ public class Enemy : MonoBehaviour
         deathParticlesInstance.transform.position = transform.position;
         deathParticlesInstance.gameObject.SetActive(true);
 
-        OnEnemyDestroyed?.Invoke();
+        OnEnemyDestroyed?.Invoke(this);
         world.OnWorldUpdate -= OnUpdateGrid;
         Destroy(gameObject);
     }

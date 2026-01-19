@@ -75,6 +75,12 @@ class EnemyBrain : MonoBehaviour
     {
         if (actionQueue.Count > 0)
         {
+            
+            if (currentAction != null)
+            {
+                currentAction.onComplete -= OnActionComplete;
+                currentAction.StopExecution();
+            }
             currentAction = actionQueue.Dequeue();
             currentAction.onComplete += OnActionComplete;
             currentAction.Execute();
