@@ -28,16 +28,12 @@ public class Enemy : MonoBehaviour
     Target target;
     Coroutine moveCoroutine;
     bool gameOver = false;
-    GameController gameController;
 
     void Awake()
     {
         target = FindFirstObjectByType<Target>();
         world = FindFirstObjectByType<World>();
 
-        gameController = FindFirstObjectByType<GameController>();
-        
-    
         deathParticlesInstance = Instantiate(deathParticlesPrefab, this.transform.position, Quaternion.identity);
 
         hitSoundPool = new ObjectPool<RepeatingAudioSource>(bugHitSound.GetComponent<RepeatingAudioSource>(), 8);
@@ -45,13 +41,13 @@ public class Enemy : MonoBehaviour
 
     void OnEnable()
     {
-        gameController.OnGameOver += OnGameEnd;
+        GameController.OnGameOver += OnGameEnd;
         world.OnWorldUpdate += OnUpdateGrid;
     }
 
     void OnDisable()
     {
-        gameController.OnGameOver -= OnGameEnd;
+        GameController.OnGameOver -= OnGameEnd;
         world.OnWorldUpdate -= OnUpdateGrid;
     }
 

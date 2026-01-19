@@ -23,7 +23,6 @@ public class EnemySpawner : MonoBehaviour
         new LevelStats { numSpawns = 21 }, // Level 4
     };
 
-    GameController gameController;
     EnemySpawnerManager spawnerManager;
     World world;
     int numActiveEnemies = 0;
@@ -32,8 +31,6 @@ public class EnemySpawner : MonoBehaviour
 
     void Awake()
     {
-        gameController = FindFirstObjectByType<GameController>();
-
         spawnerManager = FindFirstObjectByType<EnemySpawnerManager>();
         spawnerManager.RegisterSpawner(this);
 
@@ -42,12 +39,12 @@ public class EnemySpawner : MonoBehaviour
 
     void OnEnable()
     {
-        gameController.OnRoundStart += StartRound;
+        GameController.OnRoundStart += StartRound;
     }
 
     void OnDisable()
     {
-        gameController.OnRoundStart -= StartRound;
+        GameController.OnRoundStart -= StartRound;
     }
 
     void Start()
@@ -66,7 +63,7 @@ public class EnemySpawner : MonoBehaviour
     IEnumerator RoundCoroutine()
     {
         isSpawning = true;
-        gameController.RegisterSpawner();
+        GameController.RegisterSpawner();
         int enemiesToSpawn = 5; // Example value, could be based on round number
         yield return StartCoroutine(SpawnEnemiesRoutine(enemiesToSpawn));
         isSpawning = false;
@@ -95,7 +92,7 @@ public class EnemySpawner : MonoBehaviour
         numActiveEnemies--;
         if (numActiveEnemies <= 0 && !isSpawning)
         {
-            gameController.UnregisterSpawner();
+            GameController.UnregisterSpawner();
         }
         enemy.OnEnemyDestroyed -= OnEnemyDestroyed;
     }

@@ -82,7 +82,7 @@ public class StructurePlacer : MonoBehaviour
 
             if (basePlaced)
             {    
-                FindFirstObjectByType<GameController>().PlaceBase();
+                GameController.PlaceBase();
                 ExitMode();
             }
 

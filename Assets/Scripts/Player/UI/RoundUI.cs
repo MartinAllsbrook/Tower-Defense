@@ -7,32 +7,25 @@ public class RoundUI : MonoBehaviour
     [SerializeField] Button button;
     [SerializeField] TextMeshProUGUI roundText;
 
-    GameController gameController;
-
-    void Awake()
-    {
-        gameController = FindFirstObjectByType<GameController>();
-    }
-
     void OnEnable()
     {
         button.onClick.AddListener(OnClick);
 
-        gameController.OnBasePlaced += OnRoundReady;
-        gameController.OnRoundEnd += OnRoundReady;
+        GameController.OnBasePlaced += OnRoundReady;
+        GameController.OnRoundEnd += OnRoundReady;
     }
 
     void OnDisable()
     {
         button.onClick.AddListener(OnClick);
 
-        gameController.OnBasePlaced -= OnRoundReady;
-        gameController.OnRoundEnd -= OnRoundReady;
+        GameController.OnBasePlaced -= OnRoundReady;
+        GameController.OnRoundEnd -= OnRoundReady;
     }
 
     void OnClick()
     {
-        gameController.StartRound();
+        GameController.StartRound();
         Disable();
     }
 

@@ -7,22 +7,15 @@ public class EnemySpawnerManager : MonoBehaviour
     List<EnemySpawner> spawners = new List<EnemySpawner>();
 
     int spawnersActive = 0;
-    GameController gameController;
-
-    void Awake()
-    {
-        gameController = FindFirstObjectByType<GameController>();
-        
-    }
 
     void OnEnable()
     {
-        gameController.OnRoundEnd += UpgradeRandomSpawner;
+        GameController.OnRoundEnd += UpgradeRandomSpawner;
     }
 
     void OnDisable()
     {
-        gameController.OnRoundEnd -= UpgradeRandomSpawner;
+        GameController.OnRoundEnd -= UpgradeRandomSpawner;
     }
 
     public void RegisterSpawner(EnemySpawner spawner)
@@ -40,8 +33,7 @@ public class EnemySpawnerManager : MonoBehaviour
         spawnersActive = Mathf.Max(0, spawnersActive - 1);
         if (spawnersActive == 0)
         {
-            GameController gameController = FindFirstObjectByType<GameController>();
-            gameController.EndRound();
+            GameController.EndRound();
         }
     }
 

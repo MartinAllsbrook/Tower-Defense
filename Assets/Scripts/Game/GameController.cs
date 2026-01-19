@@ -1,23 +1,23 @@
 using System;
 using UnityEngine;
 
-public class GameController: MonoBehaviour
+public static class GameController
 {
-    public event Action<int> OnBasePlaced;
-    public event Action<int> OnRoundStart;
-    public event Action<int> OnRoundEnd;
-    public event Action OnGameOver;
+    public static event Action<int> OnBasePlaced;
+    public static event Action<int> OnRoundStart;
+    public static event Action<int> OnRoundEnd;
+    public static event Action OnGameOver;
 
-    bool inRound = false;
-    int currentRound = 0;
-    int spawnersActive = 0;
+    static bool inRound = false;
+    static int currentRound = 0;
+    static int spawnersActive = 0;
 
-    public void PlaceBase()
+    public static void PlaceBase()
     {
         OnBasePlaced?.Invoke(0);
     }
 
-    public void StartRound()
+    public static void StartRound()
     {
         Debug.Log("Starting Round " + (currentRound + 1));
         currentRound++;
@@ -25,13 +25,13 @@ public class GameController: MonoBehaviour
         OnRoundStart?.Invoke(currentRound);
     }
 
-    public void EndRound()
+    public static void EndRound()
     {
         inRound = false;
         OnRoundEnd?.Invoke(currentRound);
     }
 
-    public void EndGame()
+    public static void EndGame()
     {
         OnGameOver?.Invoke();
         Debug.Log("Game Over!");
@@ -39,12 +39,12 @@ public class GameController: MonoBehaviour
 
     #region Spawner Management
 
-    public void RegisterSpawner()
+    public static void RegisterSpawner()
     {
         spawnersActive++;
     }
 
-    public void UnregisterSpawner()
+    public static void UnregisterSpawner()
     {
         spawnersActive = Math.Max(0, spawnersActive - 1);
         if (spawnersActive == 0)

@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
     [SerializeField] float passiveIncomeInterval = 1f;
     [SerializeField] int passiveIncomeAmount = 10;
 
-    GameController gameController;
     int money;
     Coroutine passiveIncomeCoroutine;
 
@@ -19,21 +18,18 @@ public class Player : MonoBehaviour
     void Awake()
     {
         money = startingMoney;
-
-        gameController = FindFirstObjectByType<GameController>();
-        
     }
 
     void OnEnable()
     {
-        gameController.OnRoundStart += StartPassiveIncome;
-        gameController.OnRoundEnd += StopPassiveIncome;
+        GameController.OnRoundStart += StartPassiveIncome;
+        GameController.OnRoundEnd += StopPassiveIncome;
     }
 
     void OnDisable()
     {
-        gameController.OnRoundStart -= StartPassiveIncome;
-        gameController.OnRoundEnd -= StopPassiveIncome;
+        GameController.OnRoundStart -= StartPassiveIncome;
+        GameController.OnRoundEnd -= StopPassiveIncome;
     }
 
     void StartPassiveIncome(int roundNumber)
