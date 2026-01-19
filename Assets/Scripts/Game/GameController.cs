@@ -1,8 +1,16 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Event Manager
+/// </summary>
 public static class GameController
 {
+    // Tutorial / Info Events
+    public static event Action OnGameStart; // This is kind of a placeholder idk. literally just going to be like a Start call
+    public static event Action OnFirstStructurePlaced;
+
+    // General Events
     public static event Action<int> OnBasePlaced;
     public static event Action<int> OnRoundStart;
     public static event Action<int> OnRoundEnd;
