@@ -9,6 +9,7 @@ public static class GameController
     // Tutorial / Info Events
     public static event Action OnGameStart; // This is kind of a placeholder idk. literally just going to be like a Start call
     public static event Action OnFirstStructurePlaced;
+    public static event Action StructurePlaced;
 
     // General Events
     public static event Action<int> OnBasePlaced;
@@ -16,6 +17,7 @@ public static class GameController
     public static event Action<int> OnRoundEnd;
     public static event Action OnGameOver;
 
+    static bool firstStructurePlaced = false;
     static bool inRound = false;
     static int currentRound = 0;
     static int spawnersActive = 0;
@@ -43,6 +45,16 @@ public static class GameController
     {
         OnGameOver?.Invoke();
         Debug.Log("Game Over!");
+    }
+
+    public static void PlaceStructure()
+    {
+        if (!firstStructurePlaced)
+        {
+            firstStructurePlaced = true;
+            OnFirstStructurePlaced?.Invoke();
+        }
+        StructurePlaced?.Invoke();
     }
 
     #region Spawner Management

@@ -96,6 +96,7 @@ public class StructurePlacer : MonoBehaviour
         if (world.SetTileAt(cellPosition, structureData))
         {
             player.SpendMoney(structureData.Cost);
+            GameController.PlaceStructure();
             return true;
         }
 
@@ -147,6 +148,12 @@ public class StructurePlacer : MonoBehaviour
 
     public void ExitMode()
     {
+        // Prevent exiting place mode if base not yet placed
+        if (currentStructure != null && currentStructure.ID == StructureType.Base && !basePlaced)
+        {
+            return;
+        }
+
         previewTilemap.ClearAllTiles();
         currentStructure = null;
         mode = Mode.None;
