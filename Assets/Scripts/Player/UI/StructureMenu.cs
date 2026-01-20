@@ -4,6 +4,7 @@ public class StructureMenu : MonoBehaviour
 {
     [SerializeField] RectTransform buttonContainer;
     [SerializeField] RectTransform menuPanel;
+    [SerializeField] RectTransform openMenuButton;
     [SerializeField] GameObject placeStructureButtonPrefab;
 
     StructurePlacer structurePlacer;
@@ -29,11 +30,13 @@ public class StructureMenu : MonoBehaviour
     public void OpenMenu()
     {
         menuPanel.gameObject.SetActive(true);
+        openMenuButton.gameObject.SetActive(false);
     }
 
     public void CloseMenu()
     {
         menuPanel.gameObject.SetActive(false);
+        openMenuButton.gameObject.SetActive(true);
     }
 
     public void EnterRemoveMode()
