@@ -14,10 +14,12 @@ public class Defense : Structure
     ObjectPool<Projectile> projectilePool;
     int projectilePoolSize = 64;
     float fireCooldown = 0f;
+    Target target;
     
     void Start()
     {
         projectilePool = new ObjectPool<Projectile>(projectilePrefab, projectilePoolSize);
+        target = FindObjectOfType<Target>();
     }
 
     // Update is called once per frame
@@ -58,10 +60,17 @@ public class Defense : Structure
             // Check if raycast hit the enemy (not blocked by obstacles)
             if (hit.collider == enemiesInRange[i])
             {
-                if (dist < minDist)
+                // Calculate distance to both turret and target, use the minimum
+                float distToTurret = dist;
+                float distToTarget = target != null ? 
+                    Vector2.Distance(enemiesInRange[i].transform.position, target.transform.position) : 
+                    float.MaxValue;
+                float minDistToEither = Mathf.Min(distToTurret, distToTarget);
+
+                if (minDistToEither < minDist)
                 {
                     closest = enemiesInRange[i];
-                    minDist = dist;
+                    minDist = minDistToEither;
                 }
             }
         }
