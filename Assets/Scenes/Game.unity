@@ -2007,7 +2007,7 @@ GameObject:
   - component: {fileID: 1277166030}
   - component: {fileID: 1277166031}
   m_Layer: 0
-  m_Name: Game Controller
+  m_Name: Misc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -38,6 +38,7 @@ public static class GameController
     public static void EndRound()
     {
         inRound = false;
+        PlayerPrefs.SetInt("RoundsSurvived", currentRound);
         OnRoundEnd?.Invoke(currentRound);
     }
 
@@ -45,6 +46,7 @@ public static class GameController
     {
         OnGameOver?.Invoke();
         Debug.Log("Game Over!");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Game Over");
     }
 
     public static void PlaceStructure()

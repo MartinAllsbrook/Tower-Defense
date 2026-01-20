@@ -3,23 +3,14 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private string creditsSceneName;
-    [SerializeField] private string gameSceneName;
-
     public void LoadCreditsScene()
     {
-        if (!string.IsNullOrEmpty(creditsSceneName))
-        {
-            SceneManager.LoadScene(creditsSceneName);
-        }
+        SceneManager.LoadScene("Credits");
     }
 
     public void LoadGameScene()
     {
-        if (!string.IsNullOrEmpty(gameSceneName))
-        {
-            SceneManager.LoadScene(gameSceneName);
-        }
+        SceneManager.LoadScene("Game");
     }
 
     public void ExitGame()
