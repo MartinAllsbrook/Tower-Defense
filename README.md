@@ -1,13 +1,18 @@
 # Unnamed Tower Defense Game
-This is a tower defense game where you fight evil bugs trying to stop you from taking their land.
+This is a tower defense game where you fight evil bugs that are trying to destroy a base you just placed down.
 
-Those dang bugs!
+## Play
+If you would like to play the game check out the [releases](https://github.com/MartinAllsbrook/Tower-Defense/releases)! I currently only have a Windows release but @ me in the [Discord](https://discord.gg/763qEmm8hV) if you want to play on a mac and I will make a macOS build aswell.  
 
-Made with Unity 6.
+You can also let me know what you think in the [Discord](https://discord.gg/763qEmm8hV), I would love to hear your feedback. Thanks :)
 
-## Plugins
-### [Quantum Console](https://assetstore.unity.com/packages/tools/utilities/quantum-console-211046)
-This project uses the QFSW's Quantum Console Package. It can be downloaded [here](https://assetstore.unity.com/packages/tools/utilities/quantum-console-211046). It is not necessary but the prefab will need to be deleted from the scene if you do not have it.
+## Tools
+### Engine
+Made with Unity 6. (Scripts in C#)
+
+### Plugins
+#### [Quantum Console](https://assetstore.unity.com/packages/tools/utilities/quantum-console-211046)
+This project uses the QFSW's Quantum Console Package. It can be downloaded [here](https://assetstore.unity.com/packages/tools/utilities/quantum-console-211046). It is not necessary but you might need to remove some `[Command]` attributes and stuff if you do not have it.
 
 ## Attributions
 ### Music
