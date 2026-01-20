@@ -16,9 +16,12 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] World world;
     [SerializeField] StructureTile[] structures;
     [SerializeField] RuleTile removeIconTile;
+    [SerializeField] RepeatingAudioSource placeSound;
 
     public StructureTile[] Structures => structures;
     
+    ObjectPool<RepeatingAudioSource> placeSoundPool;
+
     Player player;
     Tilemap previewTilemap;
     StructureTile currentStructure;
@@ -30,6 +33,7 @@ public class StructurePlacer : MonoBehaviour
     {
         player = GetComponent<Player>();
         previewTilemap = GameObject.FindWithTag("Preview Tilemap").GetComponent<Tilemap>();
+        placeSoundPool = new ObjectPool<RepeatingAudioSource>(placeSound);
     }
 
     void Start()
@@ -86,6 +90,7 @@ public class StructurePlacer : MonoBehaviour
                 ExitMode();
             }
 
+            PlayStructurePlaceSound();
             return basePlaced;
         }
         
@@ -97,10 +102,18 @@ public class StructurePlacer : MonoBehaviour
         {
             player.SpendMoney(structureData.Cost);
             GameController.PlaceStructure();
+            
+            PlayStructurePlaceSound();
             return true;
         }
 
         return false;
+    }
+
+    void PlayStructurePlaceSound()
+    {
+        RepeatingAudioSource sound = placeSoundPool.Get();
+        placeSoundPool.ReturnAfterDelay(sound, sound.GetComponent<AudioSource>().clip.length);
     }
 
     void RemoveUpdate()

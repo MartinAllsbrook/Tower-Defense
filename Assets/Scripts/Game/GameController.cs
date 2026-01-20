@@ -21,6 +21,7 @@ public static class GameController
     static bool inRound = false;
     static int currentRound = 0;
     static int spawnersActive = 0;
+    static float lastStructureDamageTime = 0f;
 
     public static void PlaceBase()
     {
@@ -57,6 +58,18 @@ public static class GameController
             OnFirstStructurePlaced?.Invoke();
         }
         StructurePlaced?.Invoke();
+    }
+
+    // TODO: Move this somewhere else and make different sound for different structure types
+    public static void StructureTakenDamage()
+    {
+        float timeBetweenAlerts = 3f;
+        if (Time.time - lastStructureDamageTime > timeBetweenAlerts)
+        {
+            AudioManager audioManager = GameObject.FindFirstObjectByType<AudioManager>();
+            audioManager.PlayStructureUnderAttackSound();
+            lastStructureDamageTime = Time.time;
+        }
     }
 
     #region Spawner Management
