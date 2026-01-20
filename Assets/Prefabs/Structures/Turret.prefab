@@ -149,9 +149,17 @@ MonoBehaviour:
     m_Bits: 8
   detectionRange: 5
   projectileRange: 6
+  projectileSpeed: 15
   fireRateHz: 10
   projectilePrefab: {fileID: 3881861150001605543, guid: 5f868cb3c68e45b4fa4eb237e8cb46a7, type: 3}
   cannonTransform: {fileID: 8615121205968531383}
+  firingSound:
+    clips:
+    - {fileID: 8300000, guid: 03cee655fd5469543918b5faed5478a4, type: 3}
+    volume: 0.5
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
 --- !u!212 &1613448883286207765
 SpriteRenderer:
   serializedVersion: 2

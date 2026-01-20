@@ -5,8 +5,6 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] PostmortemParticles impactEffectPrefab;
-    [SerializeField] AudioSource shotSound;
-
     PostmortemParticles impactEffect;
     Vector3 startPosition;
     float maxRange;
@@ -17,12 +15,6 @@ public class Projectile : MonoBehaviour
     void Awake()
     {
         impactEffect = Instantiate(impactEffectPrefab);
-    }
-
-    void OnEnable()
-    {
-        shotSound.pitch = Random.Range(0.9f, 1.1f);
-        shotSound.volume = Random.Range(0.4f, 0.5f);
     }
 
     public void Initialize(float range, float speed, ObjectPool<Projectile> pool)

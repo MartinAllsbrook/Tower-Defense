@@ -551,10 +551,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0af0496938e56d84dbdc18a7c9cc3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  radius: 2
   spriteObject: {fileID: 4601083877690610282}
   healthBar: {fileID: 4001359603497208410}
-  maxHealth: 100
   legObjects:
   - {fileID: 1377875054210465015}
   - {fileID: 8964869099937028496}
@@ -562,10 +560,25 @@ MonoBehaviour:
   - {fileID: 8672291820378282963}
   - {fileID: 1375411496839372440}
   - {fileID: 386667861408369208}
+  deathParticlesPrefab: {fileID: 5599654003556535459, guid: f86f1ab5846193d45b5454d5d032ca57, type: 3}
+  radius: 2
+  maxHealth: 100
   attackDamage: 10
   attackInterval: 1
-  deathParticlesPrefab: {fileID: 5599654003556535459, guid: f86f1ab5846193d45b5454d5d032ca57, type: 3}
-  bugHitSound: {fileID: -2721506186856448375, guid: 1d29e73731f6d5e4a8a04d88bd154583, type: 3}
+  bugHitSound:
+    clips:
+    - {fileID: 8300000, guid: f2ebe5f404d43cf48807ec65eb091253, type: 3}
+    volume: 0.5
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+  bugDeathSound:
+    clips:
+    - {fileID: 8300000, guid: 510d60848f0916340b1f7405e85ce507, type: 3}
+    volume: 0.5
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
 --- !u!114 &7206824754580517996
 MonoBehaviour:
   m_ObjectHideFlags: 0

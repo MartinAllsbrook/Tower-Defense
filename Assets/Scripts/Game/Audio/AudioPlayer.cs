@@ -9,8 +9,10 @@ class AudioPlayer : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void PlayClip(AudioClip clip)
+    public void PlayClip(AudioClip clip, float volume, float pitch)
     {
+        audioSource.volume = volume;
+        audioSource.pitch = pitch;
         audioSource.PlayOneShot(clip);
-    }
+    }    
 }

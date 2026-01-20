@@ -57,7 +57,6 @@ public class Structure : MonoBehaviour
     public bool DealDamage(float damage)
     {
         health -= damage;
-        GameController.StructureTakenDamage();
         healthBar.SetFill(health / tile.MaxHealth);
         
         if (health <= 0)

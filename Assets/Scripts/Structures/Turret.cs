@@ -3,14 +3,22 @@ using UnityEngine;
 
 public class Defense : Structure
 {
+    [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
+
+    [Header("Turret Stats")]
     [SerializeField] float detectionRange = 5f;
     [SerializeField] float projectileRange = 10f;
     [SerializeField] float projectileSpeed = 15f;
     [SerializeField] float fireRateHz = 10f;
+
+    [Header("References")]
     [SerializeField] Projectile projectilePrefab; 
     [SerializeField] Transform cannonTransform;
+
+    [Header("Audio")]
+    [SerializeField] VariedAudioClip firingSound;
 
     ObjectPool<Projectile> projectilePool;
     int projectilePoolSize = 64;
@@ -94,6 +102,8 @@ public class Defense : Structure
             Projectile projectile = projectilePool.Get(cannonTransform.position, cannonTransform.rotation);
             projectile.Initialize(projectileRange, projectileSpeed, projectilePool);
             
+            AudioManager.PlayAudioAt(firingSound, transform.position);
+
             fireCooldown = 1f / fireRateHz;
         }
     }

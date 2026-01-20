@@ -60,18 +60,6 @@ public static class GameController
         StructurePlaced?.Invoke();
     }
 
-    // TODO: Move this somewhere else and make different sound for different structure types
-    public static void StructureTakenDamage()
-    {
-        float timeBetweenAlerts = 3f;
-        if (Time.time - lastStructureDamageTime > timeBetweenAlerts)
-        {
-            AudioManager audioManager = GameObject.FindFirstObjectByType<AudioManager>();
-            audioManager.PlayStructureUnderAttackSound();
-            lastStructureDamageTime = Time.time;
-        }
-    }
-
     #region Spawner Management
 
     public static void RegisterSpawner()

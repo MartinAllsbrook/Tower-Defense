@@ -7,21 +7,26 @@ using UnityEngine.Tilemaps;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] float radius = 2f;
+    [Header("References")]
     [SerializeField] GameObject spriteObject;
     [SerializeField] HealthBar healthBar;
-    [SerializeField] float maxHealth = 100f;
     [SerializeField] GameObject[] legObjects;
+    [SerializeField] PostmortemParticles deathParticlesPrefab;
+    
+    [Header("Stats")]
+    [SerializeField] float radius = 2f;
+    [SerializeField] float maxHealth = 100f;
     [SerializeField] float attackDamage = 10f;
     [SerializeField] float attackInterval = 1f;
-    [SerializeField] PostmortemParticles deathParticlesPrefab;
-    [SerializeField] RepeatingAudioSource bugHitSound;
-    
+
+    [Header("Audio")]
+    [SerializeField] VariedAudioClip bugHitSound;
+    [SerializeField] VariedAudioClip bugDeathSound;
+
     public event Action<Enemy> OnEnemyDestroyed;
     public float AttackDamage => attackDamage;
     public float AttackInterval => attackInterval;
 
-    ObjectPool<RepeatingAudioSource> hitSoundPool;
     PostmortemParticles deathParticlesInstance;
     float health = 100f;
     World world;
@@ -36,7 +41,6 @@ public class Enemy : MonoBehaviour
 
         deathParticlesInstance = Instantiate(deathParticlesPrefab, this.transform.position, Quaternion.identity);
 
-        hitSoundPool = new ObjectPool<RepeatingAudioSource>(bugHitSound.GetComponent<RepeatingAudioSource>(), 8);
     }
 
     void OnEnable()
@@ -93,9 +97,7 @@ public class Enemy : MonoBehaviour
         health -= amount;
         healthBar.SetFill(health / maxHealth);
         
-        RepeatingAudioSource hitSound = hitSoundPool.Get(transform.position, Quaternion.identity);
-
-        hitSoundPool.ReturnAfterDelay(hitSound, 0.25f);
+        AudioManager.PlayAudioAt(bugHitSound, transform.position);
 
         if (health <= 0)
         {
@@ -107,6 +109,8 @@ public class Enemy : MonoBehaviour
     {
         deathParticlesInstance.transform.position = transform.position;
         deathParticlesInstance.gameObject.SetActive(true);
+
+        AudioManager.PlayAudioAt(bugDeathSound, transform.position);
 
         OnEnemyDestroyed?.Invoke(this);
         world.OnWorldUpdate -= OnUpdateGrid;

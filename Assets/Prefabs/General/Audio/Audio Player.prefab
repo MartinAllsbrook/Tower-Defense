@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1645198402944583992
+--- !u!1 &699204560477348367
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,59 +8,55 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5903024698768980218}
-  - component: {fileID: -2721506186856448375}
-  - component: {fileID: 3406908512636345700}
+  - component: {fileID: 7702213022960895026}
+  - component: {fileID: 1797880117276792571}
+  - component: {fileID: 2278010856232157272}
   m_Layer: 0
-  m_Name: EnemyHitSound
+  m_Name: Audio Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5903024698768980218
+--- !u!4 &7702213022960895026
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1645198402944583992}
+  m_GameObject: {fileID: 699204560477348367}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.4287, y: 2.07357, z: 0}
+  m_LocalPosition: {x: 0.41225, y: 0, z: 0.70482}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-2721506186856448375
+--- !u!114 &1797880117276792571
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1645198402944583992}
+  m_GameObject: {fileID: 699204560477348367}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cd4cf5a2d20a4d46bd5522b697eec75, type: 3}
+  m_Script: {fileID: 11500000, guid: b6016094e65744e4f82dad18902d0eb5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RepeatingAudioSource
-  pitch: 1
-  pitchRange: 0.1
-  volume: 0.2
-  volumeRange: 0.1
---- !u!82 &3406908512636345700
+  m_EditorClassIdentifier: Assembly-CSharp::AudioPlayer
+--- !u!82 &2278010856232157272
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1645198402944583992}
+  m_GameObject: {fileID: 699204560477348367}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 9d761e7587d8ca842a0e0f4eb5ac14b5, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: f2ebe5f404d43cf48807ec65eb091253, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -106,7 +102,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.75
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
