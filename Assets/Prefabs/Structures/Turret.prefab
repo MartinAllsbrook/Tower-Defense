@@ -144,6 +144,9 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 8
   detectionRange: 5
   projectileRange: 6
   fireRateHz: 10

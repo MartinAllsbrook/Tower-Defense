@@ -4,6 +4,7 @@ using UnityEngine;
 public class Defense : Structure
 {
     [SerializeField] LayerMask enemyLayer;
+    [SerializeField] LayerMask obstacleLayers;
     [SerializeField] float detectionRange = 5f;
     [SerializeField] float projectileRange = 10f;
     [SerializeField] float fireRateHz = 10f;
@@ -25,29 +26,47 @@ public class Defense : Structure
         base.Update();
         if (isVisualPreview) return;
 
-        // Perform a 2D circle cast to find enemies in range
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRange, enemyLayer);
-        if (hits.Length > 0)
+        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight();
+        if (closestEnemy != null)
         {
-            // Find the closest enemy
-            Collider2D closest = hits[0];
-            float minDist = Vector2.Distance(transform.position, closest.transform.position);
-            for (int i = 1; i < hits.Length; i++)
-            {
-                float dist = Vector2.Distance(transform.position, hits[i].transform.position);
-                if (dist < minDist)
-                {
-                    closest = hits[i];
-                    minDist = dist;
-                }
-            }
             // Look at the closest enemy (2D)
-            Vector3 direction = closest.transform.position - transform.position;
+            Vector3 direction = closestEnemy.transform.position - transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             cannonTransform.rotation = Quaternion.Euler(0, 0, angle);
 
             TryFire();
         }
+    }
+
+    Collider2D FindClosestEnemyWithLineOfSight()
+    {
+        // Perform a 2D circle cast to find enemies in range
+        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, detectionRange, enemyLayer);
+        if (enemiesInRange.Length == 0) return null;
+
+        Collider2D closest = null;
+        float minDist = float.MaxValue;
+
+        for (int i = 0; i < enemiesInRange.Length; i++)
+        {
+            Vector2 direction = enemiesInRange[i].transform.position - transform.position;
+            float dist = direction.magnitude;
+
+            LayerMask combinedMask = enemyLayer | obstacleLayers;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction.normalized, dist, combinedMask);
+
+            // Check if raycast hit the enemy (not blocked by obstacles)
+            if (hit.collider == enemiesInRange[i])
+            {
+                if (dist < minDist)
+                {
+                    closest = enemiesInRange[i];
+                    minDist = dist;
+                }
+            }
+        }
+
+        return closest;
     }
 
     void TryFire()
