@@ -11,6 +11,7 @@ public class World : MonoBehaviour
 
     [SerializeField] Tilemap floorTilemap;
     [SerializeField] Tilemap worldTilemap; 
+    [SerializeField] Tilemap borderTilemap;
     [SerializeField] WorldSizeOption worldSize = WorldSizeOption.Size63;
     [SerializeField] BiomeTile[] biomeTiles;
     [SerializeField] WorldTile mountainTile;
@@ -44,6 +45,7 @@ public class World : MonoBehaviour
     private void GenerateWorld()
     {
         GenerateBiomeTiles();
+        GenerateWalls();
         GenerateTerrain();
         PlacePOI();
     }
@@ -68,6 +70,33 @@ public class World : MonoBehaviour
 
                 biomeMap[i, j] = tile.tag;
             }
+        }
+    }
+
+    void GenerateWalls()
+    {
+        int halfSize = WorldSize / 2 + 1;
+        for (int x = -halfSize - 2; x <= halfSize + 2; x++)
+        {
+            borderTilemap.SetTile(new Vector3Int(x, -halfSize - 0, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x, -halfSize - 1, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x, -halfSize - 2, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x,  halfSize + 0, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x,  halfSize + 1, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x,  halfSize + 2, 0), mountainTile);
+            // SetTileAt(new Vector3Int(x, -halfSize, 0), mountainTile);
+            // SetTileAt(new Vector3Int(x, halfSize, 0), mountainTile);
+        }
+        for (int y = -halfSize - 2; y <= halfSize + 2; y++)
+        {
+            borderTilemap.SetTile(new Vector3Int(-halfSize - 0, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(-halfSize - 1, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(-halfSize - 2, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int( halfSize + 0, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int( halfSize + 1, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int( halfSize + 2, y, 0), mountainTile);
+            // SetTileAt(new Vector3Int(-halfSize, y, 0), mountainTile);
+            // SetTileAt(new Vector3Int(halfSize, y, 0), mountainTile);
         }
     }
 
