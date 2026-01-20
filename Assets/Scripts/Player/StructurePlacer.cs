@@ -121,6 +121,10 @@ public class StructurePlacer : MonoBehaviour
 
     bool RemoveStructureAt(Vector3Int cellPosition)
     {
+        Structure structure= world.GetStructureAt(new Vector2Int(cellPosition.x, cellPosition.y));
+        if (structure == null || structure.Tile.ID == StructureType.Base)
+            return false;
+            
         return world.SetTileAt(cellPosition, null);
     }
 
