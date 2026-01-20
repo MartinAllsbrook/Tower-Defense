@@ -7,6 +7,7 @@ public class Defense : Structure
     [SerializeField] LayerMask obstacleLayers;
     [SerializeField] float detectionRange = 5f;
     [SerializeField] float projectileRange = 10f;
+    [SerializeField] float projectileSpeed = 15f;
     [SerializeField] float fireRateHz = 10f;
     [SerializeField] Projectile projectilePrefab; 
     [SerializeField] Transform cannonTransform;
@@ -19,7 +20,7 @@ public class Defense : Structure
     void Start()
     {
         projectilePool = new ObjectPool<Projectile>(projectilePrefab, projectilePoolSize);
-        target = FindObjectOfType<Target>();
+        target = FindFirstObjectByType<Target>();
     }
 
     // Update is called once per frame
@@ -31,8 +32,15 @@ public class Defense : Structure
         Collider2D closestEnemy = FindClosestEnemyWithLineOfSight();
         if (closestEnemy != null)
         {
-            // Look at the closest enemy (2D)
-            Vector3 direction = closestEnemy.transform.position - transform.position;
+            // Predictive aiming
+            Vector2 enemyVelocity = closestEnemy.attachedRigidbody.linearVelocity;
+            Debug.Log("Enemy Velocity: " + enemyVelocity);
+            float distanceToEnemy = Vector2.Distance(transform.position, closestEnemy.transform.position);
+            float timeToImpact = distanceToEnemy / projectileSpeed;
+            Vector2 predictedPosition = (Vector2)closestEnemy.transform.position + enemyVelocity * timeToImpact;
+            
+            // Rotate cannon towards predicted position
+            Vector2 direction = predictedPosition - (Vector2)transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             cannonTransform.rotation = Quaternion.Euler(0, 0, angle);
 
@@ -84,7 +92,7 @@ public class Defense : Structure
         if (fireCooldown <= 0f)
         {
             Projectile projectile = projectilePool.Get(cannonTransform.position, cannonTransform.rotation);
-            projectile.Initialize(projectileRange, projectilePool);
+            projectile.Initialize(projectileRange, projectileSpeed, projectilePool);
             
             fireCooldown = 1f / fireRateHz;
         }

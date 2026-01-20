@@ -5,12 +5,12 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] PostmortemParticles impactEffectPrefab;
-    private PostmortemParticles impactEffect;
-
-    [SerializeField] float speed = 10f;
     [SerializeField] AudioSource shotSound;
+
+    PostmortemParticles impactEffect;
     Vector3 startPosition;
     float maxRange;
+    float speed;
     bool isInitialized = false;
     ObjectPool<Projectile> pool;
 
@@ -25,10 +25,11 @@ public class Projectile : MonoBehaviour
         shotSound.volume = Random.Range(0.4f, 0.5f);
     }
 
-    public void Initialize(float range, ObjectPool<Projectile> pool)
+    public void Initialize(float range, float speed, ObjectPool<Projectile> pool)
     {
         this.pool = pool;
         startPosition = transform.position;
+        this.speed = speed;
         maxRange = range;
         isInitialized = true;
     }

@@ -12,7 +12,6 @@ public class EnemyMovement : MonoBehaviour
     
     Vector2[] path;
     Rigidbody2D rb;
-    Vector2 velocity;
     int currentPathIndex = -1;
     bool isFollowingPath = false;
     Vector2? lookAtTarget = null;
@@ -37,16 +36,20 @@ public class EnemyMovement : MonoBehaviour
                 {
                     // Path complete
                     isFollowingPath = false;
-                    velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                 }
             }
             else
             {
                 // Move toward current waypoint
-                velocity = Vector2.Lerp(velocity, (nextPos - rb.position).normalized * speed, velocitySmoothing * Time.fixedDeltaTime);
-                Vector2 newPosition = rb.position + velocity * Time.fixedDeltaTime;
-                rb.MovePosition(newPosition);
+                Vector2 targetVelocity = (nextPos - rb.position).normalized * speed;
+                rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, targetVelocity, velocitySmoothing * Time.fixedDeltaTime);
             }
+        }
+        else if (!isFollowingPath)
+        {
+            // Not following path, ensure velocity is zero
+            rb.linearVelocity = Vector2.zero;
         }
 
         // Handle rotation (independent of path following)
@@ -89,7 +92,7 @@ public class EnemyMovement : MonoBehaviour
     public void StopMovement()
     {
         isFollowingPath = false;
-        velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
     }
 
     public void SetLookAtTarget(Vector2 target)
