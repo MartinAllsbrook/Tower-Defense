@@ -20,6 +20,11 @@ public class Player : MonoBehaviour
         money = startingMoney;
     }
 
+    void Start()
+    {
+        OnMoneyChanged?.Invoke(money);
+    }
+
     void OnEnable()
     {
         GameController.OnRoundStart += StartPassiveIncome;

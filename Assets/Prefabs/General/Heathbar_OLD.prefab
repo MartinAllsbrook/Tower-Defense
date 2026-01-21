@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 4355396626653741280}
   - component: {fileID: 1654362171001080277}
   m_Layer: 5
-  m_Name: Heathbar
+  m_Name: Heathbar_OLD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -187,7 +187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.6000061}
+  m_AnchoredPosition: {x: 0, y: 0.5999756}
   m_SizeDelta: {x: 1, y: 0.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &9054252216286633949

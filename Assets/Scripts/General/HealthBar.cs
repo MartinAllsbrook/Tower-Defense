@@ -29,4 +29,9 @@ public class HealthBar : MonoBehaviour
         healthFillTransform.localScale = new Vector3(fill, 1f, 1f);
         healthFillImage.color = healthGradient.Evaluate(fill);
     }
+
+    void Update()
+    {
+        transform.rotation = Quaternion.identity;
+    }
 }
