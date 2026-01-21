@@ -69,6 +69,19 @@ public class ObjectPool<T> where T : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets an object from the pool at a specific position 
+    /// </summary>
+    public T Get(Vector3 position)
+    {
+        T obj = Get();
+        if (obj != null)
+        {
+            obj.transform.position = position;
+        }
+        return obj;
+    }
+
+    /// <summary>
     /// Gets an object from the pool at a specific position and rotation
     /// </summary>
     public T Get(Vector3 position, Quaternion rotation)
@@ -78,6 +91,18 @@ public class ObjectPool<T> where T : MonoBehaviour
         {
             obj.transform.position = position;
             obj.transform.rotation = rotation;
+        }
+        return obj;
+    }
+
+    public T Get(Transform parentTransform)
+    {
+        T obj = Get();
+        if (obj != null)
+        {
+            obj.transform.SetParent(parentTransform);
+            obj.transform.localPosition = Vector3.zero;
+            obj.transform.localRotation = Quaternion.identity;
         }
         return obj;
     }

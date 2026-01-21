@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ class AudioManager : MonoBehaviour
 
         instance = this;
 
-        audioPlayerPool = new ObjectPool<AudioPlayer>(audioPlayerPrefab, numAudioSources);
+        audioPlayerPool = new ObjectPool<AudioPlayer>(audioPlayerPrefab, numAudioSources, 0, transform);
     }
 
     static public void PlayAudioAt(AudioClip clip, Vector3 position, float volume = 0.5f, float pitch = 1f)
@@ -44,8 +45,7 @@ class AudioManager : MonoBehaviour
 
     void PlayAudioAtPosition(AudioClip clip, Vector3 position, float volume, float pitch)
     {
-        AudioPlayer player = audioPlayerPool.Get();
-        player.transform.position = position;
+        AudioPlayer player = audioPlayerPool.Get(position);
         player.PlayClip(clip, volume, pitch);
         audioPlayerPool.ReturnAfterDelay(player, clip.length);
     }

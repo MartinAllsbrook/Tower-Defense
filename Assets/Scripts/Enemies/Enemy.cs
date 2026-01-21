@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] HealthBar healthBar;
     [SerializeField] GameObject[] legObjects;
     [SerializeField] PostmortemParticles deathParticlesPrefab;
+    [SerializeField] AudioPlayer bugMoveAudioPlayer;
     
     [Header("Stats")]
     [SerializeField] float radius = 2f;
@@ -22,6 +23,7 @@ public class Enemy : MonoBehaviour
     [Header("Audio")]
     [SerializeField] VariedAudioClip bugHitSound;
     [SerializeField] VariedAudioClip bugDeathSound;
+    [SerializeField] VariedAudioClip bugMoveSound;
 
     public event Action<Enemy> OnEnemyDestroyed;
     public float AttackDamage => attackDamage;
@@ -58,6 +60,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {   
         AnimateLegs();
+        bugMoveAudioPlayer.PlayRepeating(bugMoveSound);
     }
 
     void AnimateLegs()
@@ -107,13 +110,18 @@ public class Enemy : MonoBehaviour
 
     void KillEnemy()
     {
+        // Particles
         deathParticlesInstance.transform.position = transform.position;
         deathParticlesInstance.gameObject.SetActive(true);
 
+        // Audio
         AudioManager.PlayAudioAt(bugDeathSound, transform.position);
+        bugMoveAudioPlayer.StopRepeating();
 
+        // Events
         OnEnemyDestroyed?.Invoke(this);
         world.OnWorldUpdate -= OnUpdateGrid;
+        
         Destroy(gameObject);
     }
 
