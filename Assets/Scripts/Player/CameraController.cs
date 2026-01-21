@@ -28,18 +28,20 @@ public class CameraController : MonoBehaviour
         HandleMovement();
     }
 
-    // Called by Input System
-    public void OnMove(InputAction.CallbackContext context)
+    void OnEnable()
     {
-        moveInput = context.ReadValue<Vector2>();
+        InputReader.Instance.OnMoveCamera += SetMoveInput;
+        InputReader.Instance.OnZoomCamera += SetZoomInput;
     }
 
-    // Called by Input System
-    public void OnZoom(InputAction.CallbackContext context)
+    void OnDisable()
     {
-        var scrollInput = context.ReadValue<float>();
-        AdjustZoom(scrollInput);
+        InputReader.Instance.OnMoveCamera -= SetMoveInput;
+        InputReader.Instance.OnZoomCamera -= SetZoomInput;
     }
+
+    void SetMoveInput(Vector2 input) => moveInput = input;
+    void SetZoomInput(float increment) => AdjustZoom(increment);
 
     private void HandleMovement()
     {

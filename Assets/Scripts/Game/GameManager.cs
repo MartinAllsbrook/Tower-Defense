@@ -7,12 +7,14 @@ public class GameManager : MonoBehaviour
 
     private bool isPaused = false;
 
-    public void GetTogglePauseInput(InputAction.CallbackContext context)
+    void OnEnable()
     {
-        if (context.performed)
-        {
-            TogglePause();
-        }
+        InputReader.Instance.OnPause += TogglePause;   
+    }
+
+    void OnDisable()
+    {
+        InputReader.Instance.OnPause -= TogglePause;
     }
 
     public void TogglePause()

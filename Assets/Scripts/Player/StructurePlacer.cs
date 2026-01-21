@@ -46,6 +46,24 @@ public class StructurePlacer : MonoBehaviour
             RemoveUpdate();
     }
 
+    void Click() => mouseDown = true;
+    void Release () => mouseDown = false;
+
+    void OnEnable()
+    {
+        InputReader.Instance.OnCancel += ExitMode;
+        InputReader.Instance.OnClick += Click;
+        InputReader.Instance.OnRelease += Release;
+    }
+
+    void OnDisable()
+    {
+        InputReader.Instance.OnCancel -= ExitMode;
+        InputReader.Instance.OnClick -= Click;
+        InputReader.Instance.OnRelease -= Release;
+    }
+
+
     #region Place & Remove
 
     void PlaceUpdate()
@@ -148,39 +166,24 @@ public class StructurePlacer : MonoBehaviour
         mode = Mode.Removing;
     }
 
-    public void ExitMode(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-            ExitMode();
-    }
-
     public void ExitMode()
     {
-        // Prevent exiting place mode if base not yet placed
-        if (currentStructure != null && currentStructure.ID == StructureType.Base && !basePlaced)
+        // If we have nothing to cancel, just ignore and let the InputReader know
+        if (currentStructure == null)
         {
+            InputReader.Instance.SkipCancel();
             return;
         }
+
+        // Prevent exiting place mode if base not yet placed
+        if (currentStructure != null && currentStructure.ID == StructureType.Base && !basePlaced)
+            return;
 
         previewTilemap.ClearAllTiles();
         currentStructure = null;
         mode = Mode.None;
     }
 
-    #endregion
-
-    #region Input Handling
-    public void OnClick(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            mouseDown = true;
-        }
-        else if (context.canceled)
-        {
-            mouseDown = false;
-        }
-    }
     #endregion
 
     #region Utility Methods
