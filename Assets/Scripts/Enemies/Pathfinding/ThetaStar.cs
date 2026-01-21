@@ -20,6 +20,7 @@ class ThetaStar
     /// </summary>
     public float HeuristicWeight { get; set; } = 1.5f;
 
+
     public ThetaStar(GridCell[,] worldGrid, Vector2Int offset)
     {
         gridOffset = offset;
@@ -164,8 +165,31 @@ class ThetaStar
 
     float Heuristic(Node a, Node b)
     {
-        // Using Euclidean distance as heuristic
-        return Vector2Int.Distance(new Vector2Int(a.X, a.Y), new Vector2Int(b.X, b.Y));
+        // Use accurate world-space Euclidean distance for unit flat-top hexagons
+        Vector2 worldPosA = OffsetToWorldPosition(a.X, a.Y);
+        Vector2 worldPosB = OffsetToWorldPosition(b.X, b.Y);
+        return Vector2.Distance(worldPosA, worldPosB);
+    }
+    
+    /// <summary>
+    /// Converts offset hex coordinates to world position for accurate distance calculations.
+    /// Hard-coded for unit flat-top hexagons: deltaX=0.75, deltaY=0.866, odd offset=0.433
+    /// </summary>
+    Vector2 OffsetToWorldPosition(int gridX, int gridY)
+    {
+        int tilemapY = gridY + gridOffset.y;
+        
+        // Abstract coordinate system for unit flat-top hexagons
+        float worldX = gridX * 0.75f;
+        float worldY = gridY * 0.866f;
+        
+        // Odd columns offset by half the Y spacing
+        if (tilemapY % 2 == 1)
+        {
+            worldY += 0.433f;
+        }
+        
+        return new Vector2(worldX, worldY);
     }
 
     Node InitializeNode(int x, int y, float cost, bool traversable)
