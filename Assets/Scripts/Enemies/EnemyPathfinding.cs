@@ -34,10 +34,11 @@ class EnemyPathfinding : MonoBehaviour
 
         stopwatch.Stop();
         UnityEngine.Debug.Log($"Pathfinding took {stopwatch.ElapsedMilliseconds} ms.");
+
         // Switch back to main thread before returning
         await Awaitable.MainThreadAsync();
 
-        Path path = new Path(pathList);
+        Path path = new Path(pathList); // Find object by type only works on main thread
 
         return path;
     }

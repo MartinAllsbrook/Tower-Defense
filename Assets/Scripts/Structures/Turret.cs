@@ -42,7 +42,6 @@ public class Defense : Structure
         {
             // Predictive aiming
             Vector2 enemyVelocity = closestEnemy.attachedRigidbody.linearVelocity;
-            Debug.Log("Enemy Velocity: " + enemyVelocity);
             float distanceToEnemy = Vector2.Distance(transform.position, closestEnemy.transform.position);
             float timeToImpact = distanceToEnemy / projectileSpeed;
             Vector2 predictedPosition = (Vector2)closestEnemy.transform.position + enemyVelocity * timeToImpact;

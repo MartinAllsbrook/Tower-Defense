@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] float speed = 1f;
-    [SerializeField] float maxOffset = 0.1f;
+    [SerializeField] float maxOffset = 0.65f;
     [SerializeField] float rotationSmoothing = 6f;
     [SerializeField] float velocitySmoothing = 6f;
     

@@ -1269,7 +1269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   startingMoney: 150
   passiveIncomeInterval: 1
-  passiveIncomeAmount: 10
+  passiveIncomeAmount: 1
 --- !u!4 &707805974
 Transform:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {   
     [SerializeField] int startingMoney = 100;
     [SerializeField] float passiveIncomeInterval = 1f;
-    [SerializeField] int passiveIncomeAmount = 10;
+    [SerializeField] int passiveIncomeAmount = 1;
 
     int money;
     Coroutine passiveIncomeCoroutine;

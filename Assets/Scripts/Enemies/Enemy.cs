@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] float maxHealth = 100f;
     [SerializeField] float attackDamage = 10f;
     [SerializeField] float attackInterval = 1f;
+    [SerializeField] int moneyReward = 5;
 
     [Header("Audio")]
     [SerializeField] VariedAudioClip bugHitSound;
@@ -31,15 +32,16 @@ public class Enemy : MonoBehaviour
 
     PostmortemParticles deathParticlesInstance;
     float health = 100f;
-    World world;
-    Target target;
     Coroutine moveCoroutine;
-    bool gameOver = false;
+
+    // References to other systems
+    World world;
+    Player player;
 
     void Awake()
     {
-        target = FindFirstObjectByType<Target>();
         world = FindFirstObjectByType<World>();
+        player = FindFirstObjectByType<Player>();
 
         deathParticlesInstance = Instantiate(deathParticlesPrefab, this.transform.position, Quaternion.identity);
 
@@ -47,13 +49,11 @@ public class Enemy : MonoBehaviour
 
     void OnEnable()
     {
-        GameController.OnGameOver += OnGameEnd;
         world.OnWorldUpdate += OnUpdateGrid;
     }
 
     void OnDisable()
     {
-        GameController.OnGameOver -= OnGameEnd;
         world.OnWorldUpdate -= OnUpdateGrid;
     }
 
@@ -77,22 +77,12 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        
-    }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Projectile"))
         {
             DecreaseHealth(10f);
         }
-    }
-
-    void OnGameEnd()
-    {
-        gameOver = true;
     }
 
     void DecreaseHealth(float amount)
@@ -118,9 +108,9 @@ public class Enemy : MonoBehaviour
         AudioManager.PlayAudioAt(bugDeathSound, transform.position);
         bugMoveAudioPlayer.StopRepeating();
 
-        // Events
+        // Events / Communication
         OnEnemyDestroyed?.Invoke(this);
-        world.OnWorldUpdate -= OnUpdateGrid;
+        player.AddMoney(moneyReward);
         
         Destroy(gameObject);
     }

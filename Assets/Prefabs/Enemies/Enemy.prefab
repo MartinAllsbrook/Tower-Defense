@@ -567,6 +567,7 @@ MonoBehaviour:
   maxHealth: 100
   attackDamage: 10
   attackInterval: 1
+  moneyReward: 5
   bugHitSound:
     clips:
     - {fileID: 8300000, guid: f2ebe5f404d43cf48807ec65eb091253, type: 3}
@@ -603,7 +604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   speed: 1
-  maxOffset: 0.1
+  maxOffset: 0.65
   rotationSmoothing: 6
   velocitySmoothing: 6
 --- !u!114 &7653750364039619512
