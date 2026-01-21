@@ -26,6 +26,9 @@ class EnemyBrain : MonoBehaviour
 
     System.Collections.IEnumerator PeriodicStrategyRevaluation()
     {
+        // Stagger initial evaluation by random delay to avoid all enemies evaluating at once
+        yield return new WaitForSeconds(Random.Range(0f, 2f));
+        
         while (true)
         {
             // Wait 3-5 seconds (random)
@@ -36,31 +39,42 @@ class EnemyBrain : MonoBehaviour
             if (isEvaluating)
                 continue;
 
-            // Trigger async evaluation
-            EvaluateAndUpdateStrategy();
-
-            // Wait until evaluation completes
-            yield return new WaitUntil(() => !isEvaluating);
+            // Trigger async evaluation (fire and forget - let it run asynchronously)
+            _ = EvaluateAndUpdateStrategyAsync();
         }
     }
 
-    async void EvaluateAndUpdateStrategy()
+    async Awaitable EvaluateAndUpdateStrategyAsync()
     {
+        if (isEvaluating)
+            return;
+            
         isEvaluating = true;
-        Queue<EnemyAction> newQueue = await EvaluateStrategy();
         
-        // Replace the action queue with the new strategy
-        // Note: You may want to add logic here to preserve current action if needed
-        actionQueue = newQueue;
-        
-        isEvaluating = false;
-        
-        if (currentAction != null)
+        try
         {
-            currentAction.StopExecution();
-        }
+            Queue<EnemyAction> newQueue = await EvaluateStrategy();
+            
+            // Replace the action queue with the new strategy
+            actionQueue = newQueue;
+            
+            if (currentAction != null)
+            {
+                currentAction.StopExecution();
+            }
 
-        OnActionComplete(); // Start executing from the new queue
+            OnActionComplete(); // Start executing from the new queue
+        }
+        finally
+        {
+            isEvaluating = false;
+        }
+    }
+
+    void EvaluateAndUpdateStrategy()
+    {
+        // Wrapper for collision events
+        _ = EvaluateAndUpdateStrategyAsync();
     }
 
     void OnCollisionEnter2D(Collision2D collision)

@@ -41,6 +41,26 @@ class ThetaStar
     }
 
     /// <summary>
+    /// Resets all node states for a new pathfinding operation. Must be called before CreatePath.
+    /// </summary>
+    public void ResetNodes()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Node node = grid[x, y];
+                node.F = 0f;
+                node.G = 0f;
+                node.H = 0f;
+                node.previous = new Vector2Int(-1, -1);
+                node.InOpenSet = false;
+                node.InClosedSet = false;
+            }
+        }
+    }
+
+    /// <summary>
     /// Creates a path from startPos to endPos using the Theta* algorithm.
     /// </summary>
     /// <param name="startPos">The start point of the path in tilemap space</param>
@@ -48,6 +68,8 @@ class ThetaStar
     /// <returns>A list of nodes, representing the path. Node coordinates are in grid space (need to be converted)</returns>
     public List<Vector2Int> CreatePath(Vector2Int startPos, Vector2Int endPos)
     {
+        ResetNodes();
+        
         Node startNode = grid[startPos.x - gridOffset.x, startPos.y - gridOffset.y];
         Node endNode = grid[endPos.x - gridOffset.x, endPos.y - gridOffset.y];
 
