@@ -13,6 +13,12 @@ class ThetaStar
     /// Used to offset world positions to grid indices, and vice versa.
     /// </summary>
     Vector2Int gridOffset;
+    
+    /// <summary>
+    /// Heuristic weight factor. Values > 1.0 trade optimality for speed.
+    /// 1.0 = optimal paths (standard A*/Theta*), 1.5 = good balance, 2.0 = much faster but less optimal.
+    /// </summary>
+    public float HeuristicWeight { get; set; } = 1.5f;
 
     public ThetaStar(GridCell[,] worldGrid, Vector2Int offset)
     {
@@ -80,7 +86,7 @@ class ThetaStar
 
         startNode.G = 0;
         startNode.H = Heuristic(startNode, endNode);
-        startNode.F = startNode.G + startNode.H;
+        startNode.F = startNode.G + HeuristicWeight * startNode.H;
         openSet.Add(startNode);
         startNode.InOpenSet = true;
 
@@ -133,7 +139,7 @@ class ThetaStar
                 {
                     neighbor.G = tentativeG;
                     neighbor.H = Heuristic(neighbor, endNode);
-                    neighbor.F = neighbor.G + neighbor.H;
+                    neighbor.F = neighbor.G + HeuristicWeight * neighbor.H;
                     neighbor.previous = new Vector2Int(current.X, current.Y);
                     
                     openSet.Add(neighbor);
@@ -143,7 +149,7 @@ class ThetaStar
                 {
                     neighbor.G = tentativeG;
                     neighbor.H = Heuristic(neighbor, endNode);
-                    neighbor.F = neighbor.G + neighbor.H;
+                    neighbor.F = neighbor.G + HeuristicWeight * neighbor.H;
                     neighbor.previous = new Vector2Int(current.X, current.Y);
                     
                     openSet.UpdatePriority(neighbor);
