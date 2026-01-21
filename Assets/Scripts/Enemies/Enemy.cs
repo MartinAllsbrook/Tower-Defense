@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] GameObject spriteObject;
     [SerializeField] HealthBar healthBar;
     [SerializeField] GameObject[] legObjects;
-    [SerializeField] PostmortemParticles deathParticlesPrefab;
+    [SerializeField] GameObject deathFXPrefab;
     [SerializeField] AudioPlayer bugMoveAudioPlayer;
     
     [Header("Stats")]
@@ -30,7 +30,6 @@ public class Enemy : MonoBehaviour
     public float AttackDamage => attackDamage;
     public float AttackInterval => attackInterval;
 
-    PostmortemParticles deathParticlesInstance;
     float health = 100f;
     Coroutine moveCoroutine;
 
@@ -42,9 +41,6 @@ public class Enemy : MonoBehaviour
     {
         world = FindFirstObjectByType<World>();
         player = FindFirstObjectByType<Player>();
-
-        deathParticlesInstance = Instantiate(deathParticlesPrefab, this.transform.position, Quaternion.identity);
-
     }
 
     void OnEnable()
@@ -100,9 +96,8 @@ public class Enemy : MonoBehaviour
 
     void KillEnemy()
     {
-        // Particles
-        deathParticlesInstance.transform.position = transform.position;
-        deathParticlesInstance.gameObject.SetActive(true);
+        // Death FX // TODO: Object pooling
+        Instantiate(deathFXPrefab, transform.position, Quaternion.identity);
 
         // Audio
         AudioManager.PlayAudioAt(bugDeathSound, transform.position);
