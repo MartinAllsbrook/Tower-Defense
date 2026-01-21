@@ -18,13 +18,12 @@ class EnemyPathfinding : MonoBehaviour
 
     void OnEnable()
     {
-        // Subscribe to grid changes if World exposes such an event
-        // world.OnGridChanged += MarkGridDirty;
+        world.OnWorldUpdate += MarkGridDirty;
     }
 
     void OnDisable()
     {
-        // world.OnGridChanged -= MarkGridDirty;
+        world.OnWorldUpdate -= MarkGridDirty;
     }
 
     public void MarkGridDirty()
@@ -32,7 +31,7 @@ class EnemyPathfinding : MonoBehaviour
         gridDirty = true;
         if (usePathfindingManager && PathfindingManager.Instance != null)
         {
-            PathfindingManager.Instance.MarkGridDirty();
+            PathfindingManager.Instance.MarkGridDirty(); // TODO: This might be redundant
         }
     }
 
