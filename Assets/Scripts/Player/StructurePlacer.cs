@@ -18,6 +18,8 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] StructureTile[] structures;
     [SerializeField] RuleTile removeIconTile;
     [SerializeField] VariedAudioClip placeSound;
+    [SerializeField] LayerMask structureLayer;
+    [SerializeField] UpgradeMenu upgradeMenu;
 
     public StructureTile[] Structures => structures;    
 
@@ -46,9 +48,6 @@ public class StructurePlacer : MonoBehaviour
         else if (mode == Mode.Removing)
             RemoveUpdate();
     }
-
-    void Click() => mouseDown = true;
-    void Release () => mouseDown = false;
 
     void OnEnable()
     {
@@ -169,7 +168,52 @@ public class StructurePlacer : MonoBehaviour
 
     #endregion
 
-    #region State (Mode) Management
+    #region Controls & State
+
+    public void ExitMode()
+    {
+        // If we have nothing to cancel, just ignore and let the InputReader know
+        if (currentStructure == null && !upgradeMenu.gameObject.activeSelf)
+        {
+            InputReader.Instance.SkipCancel();
+            return;
+        }
+
+        // Prevent exiting place mode if base not yet placed
+        if (currentStructure != null && currentStructure.ID == StructureType.Base && !basePlaced)
+            return;
+
+        upgradeMenu.Close();
+        previewTilemap.ClearAllTiles();
+        currentStructure = null;
+        mode = Mode.None;
+    }
+
+    void Click()
+    {
+        mouseDown = true;
+
+        // Raycast from camera to mouse position, check for hit on structure layer
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2 rayOrigin = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
+        float rayDistance = 100f;
+        // Replace 'structureLayer' with the correct LayerMask for structures
+        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.zero, rayDistance, structureLayer);
+        if (hit.collider != null)
+        {
+            // Check if the hit object is a Defense (Turret) instance
+            Defense turret = hit.collider.GetComponent<Defense>();
+            if (turret != null)
+            {
+                upgradeMenu.Open(turret.GetComponent<TurretStats>().GetAvailableUpgrades(), turret.GetComponent<TurretStats>());
+            }
+        }
+    }
+
+    void Release ()
+    {
+        mouseDown = false;
+    }
 
     public void EnterPlaceMode(StructureType structureID)
     {
@@ -183,23 +227,6 @@ public class StructurePlacer : MonoBehaviour
         mode = Mode.Removing;
     }
 
-    public void ExitMode()
-    {
-        // If we have nothing to cancel, just ignore and let the InputReader know
-        if (currentStructure == null)
-        {
-            InputReader.Instance.SkipCancel();
-            return;
-        }
-
-        // Prevent exiting place mode if base not yet placed
-        if (currentStructure != null && currentStructure.ID == StructureType.Base && !basePlaced)
-            return;
-
-        previewTilemap.ClearAllTiles();
-        currentStructure = null;
-        mode = Mode.None;
-    }
 
     #endregion
 

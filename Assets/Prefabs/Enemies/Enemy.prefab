@@ -631,6 +631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46fb26b548ebdd94786cb78b434e1e2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPathfinding
+  usePathfindingManager: 1
 --- !u!58 &2675474381764475046
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -666,7 +667,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.25
+  m_Radius: 0.2
 --- !u!50 &2311559584009982639
 Rigidbody2D:
   serializedVersion: 5

@@ -73,15 +73,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Projectile"))
-        {
-            DecreaseHealth(10f);
-        }
-    }
-
-    void DecreaseHealth(float amount)
+    public void DecreaseHealth(float amount)
     {
         health -= amount;
         healthBar.SetFill(health / maxHealth);

@@ -7,11 +7,6 @@ public class Defense : Structure
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
 
-    [Header("Turret Stats")]
-    [SerializeField] float detectionRange = 5f;
-    [SerializeField] float projectileRange = 10f;
-    [SerializeField] float projectileSpeed = 15f;
-    [SerializeField] float fireRateHz = 10f;
 
     [Header("References")]
     [SerializeField] Projectile projectilePrefab; 
@@ -24,9 +19,11 @@ public class Defense : Structure
     int projectilePoolSize = 64;
     float fireCooldown = 0f;
     Target target;
+    TurretStats stats;
     
     void Start()
     {
+        stats = GetComponent<TurretStats>();
         projectilePool = new ObjectPool<Projectile>(projectilePrefab, projectilePoolSize);
         target = FindFirstObjectByType<Target>();
     }
@@ -43,7 +40,7 @@ public class Defense : Structure
             // Predictive aiming
             Vector2 enemyVelocity = closestEnemy.attachedRigidbody.linearVelocity;
             float distanceToEnemy = Vector2.Distance(transform.position, closestEnemy.transform.position);
-            float timeToImpact = distanceToEnemy / projectileSpeed;
+            float timeToImpact = distanceToEnemy / stats.ProjectileSpeed;
             Vector2 predictedPosition = (Vector2)closestEnemy.transform.position + enemyVelocity * timeToImpact;
             
             // Rotate cannon towards predicted position
@@ -58,7 +55,7 @@ public class Defense : Structure
     Collider2D FindClosestEnemyWithLineOfSight()
     {
         // Perform a 2D circle cast to find enemies in range
-        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, detectionRange, enemyLayer);
+        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, stats.Range, enemyLayer);
         if (enemiesInRange.Length == 0) return null;
 
         Collider2D closest = null;
@@ -99,11 +96,11 @@ public class Defense : Structure
         if (fireCooldown <= 0f)
         {
             Projectile projectile = projectilePool.Get(cannonTransform.position, cannonTransform.rotation);
-            projectile.Initialize(projectileRange, projectileSpeed, projectilePool);
+            projectile.Initialize(stats.Range, stats.ProjectileSpeed, stats.Damage, projectilePool);
             
             AudioManager.PlayAudioAt(firingSound, transform.position);
 
-            fireCooldown = 1f / fireRateHz;
+            fireCooldown = 1f / stats.FireRate;
         }
     }
 }
