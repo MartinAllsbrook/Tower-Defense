@@ -2211,7 +2211,7 @@ Transform:
   m_GameObject: {fileID: 1074162242}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6999512, y: 7.700012, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2251,7 +2251,8 @@ MonoBehaviour:
   floorTilemap: {fileID: 835494806}
   worldTilemap: {fileID: 925936650}
   borderTilemap: {fileID: 1285102138}
-  worldSize: 63
+  worldSize: 39
+  numSpawners: 8
   biomeTiles:
   - {fileID: 11400000, guid: 5aa5f712e11f4eb4188b6d9638f06cae, type: 2}
   - {fileID: 11400000, guid: 970cf6b7c0689654480c9c7fa95939ba, type: 2}

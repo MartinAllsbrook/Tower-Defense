@@ -7,12 +7,14 @@ using UnityEngine.Tilemaps;
 
 public class World : MonoBehaviour
 {
-    public enum WorldSizeOption { Size15 = 15, Size31 = 31, Size63 = 63, Size127 = 127, Size255 = 255 }
 
     [SerializeField] Tilemap floorTilemap;
     [SerializeField] Tilemap worldTilemap; 
     [SerializeField] Tilemap borderTilemap;
-    [SerializeField] WorldSizeOption worldSize = WorldSizeOption.Size63;
+    
+    [Tooltip("Must be odd number to have a center tile")]
+    [SerializeField] int worldSize = 39;
+    [SerializeField] int numSpawners = 8;
     [SerializeField] BiomeTile[] biomeTiles;
     [SerializeField] WorldTile mountainTile;
     [SerializeField] WorldTile enemySpawnerTile;
@@ -125,30 +127,8 @@ public class World : MonoBehaviour
     void PlacePOI()
     {
         Debug.Log("Placing Points of Interest...");
-        int numPoints;
-        switch (worldSize)
-        {
-            case WorldSizeOption.Size15:
-                numPoints = 1;
-                break;
-            case WorldSizeOption.Size31:
-                numPoints = 4;
-                break;
-            case WorldSizeOption.Size63:
-                numPoints = 16;
-                break;
-            case WorldSizeOption.Size127:
-                numPoints = 64;
-                break;
-            case WorldSizeOption.Size255:
-                numPoints = 256;
-                break;
-            default:
-                numPoints = 2;
-                break;
-        }
 
-        List<Vector2Int> points = FindPointsInBiome(numPoints, 5);
+        List<Vector2Int> points = FindPointsInBiome(numSpawners, 5);
         foreach (var point in points)
         {
             SetTileAt(new Vector3Int(point.x, point.y, 0), enemySpawnerTile);

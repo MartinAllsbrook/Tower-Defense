@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
@@ -30,6 +31,21 @@ public class CameraController : MonoBehaviour
 
     void OnEnable()
     {
+        if (InputReader.Instance == null)
+        {
+            StartCoroutine(SubscribeWhenReady());
+            return;
+        }
+
+        InputReader.Instance.OnMoveCamera += SetMoveInput;
+        InputReader.Instance.OnZoomCamera += SetZoomInput;
+    }
+
+    IEnumerator SubscribeWhenReady()
+    {
+        while (InputReader.Instance == null)
+            yield return null;
+
         InputReader.Instance.OnMoveCamera += SetMoveInput;
         InputReader.Instance.OnZoomCamera += SetZoomInput;
     }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,20 @@ public class GameManager : MonoBehaviour
 
     void OnEnable()
     {
+        if (InputReader.Instance == null)
+        {
+            StartCoroutine(SubscribeWhenReady());
+            return;
+        }
+
+        InputReader.Instance.OnPause += TogglePause;   
+    }
+
+    IEnumerator SubscribeWhenReady()
+    {
+        while (InputReader.Instance == null)
+            yield return null;
+
         InputReader.Instance.OnPause += TogglePause;   
     }
 

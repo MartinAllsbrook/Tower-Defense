@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -51,6 +52,22 @@ public class StructurePlacer : MonoBehaviour
 
     void OnEnable()
     {
+        if (InputReader.Instance != null)
+        {
+            InputReader.Instance.OnCancel += ExitMode;
+            InputReader.Instance.OnClick += Click;
+            InputReader.Instance.OnRelease += Release;
+            return;
+        }
+
+        StartCoroutine(SubscribeWhenReady());
+    }
+
+    IEnumerator SubscribeWhenReady()
+    {
+        while (InputReader.Instance == null)
+            yield return null;
+
         InputReader.Instance.OnCancel += ExitMode;
         InputReader.Instance.OnClick += Click;
         InputReader.Instance.OnRelease += Release;

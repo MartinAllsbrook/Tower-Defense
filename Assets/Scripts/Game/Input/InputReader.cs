@@ -16,7 +16,10 @@ public class InputReader : MonoBehaviour
     void Awake()
     {
         Debug.Log("Initializing InputReader Singleton");
-        if (Instance == null) Instance = this;
+
+        if (Instance == null) 
+            Instance = this;
+        
         controls = new @InputSystem_Actions();
 
         LinkEvents();
