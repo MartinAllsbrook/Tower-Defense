@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
+// Master enemy class
 public class Enemy : MonoBehaviour
 {
     [Header("References")]

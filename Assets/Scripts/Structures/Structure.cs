@@ -1,26 +1,40 @@
 using UnityEngine;
 
+// Require a Health component on the same GameObject
+[RequireComponent(typeof(Health))]
 public class Structure : MonoBehaviour
 {
-    [SerializeField] private HealthBar healthBar;
     [SerializeField] protected StructureTile tile; // Set by StructureTile when placed, for some reason this only works as a SerializeField
     public StructureTile Tile => tile;
 
-    protected float health;
-    public bool IsDestroyed => health <= 0f;
+    Health health;
     protected bool isVisualPreview = false;
-
-    void Awake()
-    {
-        health = tile.MaxHealth;
-    }
-
+    
+    #region Lifecycle
     protected virtual void Update()
     {
         if (isVisualPreview) return;
         
         // Update logic goes here
     }
+
+    protected virtual void Awake()
+    {
+        health = GetComponent<Health>();
+        health.OnDeath += DestroyStructure; // Unsubscribe in DestroyStructure
+    }
+
+    virtual protected void DestroyStructure()
+    {
+        health.OnDeath -= DestroyStructure; // Unsubscribe to avoid potential issues
+
+        World world = FindFirstObjectByType<World>();
+        
+        // Remove the tile from the tilemap
+        Vector3Int cellPosition = world.WorldToCell(transform.position);
+        world.SetTileAt(cellPosition, null);
+    }
+    #endregion
 
     public void SetAsVisualPreview(bool isPlaceable)
     {
@@ -54,25 +68,5 @@ public class Structure : MonoBehaviour
 
     public virtual void NeighborChanged() {}
 
-    public bool DealDamage(float damage)
-    {
-        health -= damage;
-        healthBar.SetFill(health / tile.MaxHealth);
-        
-        if (health <= 0)
-        {
-            DestroyStructure();
-            return true;
-        }
-        return false;
-    }
 
-    virtual protected void DestroyStructure()
-    {
-        World world = FindFirstObjectByType<World>();
-        
-        // Remove the tile from the tilemap
-        Vector3Int cellPosition = world.WorldToCell(transform.position);
-        world.SetTileAt(cellPosition, null);
-    }
 }

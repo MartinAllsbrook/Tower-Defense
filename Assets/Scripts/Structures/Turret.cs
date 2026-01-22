@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Defense : Structure
+public class Turret : Structure
 {
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;

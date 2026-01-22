@@ -15,9 +15,11 @@ class AttackAction : EnemyAction
         EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
         movement.SetLookAtTarget(targetStructure.transform.position);
 
-        while (targetStructure != null && !targetStructure.IsDestroyed)
+        Health targetHealth = targetStructure.GetComponent<Health>();
+
+        while (targetStructure != null && !targetHealth.IsDead())
         {
-            targetStructure.DealDamage(enemy.AttackDamage);
+            targetHealth.DecreaseHealth(enemy.AttackDamage);
             yield return new WaitForSeconds(enemy.AttackInterval);
         }
 

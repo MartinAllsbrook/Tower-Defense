@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3345550294222021452}
   - component: {fileID: 6056494087450115009}
+  - component: {fileID: 1289006846860301732}
   - component: {fileID: 6811888974061470663}
   m_Layer: 7
   m_Name: Target
@@ -31,7 +32,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2194570467289510467}
   - {fileID: 8615866848146177090}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -47,8 +47,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b88ef3b378a98842a02076c5d74d0a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  healthBar: {fileID: 3527356580995839490}
   tile: {fileID: 0}
+--- !u!114 &1289006846860301732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020017536399174426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93a907f0d12467447b2b22238a7b3257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  healthBarPrefab: {fileID: 5493571826523556868, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
+  maxHealth: 100
 --- !u!60 &6811888974061470663
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -193,76 +206,3 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1001 &8993308469136423430
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 3345550294222021452}
-    m_Modifications:
-    - target: {fileID: 6247961116566284739, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_Name
-      value: Healthbar
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
---- !u!4 &2194570467289510467 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-  m_PrefabInstance: {fileID: 8993308469136423430}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3527356580995839490 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5493571826523556868, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-  m_PrefabInstance: {fileID: 8993308469136423430}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1c411ae7f9d90e428a243c5d3143c11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthBar

@@ -202,7 +202,7 @@ public class StructurePlacer : MonoBehaviour
         if (hit.collider != null)
         {
             // Check if the hit object is a Defense (Turret) instance
-            Defense turret = hit.collider.GetComponent<Defense>();
+            Turret turret = hit.collider.GetComponent<Turret>();
             if (turret != null)
             {
                 upgradeMenu.Open(turret.GetComponent<TurretStats>().GetAvailableUpgrades(), turret.GetComponent<TurretStats>());
