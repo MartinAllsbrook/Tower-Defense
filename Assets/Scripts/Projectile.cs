@@ -50,10 +50,10 @@ public class Projectile : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-            if (enemy != null)
+            Health enemyHealth = collision.gameObject.GetComponent<Health>();
+            if (enemyHealth != null)
             {
-                enemy.DecreaseHealth(damage); // Apply damage to the enemy
+                enemyHealth.DecreaseHealth(damage); // Apply damage to the enemy
             }
         }
 

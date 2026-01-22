@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
 
-// Master enemy class
+[RequireComponent(typeof(Health))]
 public class Enemy : MonoBehaviour
 {
+    // Serialized fields
     [Header("References")]
     [SerializeField] GameObject spriteObject;
     [SerializeField] HealthBar healthBar;
@@ -13,7 +14,6 @@ public class Enemy : MonoBehaviour
     
     [Header("Stats")]
     [SerializeField] float radius = 2f;
-    [SerializeField] float maxHealth = 100f;
     [SerializeField] float attackDamage = 10f;
     [SerializeField] float attackInterval = 1f;
     [SerializeField] int moneyReward = 5;
@@ -23,30 +23,34 @@ public class Enemy : MonoBehaviour
     [SerializeField] VariedAudioClip bugDeathSound;
     [SerializeField] VariedAudioClip bugMoveSound;
 
+    // Private fields
+    Health health;
+    Coroutine moveCoroutine;
+    World world;
+    Player player;
+
+    // Events / Public properties
     public event Action<Enemy> OnEnemyDestroyed;
     public float AttackDamage => attackDamage;
     public float AttackInterval => attackInterval;
 
-    float health = 100f;
-    Coroutine moveCoroutine;
-
-    // References to other systems
-    World world;
-    Player player;
-
     void Awake()
     {
+        health = GetComponent<Health>();
+
         world = FindFirstObjectByType<World>();
         player = FindFirstObjectByType<Player>();
     }
 
     void OnEnable()
     {
+        health.OnDeath += KillEnemy;
         world.OnWorldUpdate += OnUpdateGrid;
     }
 
     void OnDisable()
     {
+        health.OnDeath -= KillEnemy;
         world.OnWorldUpdate -= OnUpdateGrid;
     }
 
@@ -67,19 +71,6 @@ public class Enemy : MonoBehaviour
                 anim[anim.clip.name].time = UnityEngine.Random.Range(0f, anim.clip.length);
                 anim.Play();
             }
-        }
-    }
-
-    public void DecreaseHealth(float amount)
-    {
-        health -= amount;
-        healthBar.SetFill(health / maxHealth);
-        
-        AudioManager.PlayAudioAt(bugHitSound, transform.position);
-
-        if (health <= 0)
-        {
-            KillEnemy();
         }
     }
 

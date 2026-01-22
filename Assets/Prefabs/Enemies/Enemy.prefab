@@ -535,7 +535,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5140167636107065549}
   - {fileID: 2292694481786058398}
   - {fileID: 6644784444329325778}
   m_Father: {fileID: 0}
@@ -553,7 +552,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   spriteObject: {fileID: 4601083877690610282}
-  healthBar: {fileID: 7625321025296727180}
+  healthBar: {fileID: 0}
   legObjects:
   - {fileID: 1377875054210465015}
   - {fileID: 8964869099937028496}
@@ -564,7 +563,6 @@ MonoBehaviour:
   deathFXPrefab: {fileID: 7760042805782562832, guid: f86f1ab5846193d45b5454d5d032ca57, type: 3}
   bugMoveAudioPlayer: {fileID: 2760539710523840492}
   radius: 2
-  maxHealth: 100
   attackDamage: 10
   attackInterval: 1
   moneyReward: 5
@@ -1312,76 +1310,3 @@ Animation:
   m_AnimatePhysics: 0
   m_UpdateMode: 0
   m_CullingType: 0
---- !u!1001 &2733547991052267656
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 8607992153932832088}
-    m_Modifications:
-    - target: {fileID: 6247961116566284739, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_Name
-      value: Healthbar
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
---- !u!4 &5140167636107065549 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7114007705424611397, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-  m_PrefabInstance: {fileID: 2733547991052267656}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7625321025296727180 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5493571826523556868, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
-  m_PrefabInstance: {fileID: 2733547991052267656}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1c411ae7f9d90e428a243c5d3143c11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthBar
