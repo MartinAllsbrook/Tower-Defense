@@ -513,6 +513,7 @@ GameObject:
   - component: {fileID: 7206824754580517996}
   - component: {fileID: 7653750364039619512}
   - component: {fileID: 1429455573527520755}
+  - component: {fileID: 3140791717602940267}
   - component: {fileID: 2675474381764475046}
   - component: {fileID: 2311559584009982639}
   m_Layer: 6
@@ -552,7 +553,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   spriteObject: {fileID: 4601083877690610282}
-  healthBar: {fileID: 0}
   legObjects:
   - {fileID: 1377875054210465015}
   - {fileID: 8964869099937028496}
@@ -630,6 +630,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPathfinding
   usePathfindingManager: 1
+--- !u!114 &3140791717602940267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3862966811575854548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93a907f0d12467447b2b22238a7b3257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  healthBarPrefab: {fileID: 5493571826523556868, guid: 724eaab64e2f1dc4093a84c2dc91bd84, type: 3}
+  maxHealth: 100
 --- !u!58 &2675474381764475046
 CircleCollider2D:
   m_ObjectHideFlags: 0

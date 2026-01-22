@@ -7,7 +7,6 @@ public class Enemy : MonoBehaviour
     // Serialized fields
     [Header("References")]
     [SerializeField] GameObject spriteObject;
-    [SerializeField] HealthBar healthBar;
     [SerializeField] GameObject[] legObjects;
     [SerializeField] GameObject deathFXPrefab;
     [SerializeField] AudioPlayer bugMoveAudioPlayer;

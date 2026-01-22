@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using QFSW.QC;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class World : MonoBehaviour
 {
@@ -13,7 +15,7 @@ public class World : MonoBehaviour
     [SerializeField] Tilemap borderTilemap;
     
     [Tooltip("Must be odd number to have a center tile")]
-    [SerializeField] int worldSize = 39;
+    [SerializeField] Vector2Int worldSize = new Vector2Int(15, 63);
     [SerializeField] int numSpawners = 8;
     [SerializeField] BiomeTile[] biomeTiles;
     [SerializeField] WorldTile mountainTile;
@@ -21,22 +23,24 @@ public class World : MonoBehaviour
 
     // Event that passes the updated grid to subscribers
     public event Action OnWorldUpdate;
-    public int WorldSize => (int)worldSize;
 
     // ThetaStar thetaStar;
     GridCell[,] grid;
     BiomeID[,] biomeMap;
     BoundsInt bounds;
 
+    public Vector2Int halfWorldSize => new Vector2Int(worldSize.x / 2, worldSize.y / 2);
+
     void Start()
     {
-        worldTilemap.origin = new Vector3Int(-(WorldSize / 2), -(WorldSize / 2), 0);
-        worldTilemap.size = new Vector3Int(WorldSize, WorldSize, 1);
+        worldTilemap.origin = new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0);
+        worldTilemap.size = new Vector3Int(worldSize.x, worldSize.y, 1);
         worldTilemap.ResizeBounds();
 
-        floorTilemap.origin = new Vector3Int(-(WorldSize / 2), -(WorldSize / 2), 0);
-        floorTilemap.size = new Vector3Int(WorldSize, WorldSize, 1);
+        floorTilemap.origin = new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0);
+        floorTilemap.size = new Vector3Int(worldSize.x, worldSize.y, 1);
         floorTilemap.ResizeBounds();
+        
 
         GenerateWorld();
         UpdateTilemap();
@@ -57,13 +61,12 @@ public class World : MonoBehaviour
         FastNoiseLite noise = new FastNoiseLite(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(0.05f);
-        int halfSize = WorldSize / 2;
 
-        biomeMap = new BiomeID[WorldSize, WorldSize];
+        biomeMap = new BiomeID[worldSize.x, worldSize.y];
         
-        for (int x = -halfSize, i = 0; i < WorldSize; i++, x++)
+        for (int x = -halfWorldSize.x, i = 0; i < worldSize.x; i++, x++)
         {
-            for (int y = -halfSize, j = 0; j < WorldSize; j++, y++)
+            for (int y = -halfWorldSize.y, j = 0; j < worldSize.y; j++, y++)
             {
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
 
@@ -75,28 +78,29 @@ public class World : MonoBehaviour
         }
     }
 
-    void GenerateWalls()
+    void GenerateWalls() 
     {
-        int halfSize = WorldSize / 2 + 1;
-        for (int x = -halfSize - 2; x <= halfSize + 2; x++)
+        int halfSizeX = halfWorldSize.x + 1;
+        int halfSizeY = halfWorldSize.y + 1;
+        for (int x = -halfSizeX - 2; x <= halfSizeX + 2; x++)
         {
-            borderTilemap.SetTile(new Vector3Int(x, -halfSize - 0, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x, -halfSize - 1, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x, -halfSize - 2, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x,  halfSize + 0, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x,  halfSize + 1, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x,  halfSize + 2, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x, -halfSizeY - 0, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x, -halfSizeY - 1, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x, -halfSizeY - 2, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x,  halfSizeY + 0, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x,  halfSizeY + 1, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(x,  halfSizeY + 2, 0), mountainTile);
             // SetTileAt(new Vector3Int(x, -halfSize, 0), mountainTile);
             // SetTileAt(new Vector3Int(x, halfSize, 0), mountainTile);
         }
-        for (int y = -halfSize - 2; y <= halfSize + 2; y++)
+        for (int y = -halfSizeY - 2; y <= halfSizeY + 2; y++)
         {
-            borderTilemap.SetTile(new Vector3Int(-halfSize - 0, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(-halfSize - 1, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(-halfSize - 2, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int( halfSize + 0, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int( halfSize + 1, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int( halfSize + 2, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(-halfSizeX - 0, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(-halfSizeX - 1, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int(-halfSizeX - 2, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int( halfSizeX + 0, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int( halfSizeX + 1, y, 0), mountainTile);
+            borderTilemap.SetTile(new Vector3Int( halfSizeX + 2, y, 0), mountainTile);
             // SetTileAt(new Vector3Int(-halfSize, y, 0), mountainTile);
             // SetTileAt(new Vector3Int(halfSize, y, 0), mountainTile);
         }
@@ -107,11 +111,10 @@ public class World : MonoBehaviour
         FastNoiseLite noise = new FastNoiseLite(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(0.1f);
-        int halfSize = WorldSize / 2;
         
-        for (int x = -halfSize, i = 0; i < WorldSize; i++, x++)
+        for (int x = -halfWorldSize.x, i = 0; i < worldSize.x; i++, x++)
         {
-            for (int y = -halfSize, j = 0; j < WorldSize; j++, y++)
+            for (int y = -halfWorldSize.y, j = 0; j < worldSize.y; j++, y++)
             {
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
 
@@ -143,21 +146,20 @@ public class World : MonoBehaviour
 
     List<Vector2Int> FindPointsInBiome(int count, int minSpacing, int maxAttempts = 1000)
     {
-        int halfSize = WorldSize / 2;
         System.Random rand = new System.Random();
         List<Vector2Int> points = new List<Vector2Int>();
         while (points.Count < count && maxAttempts > 0)
         {
             maxAttempts--;
-            int x = rand.Next(0, WorldSize);
-            int y = rand.Next(0, WorldSize);
+            int x = rand.Next(0, worldSize.x);
+            int y = rand.Next(0, worldSize.y);
 
             // Check biome
             // if (biomeMap[x, y] != biome)
             //     continue;
 
             // Convert to tilemap coordinates
-            Vector2Int candidate = new Vector2Int(x - halfSize, y - halfSize);
+            Vector2Int candidate = new Vector2Int(x - halfWorldSize.x, y - halfWorldSize.y);
             bool tooClose = false;
 
             // Check if tile is already occupied
@@ -207,7 +209,7 @@ public class World : MonoBehaviour
         if (biomeTile != null)
         {
             floorTilemap.SetTile(cellPosition, biomeTile);
-            biomeMap[cellPosition.x + (WorldSize / 2), cellPosition.y + (WorldSize / 2)] = newBiome;
+            biomeMap[cellPosition.x + halfWorldSize.x, cellPosition.y + halfWorldSize.y] = newBiome;
         }
     }
 
@@ -251,9 +253,8 @@ public class World : MonoBehaviour
 
     public bool IsWithinBounds(Vector3Int cellPosition)
     {
-        int halfSize = WorldSize / 2;
-        return cellPosition.x >= -halfSize && cellPosition.x <= halfSize &&
-               cellPosition.y >= -halfSize && cellPosition.y <= halfSize;
+        return cellPosition.x >= -halfWorldSize.x && cellPosition.x <= halfWorldSize.x &&
+               cellPosition.y >= -halfWorldSize.y && cellPosition.y <= halfWorldSize.y;
     }
 
     public void UpdateTilemap()
@@ -287,7 +288,7 @@ public class World : MonoBehaviour
         {
             for (int y = bounds.yMin, j = 0; j < bounds.size.y; y++, j++)
             {
-                TileBase tile = tilemap.GetTile(new Vector3Int(x, y, 0));
+                TileBase tile = tilemap.GetTile(new Vector3Int(x, y, 0)); // TODO: GetTile() can do GetTile<WorldTile>() directly
                 if (tile is WorldTile taggedTile)
                 {
                     grid[i, j] = new GridCell
@@ -420,5 +421,43 @@ public class World : MonoBehaviour
         return neighbors;
     }
 
+    #endregion
+
+    #region Debugging
+    void TestMany()
+    {
+        // Debug.Log($"World Position: {new Vector3(0,0,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(0,0,0))}");
+        // Debug.Log($"World Position: {new Vector3(1,1,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(1,1,0))}");
+        // Debug.Log($"World Position: {new Vector3(-1,-1,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-1,-1,0))}");
+        // Debug.Log($"World Position: {new Vector3(10,5,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(10,5,0))}");
+        // Debug.Log($"World Position: {new Vector3(-10,-5,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-10,-5,0))}");
+        // Debug.Log($"World Position: {new Vector3(0.5f,0.5f,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(0.5f,0.5f,0))}");
+        // Debug.Log($"World Position: {new Vector3(-0.5f,-0.5f,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-0.5f,-0.5f,0))}");
+        // Debug.Log($"World Position: {new Vector3(2,3,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(2,3,0))}");
+        // Debug.Log($"World Position: {new Vector3(-2,-3,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-2,-3,0))}");
+        // Debug.Log($"World Position: {new Vector3(5,-5,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(5,-5,0))}");
+        // Debug.Log($"World Position: {new Vector3(-5,5,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-5,5,0))}");
+        // Debug.Log($"World Position: {new Vector3(3.7f,-2.4f,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(3.7f,-2.4f,0))}");
+        // Debug.Log($"World Position: {new Vector3(-3.7f,2.4f,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-3.7f,2.4f,0))}");
+        // Debug.Log($"World Position: {new Vector3(15,15,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(15,15,0))}");
+        // Debug.Log($"World Position: {new Vector3(-15,-15,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-15,-15,0))}");
+        // Debug.Log($"World Position: {new Vector3(20,-20,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(20,-20,0))}");
+        // Debug.Log($"World Position: {new Vector3(-20,20,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-20,20,0))}");
+        // Debug.Log($"World Position: {new Vector3(0,10,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(0,10,0))}");
+        // Debug.Log($"World Position: {new Vector3(0,-10,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(0,-10,0))}");
+        // Debug.Log($"World Position: {new Vector3(10,0,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(10,0,0))}");
+        // Debug.Log($"World Position: {new Vector3(-10,0,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-10,0,0))}");
+        // Debug.Log($"World Position: {new Vector3(7.25f, -8.75f, 0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(7.25f, -8.75f, 0))}");
+        // Debug.Log($"World Position: {new Vector3(-7.25f, 8.75f, 0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-7.25f, 8.75f, 0))}");
+        // Debug.Log($"World Position: {new Vector3(12.5f, 12.5f, 0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(12.5f, 12.5f, 0))}");
+        // Debug.Log($"World Position: {new Vector3(-12.5f, -12.5f, 0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-12.5f, -12.5f, 0))}");
+    }
+
+    [Command]
+    static public void TestManyPoints()
+    {
+        World world = FindFirstObjectByType<World>();
+        world.TestMany();
+    } 
     #endregion
 }
