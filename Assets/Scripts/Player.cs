@@ -96,6 +96,16 @@ public class Player : MonoBehaviour
     {
         return money;
     }
+
+    Target target;
+
+    public void SetTarget(Target target) {
+        this.target = target;
+    }
+
+    public Target GetTarget() {
+        return target;
+    }
 }
 
 

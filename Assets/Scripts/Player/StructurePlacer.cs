@@ -114,6 +114,8 @@ public class StructurePlacer : MonoBehaviour
                 return false;
 
             basePlaced = world.SetTileAt(cellPosition, currentStructure);
+            Target baseTarget = world.GetStructureAt(new Vector2Int(cellPosition.x, cellPosition.y)) as Target;
+            Player.Instance.SetTarget(baseTarget);
 
             if (basePlaced)
             {    

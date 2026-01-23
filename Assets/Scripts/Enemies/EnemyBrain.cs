@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Pathfinder))]
@@ -16,14 +17,67 @@ class EnemyBrain : MonoBehaviour
         actionQueue = new Queue<EnemyAction>();
     }
 
+    // This currently takes 3.5-4.5 ms on average to compute
     async void Start()
     {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         actionQueue = await EvaluateStrategy();
+        stopwatch.Stop();
+        Debug.Log($"EvaluateStrategy took {stopwatch.ElapsedTicks} ticks, {stopwatch.ElapsedMilliseconds} ms");
         OnActionComplete();
-        StartCoroutine(PeriodicStrategyRevaluation());
+        StartCoroutine(PeriodicStrategyRevaluation());   
     }
 
-    System.Collections.IEnumerator PeriodicStrategyRevaluation()
+    /// <summary>
+    /// Incomplete method to evaluate and create a strategy for the enemy. Currently just generates a move action to the target.
+    /// </summary>
+    async Awaitable<Queue<EnemyAction>> EvaluateStrategy()
+    {
+        // Make a new action queue
+        Queue<EnemyAction> newActionQueue = new Queue<EnemyAction>();
+
+        // Create path to target
+        Target target = Player.Instance.GetTarget();
+        Vector3Int targetCell = World.Instance.WorldToCell(target.transform.position);
+        Path path = await pathfinder.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y));
+        
+        List<int> structureIndices = new List<int>();
+        List<Structure> structuresOnPath = new List<Structure>();
+        for (int i = 0; i < path.tilePath.Length; i++)
+        {
+            Vector2Int tile = path.tilePath[i];
+            Structure structure = World.Instance.GetStructureAt(tile);
+            if (structure != null)
+            {
+                structureIndices.Add(i);
+                structuresOnPath.Add(structure);
+            }
+        }
+
+        Path[] subPaths = path.SplitAtIndices(structureIndices);
+        for (int i = 0; i < subPaths.Length; i++)
+        {
+            Path subPath = subPaths[i];
+
+            // Create move action to next structure or target
+            MoveAction moveAction = new MoveAction(enemy, subPath.GetMinusOne());
+            newActionQueue.Enqueue(moveAction);
+
+            // If there's a structure at the end of this subpath, add an attack action
+            if (i < structuresOnPath.Count)
+            {
+                Structure targetStructure = structuresOnPath[i];
+                AttackAction attackAction = new AttackAction(enemy, targetStructure);
+                newActionQueue.Enqueue(attackAction);
+            }
+        }
+
+        newActionQueue.Enqueue(new AttackAction(enemy, target));
+
+        return newActionQueue;
+    }
+
+    IEnumerator PeriodicStrategyRevaluation()
     {
         // Stagger initial evaluation by random delay to avoid all enemies evaluating at once
         yield return new WaitForSeconds(Random.Range(0f, 2f));
@@ -104,54 +158,7 @@ class EnemyBrain : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Incomplete method to evaluate and create a strategy for the enemy. Currently just generates a move action to the target.
-    /// </summary>
-    async Awaitable<Queue<EnemyAction>> EvaluateStrategy()
-    {
-        // Make a new action queue
-        Queue<EnemyAction> newActionQueue = new Queue<EnemyAction>();
-
-        // Create path to target
-        Target target = FindFirstObjectByType<Target>();
-        Vector3Int targetCell = World.Instance.WorldToCell(target.transform.position);
-        Path path = await pathfinder.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y));
-        
-        List<int> structureIndices = new List<int>();
-        List<Structure> structuresOnPath = new List<Structure>();
-        for (int i = 0; i < path.tilePath.Length; i++)
-        {
-            Vector2Int tile = path.tilePath[i];
-            Structure structure = World.Instance.GetStructureAt(tile);
-            if (structure != null)
-            {
-                structureIndices.Add(i);
-                structuresOnPath.Add(structure);
-            }
-        }
-
-        Path[] subPaths = path.SplitAtIndices(structureIndices);
-        for (int i = 0; i < subPaths.Length; i++)
-        {
-            Path subPath = subPaths[i];
-
-            // Create move action to next structure or target
-            MoveAction moveAction = new MoveAction(enemy, subPath.GetMinusOne());
-            newActionQueue.Enqueue(moveAction);
-
-            // If there's a structure at the end of this subpath, add an attack action
-            if (i < structuresOnPath.Count)
-            {
-                Structure targetStructure = structuresOnPath[i];
-                AttackAction attackAction = new AttackAction(enemy, targetStructure);
-                newActionQueue.Enqueue(attackAction);
-            }
-        }
-
-        newActionQueue.Enqueue(new AttackAction(enemy, target));
-
-        return newActionQueue;
-    }
+    // TODO: Remove all this dead code...
 
     /*
     Vector2Int FindObstacleOnPath(Path path)
