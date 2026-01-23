@@ -31,17 +31,20 @@ public class World : MonoBehaviour
 
     public Vector2Int halfWorldSize => new Vector2Int(worldSize.x / 2, worldSize.y / 2);
 
-    void Start()
+    void Awake()
     {
-        worldTilemap.origin = new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0);
-        worldTilemap.size = new Vector3Int(worldSize.x, worldSize.y, 1);
+        worldTilemap.origin = (new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0));
+        worldTilemap.size = (new Vector3Int(worldSize.x, worldSize.y, 1));
         worldTilemap.ResizeBounds();
 
-        floorTilemap.origin = new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0);
-        floorTilemap.size = new Vector3Int(worldSize.x, worldSize.y, 1);
+        floorTilemap.origin = (new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0));
+        floorTilemap.size = (new Vector3Int(worldSize.x, worldSize.y, 1));
         floorTilemap.ResizeBounds();
-        
+        UpdateTilemap();
+    }
 
+    void Start()
+    {
         GenerateWorld();
         UpdateTilemap();
     }
@@ -263,7 +266,7 @@ public class World : MonoBehaviour
         worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();        
         
         bounds = worldTilemap.cellBounds;
-        grid = CreateGrid(worldTilemap);
+        grid = CreateGrid(worldTilemap); // TODO: Major Swizzle
 
         // Debugging Grid
         GridDebug gridDebug = GetComponent<GridDebug>();
@@ -382,7 +385,7 @@ public class World : MonoBehaviour
 
     #endregion
 
-    #region Static Utility
+    #region Utility
 
     /// <summary>
     /// Returns the six neighboring cell positions for a given cell in an axial hex grid.
@@ -419,6 +422,44 @@ public class World : MonoBehaviour
         }
 
         return neighbors;
+    }
+
+    static Vector2Int Swizzle2Int(Vector2Int vector)
+    {
+        return new Vector2Int(vector.y, vector.x);
+    }
+
+    static Vector3Int Swizzle3Int(Vector3Int vector)
+    {
+        return new Vector3Int(vector.y, vector.x, vector.z);
+    }
+
+    static Vector2 Swizzle2(Vector2 vector)
+    {
+        return new Vector2(vector.y, vector.x);
+    }
+
+    static Vector3 Swizzle3(Vector3 vector)
+    {
+        return new Vector3(vector.y, vector.x, vector.z);
+    }
+
+    static BoundsInt SwizzleBounds(BoundsInt bounds)
+    {
+        Debug.Log($"Swizzling Bounds: {bounds}");
+
+        BoundsInt swizzled = new BoundsInt(
+            new Vector3Int(bounds.yMin, bounds.xMin, bounds.zMin),
+            new Vector3Int(bounds.size.y, bounds.size.x, bounds.size.z)
+        );
+
+        Debug.Log($"Swizzled Bounds: {swizzled}");
+        
+
+        return new BoundsInt(
+            new Vector3Int(bounds.yMin, bounds.xMin, bounds.zMin),
+            new Vector3Int(bounds.size.y, bounds.size.x, bounds.size.z)
+        );
     }
 
     #endregion

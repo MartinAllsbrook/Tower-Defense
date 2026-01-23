@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 35429c8f8f142cc4d939371615325724
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - debugTile: {fileID: 11400000, guid: f29a5164deab69a4ebb49e326530bff1, type: 2}
+  - debugTilemap: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

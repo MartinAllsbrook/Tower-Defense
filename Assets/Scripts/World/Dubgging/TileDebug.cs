@@ -16,11 +16,13 @@ public class TileDebug : MonoBehaviour
 
     public void SetCoordinates(Vector2Int coordinates)
     {
-        coordinatesText.text = $"Pos: ({coordinates.x}, {coordinates.y})";
+        coordinatesText.gameObject.SetActive(true);
+        coordinatesText.text = $"({coordinates.x},{coordinates.y})";
     }
 
     public void SetCost(int cost)
     {
+        costText.gameObject.SetActive(true);
         costText.text = $"C: {cost}";
     }
 
