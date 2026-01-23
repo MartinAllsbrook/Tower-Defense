@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-class Pathfinding : MonoBehaviour
+class Pathfinder : MonoBehaviour
 {
     [SerializeField] bool usePathfindingManager = true; // Toggle to use centralized manager
     

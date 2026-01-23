@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Pathfinder))]
 class EnemyBrain : MonoBehaviour
 {
     Queue<EnemyAction> actionQueue;
     World world;
-    EnemyPathfinding pathfinding;
+    Pathfinder pathfinder;
     EnemyAction currentAction;
     Enemy enemy => GetComponent<Enemy>();
     bool isEvaluating = false;
@@ -13,7 +14,7 @@ class EnemyBrain : MonoBehaviour
     void Awake()
     {
         world = FindFirstObjectByType<World>();
-        pathfinding = GetComponent<EnemyPathfinding>();
+        pathfinder = GetComponent<Pathfinder>();
         actionQueue = new Queue<EnemyAction>();
     }
 
@@ -116,7 +117,7 @@ class EnemyBrain : MonoBehaviour
         // Create path to target
         Target target = FindFirstObjectByType<Target>();
         Vector3Int targetCell = world.WorldToCell(target.transform.position);
-        Path path = await pathfinding.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y));
+        Path path = await pathfinder.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y));
         
         List<int> structureIndices = new List<int>();
         List<Structure> structuresOnPath = new List<Structure>();
