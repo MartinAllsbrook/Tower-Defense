@@ -15,6 +15,11 @@ public class SwizzledHFTTilemap : MonoBehaviour
     }
 
     #region Tilemap Methods
+    public void ResizeBounds()
+    {
+        tilemap.ResizeBounds();
+    }
+
     public void SetOrigin(Vector3Int origin)
     {
         tilemap.origin = Swizzle3Int(origin);
@@ -23,6 +28,12 @@ public class SwizzledHFTTilemap : MonoBehaviour
     public void SetSize(Vector3Int center)
     {
         tilemap.size = Swizzle3Int(center);
+    }
+
+    public bool HasTile(Vector3Int position)
+    {
+        Vector3Int swizzledPos = Swizzle3Int(position);
+        return tilemap.HasTile(swizzledPos);
     }
 
     public T GetTile<T>(Vector3Int position) where T : TileBase
@@ -58,6 +69,11 @@ public class SwizzledHFTTilemap : MonoBehaviour
     {
         Vector3Int cellPos = tilemap.WorldToCell(worldPosition);
         return Swizzle3Int(cellPos);
+    }
+    
+    public void ClearAllTiles()
+    {
+        tilemap.ClearAllTiles();
     }
     #endregion
 

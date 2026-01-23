@@ -1555,6 +1555,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 835494808}
+  - component: {fileID: 835494809}
   - component: {fileID: 835494806}
   - component: {fileID: 835494807}
   m_Layer: 0
@@ -1699,6 +1700,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1074162244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &835494809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835494805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdca2e00e59ecd64fbade6d6eca556e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwizzledHFTTilemap
 --- !u!1 &925936647
 GameObject:
   m_ObjectHideFlags: 0
@@ -1708,6 +1721,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 925936648}
+  - component: {fileID: 925936651}
   - component: {fileID: 925936650}
   - component: {fileID: 925936649}
   m_Layer: 0
@@ -1892,6 +1906,18 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &925936651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925936647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdca2e00e59ecd64fbade6d6eca556e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwizzledHFTTilemap
 --- !u!1 &1005322655 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2013792490014022492, guid: 131d59cbe8131bb45a829cc558045c4c, type: 3}
@@ -2255,9 +2281,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13dd9f4659a9a6145880f46fcc6ba11f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::World
-  floorTilemap: {fileID: 835494806}
-  worldTilemap: {fileID: 925936650}
-  borderTilemap: {fileID: 1285102138}
+  floorTilemap: {fileID: 835494809}
+  worldTilemap: {fileID: 925936651}
+  borderTilemap: {fileID: 1285102141}
   worldSize: {x: 15, y: 63}
   numSpawners: 8
   biomeTiles:
@@ -2284,7 +2310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldDebug
   debugTile: {fileID: 11400000, guid: f29a5164deab69a4ebb49e326530bff1, type: 2}
-  debugTilemap: {fileID: 1842484897}
+  debugTilemap: {fileID: 1842484900}
 --- !u!1 &1277166026
 GameObject:
   m_ObjectHideFlags: 0
@@ -2469,6 +2495,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1285102140}
+  - component: {fileID: 1285102141}
   - component: {fileID: 1285102138}
   - component: {fileID: 1285102139}
   m_Layer: 0
@@ -2587,6 +2614,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1074162244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1285102141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285102137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdca2e00e59ecd64fbade6d6eca556e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwizzledHFTTilemap
 --- !u!1 &1331522989
 GameObject:
   m_ObjectHideFlags: 0
@@ -2596,6 +2635,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1331522990}
+  - component: {fileID: 1331522993}
   - component: {fileID: 1331522992}
   - component: {fileID: 1331522991}
   m_Layer: 0
@@ -2780,6 +2820,18 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1331522993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331522989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdca2e00e59ecd64fbade6d6eca556e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwizzledHFTTilemap
 --- !u!1 &1589882578
 GameObject:
   m_ObjectHideFlags: 0
@@ -3132,6 +3184,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1842484899}
+  - component: {fileID: 1842484900}
   - component: {fileID: 1842484897}
   - component: {fileID: 1842484898}
   m_Layer: 0
@@ -3244,12 +3297,24 @@ Transform:
   m_GameObject: {fileID: 1842484896}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.16}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1074162244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1842484900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842484896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdca2e00e59ecd64fbade6d6eca556e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwizzledHFTTilemap
 --- !u!1001 &1908212429
 PrefabInstance:
   m_ObjectHideFlags: 0

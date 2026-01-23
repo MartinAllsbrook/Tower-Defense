@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class WorldDebug : MonoBehaviour
 {
     [SerializeField] private TileBase debugTile;
-    [SerializeField] private Tilemap debugTilemap;
+    [SerializeField] private SwizzledHFTTilemap debugTilemap;
 
     void Start()
     {
@@ -29,11 +29,10 @@ public class WorldDebug : MonoBehaviour
 
     void PlaceDebugTileAtCell(Vector3Int vector3Int)
     {
-        vector3Int = new Vector3Int(vector3Int.y, vector3Int.x, vector3Int.z); // Swizzle x and y
         debugTilemap.SetTile(vector3Int, debugTile);
         GameObject placedTileObject = debugTilemap.GetInstantiatedObject(vector3Int);
         TileDebug tileDebug = placedTileObject.GetComponent<TileDebug>();
 
-        tileDebug.SetCoordinates(new Vector2Int(vector3Int.y, vector3Int.x));        
+        tileDebug.SetCoordinates(new Vector2Int(vector3Int.x, vector3Int.y));        
     }
 }

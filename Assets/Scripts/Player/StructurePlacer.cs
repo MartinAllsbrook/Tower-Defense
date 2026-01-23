@@ -24,7 +24,7 @@ public class StructurePlacer : MonoBehaviour
     public StructureTile[] Structures => structures;    
 
     Player player;
-    Tilemap previewTilemap;
+    SwizzledHFTTilemap previewTilemap;
     StructureTile currentStructure;
     Mode mode = Mode.None;
     bool basePlaced = false; // To ensure only one base is placed
@@ -33,7 +33,7 @@ public class StructurePlacer : MonoBehaviour
     void Awake()
     {
         player = GetComponent<Player>();
-        previewTilemap = GameObject.FindWithTag("Preview Tilemap").GetComponent<Tilemap>();
+        previewTilemap = GameObject.FindWithTag("Preview Tilemap").GetComponent<SwizzledHFTTilemap>();
     }
 
     void Start()
