@@ -5,25 +5,21 @@ using UnityEngine;
 class Pathfinder : MonoBehaviour
 {
     [SerializeField] bool usePathfindingManager = true; // Toggle to use centralized manager
-    
-    World world;
+
     ThetaStar cachedThetaStar;
     bool gridDirty = true;
 
-    void Awake()
-    {
-        world = FindFirstObjectByType<World>();
-    }
-
+    #region Lifecycle
     void OnEnable()
     {
-        world.OnWorldUpdate += MarkGridDirty;
+        World.Instance.OnWorldUpdate += MarkGridDirty;
     }
 
     void OnDisable()
     {
-        world.OnWorldUpdate -= MarkGridDirty;
+        World.Instance.OnWorldUpdate -= MarkGridDirty;
     }
+    #endregion
 
     public void MarkGridDirty()
     {
@@ -36,7 +32,7 @@ class Pathfinder : MonoBehaviour
 
     public async Awaitable<Path> GetPathToCell(Vector2Int cellPosition)
     {
-        Vector3Int start = world.WorldToCell(transform.position);
+        Vector3Int start = World.Instance.WorldToCell(transform.position);
         Vector2Int startCell = new Vector2Int(start.x, start.y);
         
         // Use PathfindingManager if available and enabled
@@ -51,8 +47,8 @@ class Pathfinder : MonoBehaviour
         // Only rebuild ThetaStar if grid changed
         if (gridDirty || cachedThetaStar == null)
         {
-            GridCell[,] gridCells = world.GetGrid();
-            BoundsInt bounds = world.GetBounds();
+            GridCell[,] gridCells = World.Instance.GetGrid();
+            BoundsInt bounds = World.Instance.GetBounds();
             Vector2Int offset = new Vector2Int(bounds.xMin, bounds.yMin);
             
             await Awaitable.BackgroundThreadAsync();

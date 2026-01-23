@@ -25,8 +25,6 @@ public class Enemy : MonoBehaviour
     // Private fields
     Health health;
     Coroutine moveCoroutine;
-    World world;
-    Player player;
 
     // Events / Public properties
     public event Action<Enemy> OnEnemyDestroyed;
@@ -36,21 +34,18 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         health = GetComponent<Health>();
-
-        world = FindFirstObjectByType<World>();
-        player = FindFirstObjectByType<Player>();
     }
 
     void OnEnable()
     {
         health.OnDeath += KillEnemy;
-        world.OnWorldUpdate += OnUpdateGrid;
+        World.Instance.OnWorldUpdate += OnUpdateGrid;
     }
 
     void OnDisable()
     {
         health.OnDeath -= KillEnemy;
-        world.OnWorldUpdate -= OnUpdateGrid;
+        World.Instance.OnWorldUpdate -= OnUpdateGrid;
     }
 
     void Start()
@@ -84,7 +79,7 @@ public class Enemy : MonoBehaviour
 
         // Events / Communication
         OnEnemyDestroyed?.Invoke(this);
-        player.AddMoney(moneyReward);
+        Player.Instance.AddMoney(moneyReward);
         
         Destroy(gameObject);
     }

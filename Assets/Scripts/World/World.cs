@@ -9,6 +9,8 @@ using UnityEngine.UIElements;
 
 public class World : MonoBehaviour
 {
+    // Singleton
+    public static World Instance { get; private set; }
 
     [SerializeField] SwizzledHFTTilemap floorTilemap;
     [SerializeField] SwizzledHFTTilemap worldTilemap; 
@@ -33,6 +35,15 @@ public class World : MonoBehaviour
 
     void Awake()
     {
+        // Singleton setup
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
         worldTilemap.SetOrigin(new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0));
         worldTilemap.SetSize(new Vector3Int(worldSize.x, worldSize.y, 1));
         worldTilemap.ResizeBounds();

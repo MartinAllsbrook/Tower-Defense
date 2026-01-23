@@ -5,7 +5,6 @@ using UnityEngine;
 class EnemyBrain : MonoBehaviour
 {
     Queue<EnemyAction> actionQueue;
-    World world;
     Pathfinder pathfinder;
     EnemyAction currentAction;
     Enemy enemy => GetComponent<Enemy>();
@@ -13,7 +12,6 @@ class EnemyBrain : MonoBehaviour
 
     void Awake()
     {
-        world = FindFirstObjectByType<World>();
         pathfinder = GetComponent<Pathfinder>();
         actionQueue = new Queue<EnemyAction>();
     }
@@ -116,7 +114,7 @@ class EnemyBrain : MonoBehaviour
 
         // Create path to target
         Target target = FindFirstObjectByType<Target>();
-        Vector3Int targetCell = world.WorldToCell(target.transform.position);
+        Vector3Int targetCell = World.Instance.WorldToCell(target.transform.position);
         Path path = await pathfinder.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y));
         
         List<int> structureIndices = new List<int>();
@@ -124,7 +122,7 @@ class EnemyBrain : MonoBehaviour
         for (int i = 0; i < path.tilePath.Length; i++)
         {
             Vector2Int tile = path.tilePath[i];
-            Structure structure = world.GetStructureAt(tile);
+            Structure structure = World.Instance.GetStructureAt(tile);
             if (structure != null)
             {
                 structureIndices.Add(i);

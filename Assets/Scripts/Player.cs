@@ -6,6 +6,10 @@ using UnityEngine.Tilemaps;
 
 public class Player : MonoBehaviour
 {   
+    // Singleton
+    public static Player Instance { get; private set; }
+
+    [Header("Economy")]
     [SerializeField] int startingMoney = 100;
     [SerializeField] float passiveIncomeInterval = 1f;
     [SerializeField] int passiveIncomeAmount = 1;
@@ -17,6 +21,15 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
+        // Singleton setup
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
         money = startingMoney;
     }
 

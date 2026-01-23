@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8919189325d1f534faedc3deaaf3fb2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PathfindingManager
-  maxRequestsPerFrame: 3
+  maxRequestsPerFrame: 1
   useManager: 1
 --- !u!4 &448608288
 Transform:
