@@ -16,7 +16,6 @@ class PathfindingManager : MonoBehaviour
     
     ThetaStar cachedThetaStar;
     bool gridDirty = true;
-    World world;
     
     Queue<PathRequest> pendingRequests = new Queue<PathRequest>();
     List<PathRequest> processingRequests = new List<PathRequest>();
@@ -40,17 +39,16 @@ class PathfindingManager : MonoBehaviour
         }
         
         Instance = this;
-        world = FindFirstObjectByType<World>();
     }
     
     void OnEnable()
     {
-        world.OnWorldUpdate += MarkGridDirty;
+        World.Instance.OnWorldUpdate += MarkGridDirty;
     }
     
     void OnDisable()
     {
-        world.OnWorldUpdate -= MarkGridDirty;
+        World.Instance.OnWorldUpdate -= MarkGridDirty;
     }
     #endregion
     
@@ -107,8 +105,8 @@ class PathfindingManager : MonoBehaviour
     {
         if (gridDirty || cachedThetaStar == null)
         {
-            GridCell[,] gridCells = world.GetGrid();
-            BoundsInt bounds = world.GetBounds();
+            GridCell[,] gridCells = World.Instance.GetGrid();
+            BoundsInt bounds = World.Instance.GetBounds();
             Vector2Int offset = new Vector2Int(bounds.xMin, bounds.yMin);
             
             await Awaitable.BackgroundThreadAsync();

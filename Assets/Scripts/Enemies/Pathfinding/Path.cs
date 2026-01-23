@@ -13,8 +13,7 @@ public class Path
     public Path(List<Vector2Int> path)
     {
         tilePath = path.ToArray();
-        world = Object.FindFirstObjectByType<World>();
-        worldPath = tilePath.Select(tile => world.CellToWorld(new Vector3Int(tile.x, tile.y, 0))).ToArray();
+        worldPath = tilePath.Select(tile => World.Instance.CellToWorld(new Vector3Int(tile.x, tile.y, 0))).ToArray();
     }
 
     /// <summary>

@@ -17,15 +17,14 @@ public class Wall : Structure
 
     void UpdateWallConnections()
     {
-        World world = FindFirstObjectByType<World>();
-        Vector2Int cellPosition = world.WorldToCell2(transform.position);
+        Vector2Int cellPosition = World.Instance.WorldToCell2(transform.position);
 
         Vector2Int[] neighbors = World.GetNeighbors(cellPosition);
 
         for (int i = 0; i < 6; i++)
         {
-            bool neighboringWall = world.HasStructureAt(neighbors[i], StructureType.Wall);
-            bool neighboringTerrain = world.HasTileAt(neighbors[i], TileTag.Terrain);
+            bool neighboringWall = World.Instance.HasStructureAt(neighbors[i], StructureType.Wall);
+            bool neighboringTerrain = World.Instance.HasTileAt(neighbors[i], TileTag.Terrain);
             bool connect = neighboringWall || neighboringTerrain;
             wallConnections[i].SetActive(connect);
         }

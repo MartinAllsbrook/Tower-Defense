@@ -5,20 +5,14 @@ public class ResourcesUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI moneyText;
 
-    Player player;
-    void Awake()
-    {
-        player = FindFirstObjectByType<Player>();
-    }
-
     void OnEnable()
     {
-        player.OnMoneyChanged += UpdateMoneyUI;
+        Player.Instance.OnMoneyChanged += UpdateMoneyUI;
     }
 
     void OnDisable()
     {
-        player.OnMoneyChanged -= UpdateMoneyUI;
+        Player.Instance.OnMoneyChanged -= UpdateMoneyUI;
     }
 
     void UpdateMoneyUI(int amount)

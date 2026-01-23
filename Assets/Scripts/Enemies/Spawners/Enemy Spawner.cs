@@ -24,7 +24,6 @@ public class EnemySpawner : MonoBehaviour
     };
 
     EnemySpawnerManager spawnerManager;
-    World world;
     int numActiveEnemies = 0;
     bool isSpawning = false;
     int spawnerLevel = 1;
@@ -33,8 +32,6 @@ public class EnemySpawner : MonoBehaviour
     {
         spawnerManager = FindFirstObjectByType<EnemySpawnerManager>();
         spawnerManager.RegisterSpawner(this);
-
-        world = FindFirstObjectByType<World>();
     }
 
     void OnEnable()
@@ -49,10 +46,8 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        World world = FindFirstObjectByType<World>();
-        Vector3Int tilePos = world.WorldToCell(transform.position);
-        
-            world.SetBiomeAt(tilePos, BiomeID.bug1);
+        Vector3Int tilePos = World.Instance.WorldToCell(transform.position);
+        World.Instance.SetBiomeAt(tilePos, BiomeID.bug1);
     }
 
     void StartRound(int roundNumber)
@@ -108,13 +103,12 @@ public class EnemySpawner : MonoBehaviour
         spawnerLevel++;
 
         Debug.Log("Upgrading spawner at " + transform.position);
-        World world = FindFirstObjectByType<World>();
-        Vector2Int tilePos = world.WorldToCell2(transform.position);
+        Vector2Int tilePos = World.Instance.WorldToCell2(transform.position);
         
         // Set the center tile (spawner position) to the current spawner level's bug type
         BiomeID centerBiome = BiomeID.bug1 + (spawnerLevel - 1);
         Debug.Log("Setting center tile at " + tilePos + " to " + centerBiome);
-        world.SetBiomeAt(new Vector3Int(tilePos.x, tilePos.y, 0), centerBiome);
+        World.Instance.SetBiomeAt(new Vector3Int(tilePos.x, tilePos.y, 0), centerBiome);
         
         // Track which ring each tile belongs to (starting from ring 1, since center is ring 0)
         Dictionary<Vector2Int, int> tileRingLevel = new Dictionary<Vector2Int, int>();
@@ -150,7 +144,7 @@ public class EnemySpawner : MonoBehaviour
             BiomeID biome = BiomeID.bug1 + (spawnerLevel - ringLevel - 1);
             
             Debug.Log("Setting biome at " + tilePosition + " (ring " + ringLevel + ") to " + biome);
-            world.SetBiomeAt(new Vector3Int(tilePosition.x, tilePosition.y, 0), biome);
+            World.Instance.SetBiomeAt(new Vector3Int(tilePosition.x, tilePosition.y, 0), biome);
         }
 
         return true;

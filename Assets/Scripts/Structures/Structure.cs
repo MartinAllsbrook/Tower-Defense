@@ -27,12 +27,10 @@ public class Structure : MonoBehaviour
     virtual protected void DestroyStructure()
     {
         health.OnDeath -= DestroyStructure; // Unsubscribe to avoid potential issues
-
-        World world = FindFirstObjectByType<World>();
         
         // Remove the tile from the tilemap
-        Vector3Int cellPosition = world.WorldToCell(transform.position);
-        world.SetTileAt(cellPosition, null);
+        Vector3Int cellPosition = World.Instance.WorldToCell(transform.position);
+        World.Instance.SetTileAt(cellPosition, null);
     }
     #endregion
 

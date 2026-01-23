@@ -20,10 +20,7 @@ class EnemyBrain : MonoBehaviour
     // This currently takes 3.5-4.5 ms on average to compute
     async void Start()
     {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         actionQueue = await EvaluateStrategy();
-        stopwatch.Stop();
-        Debug.Log($"EvaluateStrategy took {stopwatch.ElapsedTicks} ticks, {stopwatch.ElapsedMilliseconds} ms");
         OnActionComplete();
         StartCoroutine(PeriodicStrategyRevaluation());   
     }
@@ -39,8 +36,12 @@ class EnemyBrain : MonoBehaviour
         // Create path to target
         Target target = Player.Instance.GetTarget();
         Vector3Int targetCell = World.Instance.WorldToCell(target.transform.position);
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         Path path = await pathfinder.GetPathToCell(new Vector2Int(targetCell.x, targetCell.y));
-        
+        stopwatch.Stop();
+        Debug.Log($"[EnemyBrain] Pathfinding took {stopwatch.ElapsedTicks} ticks ({stopwatch.ElapsedMilliseconds} ms)");
+
         List<int> structureIndices = new List<int>();
         List<Structure> structuresOnPath = new List<Structure>();
         for (int i = 0; i < path.tilePath.Length; i++)
