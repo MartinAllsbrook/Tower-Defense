@@ -33,12 +33,12 @@ public class World : MonoBehaviour
 
     void Awake()
     {
-        worldTilemap.origin = (new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0));
-        worldTilemap.size = (new Vector3Int(worldSize.x, worldSize.y, 1));
+        worldTilemap.origin = Swizzle3Int(new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0));
+        worldTilemap.size = Swizzle3Int(new Vector3Int(worldSize.x, worldSize.y, 1));
         worldTilemap.ResizeBounds();
 
-        floorTilemap.origin = (new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0));
-        floorTilemap.size = (new Vector3Int(worldSize.x, worldSize.y, 1));
+        floorTilemap.origin = Swizzle3Int(new Vector3Int(-halfWorldSize.x, -halfWorldSize.y, 0));
+        floorTilemap.size = Swizzle3Int(new Vector3Int(worldSize.x, worldSize.y, 1));
         floorTilemap.ResizeBounds();
         UpdateTilemap();
     }
@@ -74,7 +74,8 @@ public class World : MonoBehaviour
                 float value = (noise.GetNoise(i, j) + 1) / 2; // Normalize to 0-1
 
                 BiomeTile tile = biomeTiles[(int)(value * 4)]; // We are just using first 4 biomes for now
-                floorTilemap.SetTile(new Vector3Int(x, y, 0), tile);    
+
+                SetTile(floorTilemap, new Vector3Int(x, y, 0), tile);
 
                 biomeMap[i, j] = tile.tag;
             }
@@ -87,25 +88,21 @@ public class World : MonoBehaviour
         int halfSizeY = halfWorldSize.y + 1;
         for (int x = -halfSizeX - 2; x <= halfSizeX + 2; x++)
         {
-            borderTilemap.SetTile(new Vector3Int(x, -halfSizeY - 0, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x, -halfSizeY - 1, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x, -halfSizeY - 2, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x,  halfSizeY + 0, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x,  halfSizeY + 1, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(x,  halfSizeY + 2, 0), mountainTile);
-            // SetTileAt(new Vector3Int(x, -halfSize, 0), mountainTile);
-            // SetTileAt(new Vector3Int(x, halfSize, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(x, -halfSizeY - 0, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(x, -halfSizeY - 1, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(x, -halfSizeY - 2, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(x,  halfSizeY + 0, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(x,  halfSizeY + 1, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(x,  halfSizeY + 2, 0), mountainTile);
         }
         for (int y = -halfSizeY - 2; y <= halfSizeY + 2; y++)
         {
-            borderTilemap.SetTile(new Vector3Int(-halfSizeX - 0, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(-halfSizeX - 1, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int(-halfSizeX - 2, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int( halfSizeX + 0, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int( halfSizeX + 1, y, 0), mountainTile);
-            borderTilemap.SetTile(new Vector3Int( halfSizeX + 2, y, 0), mountainTile);
-            // SetTileAt(new Vector3Int(-halfSize, y, 0), mountainTile);
-            // SetTileAt(new Vector3Int(halfSize, y, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(-halfSizeX - 0, y, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(-halfSizeX - 1, y, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int(-halfSizeX - 2, y, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int( halfSizeX + 0, y, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int( halfSizeX + 1, y, 0), mountainTile);
+            SetTile(borderTilemap, new Vector3Int( halfSizeX + 2, y, 0), mountainTile);
         }
     }
 
@@ -123,7 +120,7 @@ public class World : MonoBehaviour
 
                 if (value < 0.2f)
                 {
-                    worldTilemap.SetTile(new Vector3Int(x, y, 0), mountainTile);
+                    SetTile(worldTilemap, new Vector3Int(x, y, 0), mountainTile);
                 }  
             }
         }
@@ -137,7 +134,7 @@ public class World : MonoBehaviour
         List<Vector2Int> points = FindPointsInBiome(numSpawners, 5);
         foreach (var point in points)
         {
-            SetTileAt(new Vector3Int(point.x, point.y, 0), enemySpawnerTile);
+            SetTileAt(new Vector3Int(point.x, point.y, 0), enemySpawnerTile); // TODO: Should this use internal methods?
             
             // if (!worldTilemap.HasTile(new Vector3Int(point.x, point.y, 0)))
             // {
@@ -166,7 +163,7 @@ public class World : MonoBehaviour
             bool tooClose = false;
 
             // Check if tile is already occupied
-            if (worldTilemap.HasTile(new Vector3Int(candidate.x, candidate.y, 0)))
+            if (HasTile(worldTilemap, new Vector3Int(candidate.x, candidate.y, 0)))
             {   
                 continue;
             }
@@ -211,7 +208,7 @@ public class World : MonoBehaviour
 
         if (biomeTile != null)
         {
-            floorTilemap.SetTile(cellPosition, biomeTile);
+            SetTile(floorTilemap, cellPosition, biomeTile);
             biomeMap[cellPosition.x + halfWorldSize.x, cellPosition.y + halfWorldSize.y] = newBiome;
         }
     }
@@ -225,12 +222,12 @@ public class World : MonoBehaviour
         if (!IsWithinBounds(cellPosition))
             return false;
 
-        WorldTile existingTile = worldTilemap.GetTile<WorldTile>(cellPosition);
+        WorldTile existingTile = GetTile<WorldTile>(worldTilemap, cellPosition);
 
         // Only allow placing on a empty tile or removing an existing tile
         if (existingTile == null || newTile == null)
         {
-            worldTilemap.SetTile(cellPosition, newTile);
+            SetTile(worldTilemap, cellPosition, newTile);
             UpdateTilemap();
             UpdateNeighbors(cellPosition);
             return true;
@@ -265,7 +262,7 @@ public class World : MonoBehaviour
         // TODO: Do we need to get the tilemap each time?
         worldTilemap = GameObject.FindWithTag("World Tilemap").GetComponent<Tilemap>();        
         
-        bounds = worldTilemap.cellBounds;
+        bounds = SwizzleBounds(worldTilemap.cellBounds);
         grid = CreateGrid(worldTilemap); // TODO: Major Swizzle
 
         // Debugging Grid
@@ -285,13 +282,13 @@ public class World : MonoBehaviour
 
     GridCell[,] CreateGrid(Tilemap tilemap)
     {
-        BoundsInt bounds = tilemap.cellBounds;
+        BoundsInt bounds = SwizzleBounds(tilemap.cellBounds); // TODO: Maybe make a get swizzled bounds method
         GridCell[,] grid = new GridCell[bounds.size.x, bounds.size.y];
         for (int x = bounds.xMin, i = 0; i < bounds.size.x; x++, i++)
         {
             for (int y = bounds.yMin, j = 0; j < bounds.size.y; y++, j++)
             {
-                TileBase tile = tilemap.GetTile(new Vector3Int(x, y, 0)); // TODO: GetTile() can do GetTile<WorldTile>() directly
+                TileBase tile = GetTile<TileBase>(tilemap, new Vector3Int(x, y, 0)); // TODO: Use proper type of tile brah
                 if (tile is WorldTile taggedTile)
                 {
                     grid[i, j] = new GridCell
@@ -322,18 +319,18 @@ public class World : MonoBehaviour
 
     public Vector3Int WorldToCell(Vector3 worldPosition)
     {
-        return worldTilemap.WorldToCell(worldPosition);
+        return Swizzle3Int(worldTilemap.WorldToCell(worldPosition));
     }
 
     public Vector2Int WorldToCell2(Vector3 worldPosition)
     {
-        Vector3Int vector3Int = worldTilemap.WorldToCell(worldPosition);
+        Vector3Int vector3Int = WorldToCell(worldPosition); // This already swizzles
         return new Vector2Int(vector3Int.x, vector3Int.y);
     }
 
     public Vector2 CellToWorld(Vector3Int cellPosition)
     {
-        return worldTilemap.CellToWorld(cellPosition);
+        return worldTilemap.CellToWorld(Swizzle3Int(cellPosition));
     }
 
     public GridCell[,] GetGrid()
@@ -351,7 +348,7 @@ public class World : MonoBehaviour
     /// </summary>
     public Structure GetStructureAt(Vector2Int cellPosition)
     {
-        Vector3Int cellPos = new Vector3Int(cellPosition.x, cellPosition.y, 0);
+        Vector3Int cellPos = Swizzle3Int(new Vector3Int(cellPosition.x, cellPosition.y, 0)); // TODO: We can pre-swizzle here but it is dangerous
         TileBase tile = worldTilemap.GetTile(cellPos);
         if (tile is WorldTile worldTile && worldTile.Tag == TileTag.Structure)
         {
@@ -373,14 +370,14 @@ public class World : MonoBehaviour
 
     public bool HasTileAt(Vector2Int cellPosition, TileTag tag)
     {
-        TileBase tile = worldTilemap.GetTile(new Vector3Int(cellPosition.x, cellPosition.y, 0));
-        return (tile is WorldTile worldTile && worldTile.Tag == tag);
+        TileBase tile = GetTile<TileBase>(worldTilemap, new Vector3Int(cellPosition.x, cellPosition.y, 0));
+        return tile is WorldTile worldTile && worldTile.Tag == tag;
     }
 
     public bool HasStructureAt(Vector2Int cellPosition, StructureType structureID)
     {
-        TileBase tile = worldTilemap.GetTile(new Vector3Int(cellPosition.x, cellPosition.y, 0));
-        return (tile is StructureTile structureTile && structureTile.ID == structureID);
+        TileBase tile = GetTile<TileBase>(worldTilemap, new Vector3Int(cellPosition.x, cellPosition.y, 0));
+        return tile is StructureTile structureTile && structureTile.ID == structureID;
     }
 
     #endregion
@@ -424,6 +421,7 @@ public class World : MonoBehaviour
         return neighbors;
     }
 
+    // Swizzle Methods
     static Vector2Int Swizzle2Int(Vector2Int vector)
     {
         return new Vector2Int(vector.y, vector.x);
@@ -460,6 +458,22 @@ public class World : MonoBehaviour
             new Vector3Int(bounds.yMin, bounds.xMin, bounds.zMin),
             new Vector3Int(bounds.size.y, bounds.size.x, bounds.size.z)
         );
+    }
+
+    // Pre-swizzled versions of Tilemap methods
+    static T GetTile<T>(Tilemap tilemap, Vector3Int cellPosition) where T : TileBase
+    {
+        return tilemap.GetTile<T>(Swizzle3Int(cellPosition));
+    }
+
+    static void SetTile(Tilemap tilemap, Vector3Int cellPosition, TileBase tile)
+    {
+        tilemap.SetTile(Swizzle3Int(cellPosition), tile);
+    }
+
+    static bool HasTile(Tilemap tilemap, Vector3Int cellPosition)
+    {
+        return tilemap.HasTile(Swizzle3Int(cellPosition));
     }
 
     #endregion
