@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-class EnemyPathfinding : MonoBehaviour
+class Pathfinding : MonoBehaviour
 {
     [SerializeField] bool usePathfindingManager = true; // Toggle to use centralized manager
     
