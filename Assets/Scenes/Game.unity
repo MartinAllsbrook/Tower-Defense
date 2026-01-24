@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PathfindingManager
   maxRequestsPerFrame: 1
-  useManager: 1
+  useManager: 0
 --- !u!4 &448608288
 Transform:
   m_ObjectHideFlags: 0
@@ -2212,7 +2212,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1074162244}
   - component: {fileID: 1074162243}
-  - component: {fileID: 1074162245}
   - component: {fileID: 1074162246}
   - component: {fileID: 1074162247}
   m_Layer: 0
@@ -2254,21 +2253,6 @@ Transform:
   - {fileID: 835494808}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1074162245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1074162242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a2d3c590c49f1b4490d4372bd2874ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GridDebug
-  showGrid: 0
-  world: {fileID: 1074162246}
-  tileDebugPrefab: {fileID: 3852751357694815128, guid: bc77b8deef3f6594cb99255b88825438, type: 3}
 --- !u!114 &1074162246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2311,6 +2295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorldDebug
   debugTile: {fileID: 11400000, guid: f29a5164deab69a4ebb49e326530bff1, type: 2}
   debugTilemap: {fileID: 1842484900}
+  createOnStart: 0
 --- !u!1 &1277166026
 GameObject:
   m_ObjectHideFlags: 0

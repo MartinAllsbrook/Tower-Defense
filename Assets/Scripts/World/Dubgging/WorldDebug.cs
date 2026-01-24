@@ -1,3 +1,4 @@
+using QFSW.QC;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -9,8 +10,17 @@ public class WorldDebug : MonoBehaviour
 {
     [SerializeField] private TileBase debugTile;
     [SerializeField] private SwizzledHFTTilemap debugTilemap;
+    [SerializeField] private bool createOnStart = false;
 
     void Start()
+    {
+        if (createOnStart)
+        {
+            CreateGrid();
+        }
+    }
+
+    void CreateGrid()
     {
         World world = GetComponent<World>();
         BoundsInt bounds = world.GetBounds();
@@ -34,5 +44,12 @@ public class WorldDebug : MonoBehaviour
         TileDebug tileDebug = placedTileObject.GetComponent<TileDebug>();
 
         tileDebug.SetCoordinates(new Vector2Int(vector3Int.x, vector3Int.y));        
+    }
+
+    [Command("ShowWorldGrid")]
+    static void ShowGridCommand()
+    {
+        WorldDebug worldDebug = FindFirstObjectByType<WorldDebug>();
+        worldDebug.CreateGrid();
     }
 }

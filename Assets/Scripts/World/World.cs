@@ -24,7 +24,7 @@ public class World : MonoBehaviour
     [SerializeField] WorldTile enemySpawnerTile;
 
     // Event that passes the updated grid to subscribers
-    public event Action OnWorldUpdate;
+    public static event Action OnWorldUpdate;
 
     // ThetaStar thetaStar;
     GridCell[,] grid;
@@ -275,13 +275,6 @@ public class World : MonoBehaviour
         
         bounds = worldTilemap.GetBounds();
         grid = CreateGrid(worldTilemap); // TODO: Major Swizzle
-
-        // Debugging Grid
-        GridDebug gridDebug = GetComponent<GridDebug>();
-        if (gridDebug != null)
-        {
-            gridDebug.HandleGridUpdate(grid, bounds);
-        }
 
         // Notify all subscribers with the updated grid
         OnWorldUpdate?.Invoke();

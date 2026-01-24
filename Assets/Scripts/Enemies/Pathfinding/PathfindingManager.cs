@@ -43,12 +43,12 @@ class PathfindingManager : MonoBehaviour
     
     void OnEnable()
     {
-        World.Instance.OnWorldUpdate += MarkGridDirty;
+        World.OnWorldUpdate += MarkGridDirty;
     }
     
     void OnDisable()
     {
-        World.Instance.OnWorldUpdate -= MarkGridDirty;
+        World.OnWorldUpdate -= MarkGridDirty;
     }
     #endregion
     

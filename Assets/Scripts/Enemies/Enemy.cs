@@ -39,13 +39,13 @@ public class Enemy : MonoBehaviour
     void OnEnable()
     {
         health.OnDeath += KillEnemy;
-        World.Instance.OnWorldUpdate += OnUpdateGrid;
+        World.OnWorldUpdate += OnUpdateGrid;
     }
 
     void OnDisable()
     {
         health.OnDeath -= KillEnemy;
-        World.Instance.OnWorldUpdate -= OnUpdateGrid;
+        World.OnWorldUpdate -= OnUpdateGrid;
     }
 
     void Start()

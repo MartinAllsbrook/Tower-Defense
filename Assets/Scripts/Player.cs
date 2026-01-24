@@ -1,14 +1,14 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
 
 public class Player : MonoBehaviour
 {   
-    // Singleton
+    // Static
     public static Player Instance { get; private set; }
+    public static event Action<int> OnMoneyChanged;
 
+    // Serialized fields
     [Header("Economy")]
     [SerializeField] int startingMoney = 100;
     [SerializeField] float passiveIncomeInterval = 1f;
@@ -17,7 +17,6 @@ public class Player : MonoBehaviour
     int money;
     Coroutine passiveIncomeCoroutine;
 
-    public event Action<int> OnMoneyChanged;
 
     void Awake()
     {

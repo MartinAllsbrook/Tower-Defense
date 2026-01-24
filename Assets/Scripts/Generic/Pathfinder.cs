@@ -12,12 +12,12 @@ class Pathfinder : MonoBehaviour
     #region Lifecycle
     void OnEnable()
     {
-        World.Instance.OnWorldUpdate += MarkGridDirty;
+        World.OnWorldUpdate += MarkGridDirty;
     }
 
     void OnDisable()
     {
-        World.Instance.OnWorldUpdate -= MarkGridDirty;
+        World.OnWorldUpdate -= MarkGridDirty;
     }
     #endregion
 

@@ -7,12 +7,12 @@ public class ResourcesUI : MonoBehaviour
 
     void OnEnable()
     {
-        Player.Instance.OnMoneyChanged += UpdateMoneyUI;
+        Player.OnMoneyChanged += UpdateMoneyUI;
     }
 
     void OnDisable()
     {
-        Player.Instance.OnMoneyChanged -= UpdateMoneyUI;
+        Player.OnMoneyChanged -= UpdateMoneyUI;
     }
 
     void UpdateMoneyUI(int amount)

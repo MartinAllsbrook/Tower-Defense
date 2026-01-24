@@ -18,12 +18,12 @@ public class PlaceStructureButton : MonoBehaviour
 
     void OnEnable()
     {
-        Player.Instance.OnMoneyChanged += UpdateAffordability;
+        Player.OnMoneyChanged += UpdateAffordability;
     }
 
     void OnDisable()
     {
-        Player.Instance.OnMoneyChanged -= UpdateAffordability;
+        Player.OnMoneyChanged -= UpdateAffordability;
     }
 
     public void Initialize(StructureTile structureTile, StructurePlacer structurePlacer)
