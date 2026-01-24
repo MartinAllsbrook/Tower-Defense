@@ -3,33 +3,23 @@ using UnityEngine;
 
 public class Turret : Structure
 {
+    [SerializeField] Cannon cannon;
+    
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
 
-
-    [Header("References")]
-    [SerializeField] Projectile projectilePrefab; 
-    [SerializeField] Transform cannonTransform;
-
-    [Header("Audio")]
-    [SerializeField] VariedAudioClip firingSound;
-
-    ObjectPool<Projectile> projectilePool;
-    int projectilePoolSize = 64;
-    float fireCooldown = 0f;
     Target target;
     TurretStats stats;
     
     void Start()
     {
         stats = GetComponent<TurretStats>();
-        projectilePool = new ObjectPool<Projectile>(projectilePrefab, projectilePoolSize);
         target = FindFirstObjectByType<Target>();
     }
 
     // Update is called once per frame
-    protected override void Update()
+    protected override void Update()    
     {
         base.Update();
         if (isVisualPreview) return;
@@ -46,9 +36,9 @@ public class Turret : Structure
             // Rotate cannon towards predicted position
             Vector2 direction = predictedPosition - (Vector2)transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            cannonTransform.rotation = Quaternion.Euler(0, 0, angle);
 
-            TryFire();
+            cannon.SetRotation(angle);
+            cannon.TryFire();
         }
     }
 
@@ -90,17 +80,5 @@ public class Turret : Structure
         return closest;
     }
 
-    void TryFire()
-    {
-        fireCooldown -= Time.deltaTime;
-        if (fireCooldown <= 0f)
-        {
-            Projectile projectile = projectilePool.Get(cannonTransform.position, cannonTransform.rotation);
-            projectile.Initialize(stats.Range, stats.ProjectileSpeed, stats.Damage, projectilePool);
-            
-            AudioManager.PlayAudioAt(firingSound, transform.position);
 
-            fireCooldown = 1f / stats.FireRate;
-        }
-    }
 }
