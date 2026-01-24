@@ -602,7 +602,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   speed: 1
-  maxOffset: 0.1
+  maxOffset: 0.5
   rotationSmoothing: 6
   velocitySmoothing: 6
 --- !u!114 &7653750364039619512
