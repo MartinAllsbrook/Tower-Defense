@@ -210,29 +210,30 @@ class ThetaStar
         };
     }
 
+    // TODO: this should be merged with the world's GetNeighbors method for consistency
     void AddNeighbors(Vector2Int position)
     {
         // When column (X coordinate) is even
         int[][] evenColOffsets = new int[][] {
-            new int[] {+1,  0}, // N
-            new int[] { 0, +1}, // NE
-            new int[] {-1, +1}, // SE
-            new int[] {-1,  0}, // S
+            new int[] { 0, +1}, // N
+            new int[] {+1,  0}, // NE
+            new int[] {+1, -1}, // SE
+            new int[] { 0, -1}, // S
             new int[] {-1, -1}, // SW
-            new int[] { 0, -1}  // NW
+            new int[] {-1,  0}  // NW
         };
-        // When column (X coordinate) is odd (shifted down, so upper diagonals have Y-1)
+        // When column (X coordinate) is odd 
         int[][] oddColOffsets = new int[][] {
-            new int[] {+1,  0}, // N
+            new int[] { 0, +1}, // N
             new int[] {+1, +1}, // NE
-            new int[] { 0, +1}, // SE
-            new int[] {-1,  0}, // S
-            new int[] { 0, -1}, // SW
-            new int[] {+1, -1}  // NW
+            new int[] {+1,  0}, // SE
+            new int[] { 0, -1}, // S
+            new int[] {-1,  0}, // SW
+            new int[] {-1, +1}  // NW
         };
 
-        int tilemapY = position.y + gridOffset.y;
-        int[][] offsets = (tilemapY % 2 == 0) ? evenColOffsets : oddColOffsets;
+        int tilemapX = position.x + gridOffset.x;
+        int[][] offsets = (tilemapX % 2 == 0) ? evenColOffsets : oddColOffsets;
 
         List<Node> neighbors = new List<Node>();
         foreach (int[] offset in offsets)

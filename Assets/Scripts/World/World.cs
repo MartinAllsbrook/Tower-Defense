@@ -428,7 +428,7 @@ public class World : MonoBehaviour
     #endregion
 
     #region Debugging
-    void TestMany()
+    void TestManyPoints()
     {
         // Debug.Log($"World Position: {new Vector3(0,0,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(0,0,0))}");
         // Debug.Log($"World Position: {new Vector3(1,1,0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(1,1,0))}");
@@ -457,11 +457,23 @@ public class World : MonoBehaviour
         // Debug.Log($"World Position: {new Vector3(-12.5f, -12.5f, 0)}, Cell Position: {worldTilemap.WorldToCell(new Vector3(-12.5f, -12.5f, 0))}");
     }
 
-    [Command]
-    static public void TestManyPoints()
+    [Command ("GetNeighbors")]
+    void GetNeighborsCommand(int x, int y)
+    {
+        Vector2Int cellPosition = new Vector2Int(x, y);
+        Vector2Int[] neighbors = GetNeighbors(cellPosition);
+        Debug.Log($"Neighbors of {cellPosition}:");
+        foreach (var neighbor in neighbors)
+        {
+            Debug.Log(neighbor);
+        }
+    }
+
+    [Command ("TestManyPoints")]
+    static public void TestManyPointsCommand()
     {
         World world = FindFirstObjectByType<World>();
-        world.TestMany();
+        world.TestManyPoints();
     } 
     #endregion
 }
