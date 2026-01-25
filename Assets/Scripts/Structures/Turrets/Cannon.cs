@@ -1,35 +1,69 @@
 using UnityEngine;
 
-public class Cannon : MonoBehaviour
+class Cannon : MonoBehaviour
 {
-    [SerializeField] Projectile projectilePrefab; 
     [SerializeField] Transform muzzleTransform;
-    [SerializeField] Animator animator;
+    [SerializeField] Projectile projectilePrefab;
 
-    ObjectPool<Projectile> projectilePool;
-
-    [Header("Audio")]
-    [SerializeField] VariedAudioClip firingSound;
-
-    TurretStats stats;
-
+    Animator animator;
     float fireCooldown = 0f;
+    bool isFiring = false;
+
+    // References passed from Turret
+    VariedAudioClip firingSound;
+    TurretStats stats;
+    ObjectPool<Projectile> projectilePool;
+    float firingOffset = 0f;
 
     void Awake()
     {
-        stats = GetComponentInParent<TurretStats>();
+        animator = GetComponent<Animator>();
+        projectilePool = new ObjectPool<Projectile>(projectilePrefab, 10, 0);
     }
 
-    void Start()
+    void Update()
     {
-        projectilePool = new ObjectPool<Projectile>(projectilePrefab, 32);
+        if (isFiring)
+            TryFire(stats.FireRate);
     }
 
-    public void TryFire()
+    public void Initialize(VariedAudioClip firingSound, TurretStats stats, ObjectPool<Projectile> projectilePool, float firingOffset)
     {
-        fireCooldown -= Time.deltaTime;
+        this.firingSound = firingSound;
+        this.stats = stats;
+        this.projectilePool = projectilePool;
+        this.firingOffset = firingOffset;
+        Reset();
+    }
+
+    public void StartFiring()
+    {
+        isFiring = true;
+    }
+
+    public void StopFiring()
+    {
+        isFiring = false;
+        Reset();
+    }
+
+    void Reset()
+    {
+        fireCooldown = firingOffset;
+    }
+
+    // Called on Update when firing
+    void TryFire(float fireRate)
+    {
         if (fireCooldown <= 0f)
+        {
             Fire();
+            fireCooldown = 1f / fireRate;
+        }
+        else
+        {
+            fireCooldown -= Time.deltaTime;
+        }
     }
 
     void Fire()
@@ -45,10 +79,5 @@ public class Cannon : MonoBehaviour
         animator.speed = stats.FireRate;
 
         fireCooldown = timeBetweenShots;
-    }
-
-    public void SetRotation(float angle)
-    {
-        transform.rotation = Quaternion.Euler(0, 0, (angle - 90f));
     }
 }

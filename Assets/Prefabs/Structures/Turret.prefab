@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7349971692108862743}
   - component: {fileID: 8545668489301301973}
   - component: {fileID: 6682991313655603355}
+  - component: {fileID: 2911963737390370784}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6809907661698028246, guid: a41f1744af784ac47a01e134b1522d0c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -115,6 +116,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2911963737390370784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608818035737810518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9bd8e7e90e9bef45afd897ca114205b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cannon
+  muzzleTransform: {fileID: 1556335592263810501}
+  projectilePrefab: {fileID: 3881861150001605543, guid: 5f868cb3c68e45b4fa4eb237e8cb46a7, type: 3}
 --- !u!1 &757007021079115474
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,8 +194,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5133751830972998746}
   - {fileID: 2324272235215124507}
+  - {fileID: 5133751830972998746}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-8492846012671865455
@@ -196,7 +211,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Defense
   tile: {fileID: 11400000, guid: b42dbad104a5f3348810a6d3e36fec73, type: 2}
-  cannon: {fileID: 4766360131988666227}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -297,7 +311,7 @@ GameObject:
   - component: {fileID: 5133751830972998746}
   - component: {fileID: 1297172770237292607}
   m_Layer: 0
-  m_Name: Base
+  m_Name: Foundation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -389,7 +403,7 @@ GameObject:
   - component: {fileID: 901549307594195954}
   - component: {fileID: 4766360131988666227}
   m_Layer: 0
-  m_Name: Turret
+  m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -458,7 +472,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: -539579915749326718, guid: 72f47f737e06a0a46bf0f16cf4266d0d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

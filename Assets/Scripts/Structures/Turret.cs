@@ -3,15 +3,22 @@ using UnityEngine;
 
 public class Turret : Structure
 {
-    [SerializeField] Cannon cannon;
-    
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
 
+    Gun gun;
     Target target;
     TurretStats stats;
-    
+
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        gun = GetComponentInChildren<Gun>();
+    }
+
     void Start()
     {
         stats = GetComponent<TurretStats>();
@@ -37,8 +44,12 @@ public class Turret : Structure
             Vector2 direction = predictedPosition - (Vector2)transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            cannon.SetRotation(angle);
-            cannon.TryFire();
+            gun.SetRotation(angle);
+            gun.SetFiring(true);
+        }
+        else    
+        {
+            gun.SetFiring(false);
         }
     }
 
