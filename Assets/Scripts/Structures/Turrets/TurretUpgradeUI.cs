@@ -9,12 +9,14 @@ public class TurretUpgradeUI : MonoBehaviour
     {
         if (upgradeSlotUIs.Length != 3)
             Debug.LogError("TurretUpgradeUI requires exactly 3 TurretUpgradeSlotUIs assigned.");
+
+        Close();
     }
 
     public void Open(TurretTile<Enum> turret)
     {
         gameObject.SetActive(true);
-        SetUpgrades(turret.GetUpgradeOptions());
+        SetUpgrades(turret.UpgradeOptions);
     }
 
     public void Close()
@@ -29,7 +31,7 @@ public class TurretUpgradeUI : MonoBehaviour
             if (i < upgrades.Length)
             {
                 var upgrade = upgrades[i];
-                upgradeSlotUIs[i].Set(upgrade.Name, upgrade.Keys, upgrade.Changes);
+                upgradeSlotUIs[i].Set(upgrade.Name, upgrade.StatChanges);
             }
             else
             {

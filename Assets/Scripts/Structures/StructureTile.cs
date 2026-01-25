@@ -14,14 +14,14 @@ public enum StructureType
 [CreateAssetMenu(fileName = "New Structure Tile", menuName = "Tiles/Structure Tile")]
 public class StructureTile : WorldTile
 {
-    [SerializeField] StructureType id;
+    [SerializeField] protected StructureType id;
 
     [Tooltip("Lower number means higher priority")]
-    [SerializeField] int priority; 
-    [SerializeField] float maxHealth;
-    [SerializeField] Sprite icon;
-    [SerializeField] string structureName;
-    [SerializeField] int cost;
+    [SerializeField] protected int priority; 
+    [SerializeField] protected float maxHealth;
+    [SerializeField] protected Sprite icon;
+    [SerializeField] protected string structureName;
+    [SerializeField] protected int cost;
 
     // Data accessors
     public StructureType ID => id;

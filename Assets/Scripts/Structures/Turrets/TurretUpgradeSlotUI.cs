@@ -6,7 +6,6 @@ using Unity.VisualScripting;
 public class TurretUpgradeSlotUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI nameText;
-    [SerializeField] RectTransform statChangesContainer;
     [SerializeField] TextMeshProUGUI[] statChangeTexts;
     [SerializeField] Color green;
     [SerializeField] Color red;
@@ -21,15 +20,18 @@ public class TurretUpgradeSlotUI : MonoBehaviour
             Debug.LogError("TurretUpgradeSlotUI requires at least 6 stat change TextMeshProUGUI elements assigned.");
     }
 
-    public void Set(string name, Enum[] stats, float[] changes)
+    public void Set(string name, TurretStat<Enum>[] statChanges)
     {
         nameText.text = name;
-        for (int i = 0; i < stats.Length; i++)
+        for (int i = 0; i < statChanges.Length; i++)
         {
-            string sign = changes[i] >= 0 ? "+" : "-";
-            statChangeTexts[i].text = $"{stats[i]}: {sign}{Mathf.Abs(changes[i])}";
+            Enum key = statChanges[i].Key;
+            float value = statChanges[i].Value;
 
-            statChangeTexts[i].color = changes[i] >= 0 ? green : red;
+            string sign = value >= 0 ? "+" : "-";
+            statChangeTexts[i].text = $"{key}: {sign}{Mathf.Abs(value)}";
+
+            statChangeTexts[i].color = value >= 0 ? green : red;
         }
     }
 }

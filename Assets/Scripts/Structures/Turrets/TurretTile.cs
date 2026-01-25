@@ -1,20 +1,21 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[Serializable]
 public struct TurretUpgrade<StatKeys> where StatKeys : Enum
 {
     public string Name;
-    public StatKeys[] Keys;
-    public float[] Changes;
+    public TurretStat<StatKeys> [] StatChanges;
 
-    public TurretUpgrade(string name, StatKeys[] keys, float[] changes)
+    public TurretUpgrade(string name, TurretStat<StatKeys> [] statChanges)
     {
         Name = name;
-        Keys = keys;
-        Changes = changes;
+        StatChanges = statChanges;
     }
 }
 
+[Serializable]
 public struct TurretStat<StatKeys> where StatKeys : Enum
 {
     public StatKeys Key;
@@ -27,9 +28,12 @@ public struct TurretStat<StatKeys> where StatKeys : Enum
     }
 }
 
-public abstract class TurretTile<StatKeys> : StructureTile where StatKeys : Enum
+public class TurretTile<StatKeys> : StructureTile where StatKeys : Enum
 {
-    public abstract TurretStat<StatKeys>[] BaseStats { get; }
 
-    public abstract TurretUpgrade<StatKeys>[] UpgradeOptions { get; }
+    [SerializeField] protected TurretStat<StatKeys>[] baseStats;
+    [SerializeField] protected TurretUpgrade<StatKeys>[] upgradeOptions;
+
+    public TurretStat<StatKeys>[] BaseStats { get { return baseStats; } }
+    public TurretUpgrade<StatKeys>[] UpgradeOptions { get { return upgradeOptions; } }
 }

@@ -29,21 +29,21 @@ public class TurretStats<StatKeys> where StatKeys : Enum
 
     public void ApplyUpgrade(TurretUpgrade<StatKeys> upgrade)
     {
-        for (int i = 0; i < upgrade.Keys.Length; i++)
+        for (int i = 0; i < upgrade.StatChanges.Length; i++)
         {
-            ImproveStat(upgrade.Keys[i], upgrade.Changes[i]);
+            ImproveStat(upgrade.StatChanges[i]);
         }
     }
 
-    void ImproveStat(StatKeys stat, float percentIncrease)
+    void ImproveStat(TurretStat<StatKeys> statChange)
     {
-        if (statValues.ContainsKey(stat))
+        if (statValues.ContainsKey(statChange.Key))
         {
-            statValues[stat] *= (1f + percentIncrease);
+            statValues[statChange.Key] *= (1f + statChange.Value / 100f);
         }
         else
         {
-            Debug.LogWarning($"StatKeys {stat} not found in TurretStats. Cannot improve.");
+            Debug.LogWarning($"StatKeys {statChange.Key} not found in TurretStats. Cannot improve.");
         }
     }
 }

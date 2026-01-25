@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fcf962aa86cc614781a279442efd98d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GunTurret
-  tile: {fileID: 0}
+  tile: {fileID: 11400000, guid: 3b4cf2bc6ad724344bff8725da4bdc1e, type: 2}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64

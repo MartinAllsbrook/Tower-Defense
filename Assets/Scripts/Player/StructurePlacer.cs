@@ -203,12 +203,25 @@ public class StructurePlacer : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.zero, rayDistance, structureLayer);
         if (hit.collider != null)
         {
-            // // Check if the hit object is a Defense (Turret) instance
-            // Turret turret = hit.collider.GetComponent<Turret>();
-            // if (turret != null)
-            // {
-            //     // upgradeMenu.Open(turret.GetComponent<TurretStats<Enum>>().GetAvailableUpgrades(), turret.GetComponent<TurretStats>());
-            // }
+            Debug.Log("Structure clicked.");
+            // Check if the hit object is a Defense (Turret) instance
+            Structure structure = hit.collider.GetComponent<Structure>();
+            if (structure != null && structure.Tile.ID == StructureType.Turret)
+            {
+                Turret turret = structure as Turret;
+                if (turret == null)
+                {
+                    Debug.LogWarning("Clicked structure is not a Turret instance.");
+                    return;
+                }
+
+                Debug.Log($"Turret of type {turret.Tile.Name} clicked.");
+
+                // Open the upgrade menu for this turret
+                Debug.Log("Opening upgrade menu for turret.");
+                Debug.Log("Turret clicked, opening upgrade menu.");
+                upgradeMenu.Open(turret.Tile as TurretTile<Enum>);
+            }
         }
     }
 

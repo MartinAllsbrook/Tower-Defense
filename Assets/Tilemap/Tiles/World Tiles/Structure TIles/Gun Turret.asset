@@ -12,16 +12,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0efbf7eb9cdb81940b7354a72fc8e82e, type: 3}
   m_Name: Gun Turret
   m_EditorClassIdentifier: Assembly-CSharp::GunTurretTile
-  m_DefaultSprite: {fileID: 0}
-  m_DefaultGameObject: {fileID: 0}
-  m_DefaultColliderType: 1
+  m_DefaultSprite: {fileID: -4575850169870368220, guid: 831f754361d3f3b47847d6bb7dc7fff4, type: 3}
+  m_DefaultGameObject: {fileID: 2786205599803057699, guid: 9881d372c4daad441bace44a49ef33e8, type: 3}
+  m_DefaultColliderType: 0
   m_TilingRules: []
-  m_FlatTop: 0
-  tag: 0
-  id: 0
-  priority: 0
-  maxHealth: 0
-  icon: {fileID: 0}
-  structureName: 
-  cost: 0
-  baseStats: []
+  m_FlatTop: 1
+  tag: 1
+  id: 100
+  priority: 20
+  maxHealth: 50
+  icon: {fileID: 21300000, guid: acc90b25d5b946b4b8e40f604b3799bd, type: 3}
+  structureName: Turret
+  cost: 50
+  baseStats:
+  - Key: 0
+    Value: 5
+  - Key: 1
+    Value: 1
+  - Key: 2
+    Value: 10
+  - Key: 3
+    Value: 10
+  - Key: 4
+    Value: 1
+  - Key: 5
+    Value: 0.1
+  upgradeOptions:
+  - Name: Firing Mechanism
+    StatChanges:
+    - Key: 1
+      Value: 10
+    - Key: 5
+      Value: -5
+  - Name: Barrel
+    StatChanges:
+    - Key: 0
+      Value: 10
+    - Key: 3
+      Value: 10
+    - Key: 4
+      Value: 10
+    - Key: 5
+      Value: 10
+  - Name: Caliber
+    StatChanges:
+    - Key: 2
+      Value: 10
+    - Key: 4
+      Value: 5
+    - Key: 3
+      Value: -10

@@ -1,15 +1,15 @@
 using System;
 using UnityEngine;
 
-public abstract class Turret<StatKey> : Structure where StatKey : Enum
+public abstract class Turret : Structure
 {
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
-    [SerializeField] TurretTile<StatKey> turretTile;
+    [SerializeField] TurretTile<Enum> turretTile;
 
     // Protected
-    protected TurretStats<StatKey> stats;
+    protected TurretStats<Enum> stats;
     protected TurretSwivel swivel;
 
     // Private
@@ -19,7 +19,7 @@ public abstract class Turret<StatKey> : Structure where StatKey : Enum
     {
         base.Awake();
 
-        stats = new TurretStats<StatKey>(turretTile);
+        stats = new TurretStats<Enum>(turretTile);
 
         swivel = GetComponentInChildren<TurretSwivel>();
     }
