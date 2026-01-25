@@ -11,7 +11,7 @@ class Cannon : MonoBehaviour
 
     // References passed from Turret
     VariedAudioClip firingSound;
-    TurretStats stats;
+    TurretStats<GunTurretStat> stats;
     ObjectPool<Projectile> projectilePool;
     float firingOffset = 0f;
 
@@ -24,10 +24,10 @@ class Cannon : MonoBehaviour
     void Update()
     {
         if (isFiring)
-            TryFire(stats.FireRate);
+            TryFire(stats.GetStat(GunTurretStat.FireRate));
     }
 
-    public void Initialize(VariedAudioClip firingSound, TurretStats stats, ObjectPool<Projectile> projectilePool, float firingOffset)
+    public void Initialize(VariedAudioClip firingSound, TurretStats<GunTurretStat> stats, ObjectPool<Projectile> projectilePool, float firingOffset)
     {
         this.firingSound = firingSound;
         this.stats = stats;
@@ -69,14 +69,14 @@ class Cannon : MonoBehaviour
     void Fire()
     {
         Projectile projectile = projectilePool.Get(muzzleTransform.position, muzzleTransform.rotation);
-        projectile.Initialize(stats.Range, stats.ProjectileSpeed, stats.Damage, projectilePool);
+        projectile.Initialize(stats.GetStat(GunTurretStat.Range), stats.GetStat(GunTurretStat.ProjectileSpeed), stats.GetStat(GunTurretStat.Damage), projectilePool);
 
         AudioManager.PlayAudioAt(firingSound, transform.position);
 
-        float timeBetweenShots = 1f / stats.FireRate;
+        float timeBetweenShots = 1f / stats.GetStat(GunTurretStat.FireRate);
 
         animator.SetTrigger("Fire");
-        animator.speed = stats.FireRate;
+        animator.speed = stats.GetStat(GunTurretStat.FireRate);
 
         fireCooldown = timeBetweenShots;
     }

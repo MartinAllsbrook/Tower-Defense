@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-class TurretStats<StatKeys> where StatKeys : Enum
+public class TurretStats<StatKeys> where StatKeys : Enum
 {   
     Dictionary<StatKeys, float> statValues = new Dictionary<StatKeys, float>();
-
 
     public TurretStats(TurretTile<StatKeys> turretTile)
     {

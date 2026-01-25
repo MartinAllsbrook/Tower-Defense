@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 
-[Serializable]
 public struct TurretUpgrade<StatKeys> where StatKeys : Enum
 {
     public string Name;
@@ -16,7 +15,6 @@ public struct TurretUpgrade<StatKeys> where StatKeys : Enum
     }
 }
 
-[Serializable]
 public struct TurretStat<StatKeys> where StatKeys : Enum
 {
     public StatKeys Key;
@@ -31,9 +29,7 @@ public struct TurretStat<StatKeys> where StatKeys : Enum
 
 public abstract class TurretTile<StatKeys> : StructureTile where StatKeys : Enum
 {
-    [SerializeField] TurretStat<StatKeys>[] baseStats;
+    public abstract TurretStat<StatKeys>[] BaseStats { get; }
 
-    public TurretStat<StatKeys>[] BaseStats { get { return baseStats; } }
-
-    abstract public TurretUpgrade<StatKeys>[] GetUpgradeOptions();
+    public abstract TurretUpgrade<StatKeys>[] UpgradeOptions { get; }
 }

@@ -6,13 +6,14 @@ public abstract class Turret<StatKey> : Structure where StatKey : Enum
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
-
     [SerializeField] TurretTile<StatKey> turretTile;
 
+    // Protected
+    protected TurretStats<StatKey> stats;
+    protected TurretSwivel swivel;
 
-    Gun gun;
+    // Private
     Target target;
-    TurretStats<StatKey> stats;
 
     protected override void Awake()
     {
@@ -20,7 +21,7 @@ public abstract class Turret<StatKey> : Structure where StatKey : Enum
 
         stats = new TurretStats<StatKey>(turretTile);
 
-        gun = GetComponentInChildren<Gun>();
+        swivel = GetComponentInChildren<TurretSwivel>();
     }
 
     void Start()
@@ -28,38 +29,12 @@ public abstract class Turret<StatKey> : Structure where StatKey : Enum
         target = FindFirstObjectByType<Target>();
     }
 
-    // Update is called once per frame
-    protected override void Update()    
-    {
-        base.Update();
-        if (isVisualPreview) return;
+    abstract protected float Range { get; }
 
-        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight();
-        if (closestEnemy != null)
-        {
-            // Predictive aiming
-            Vector2 enemyVelocity = closestEnemy.attachedRigidbody.linearVelocity;
-            float distanceToEnemy = Vector2.Distance(transform.position, closestEnemy.transform.position);
-            float timeToImpact = distanceToEnemy / stats.ProjectileSpeed;
-            Vector2 predictedPosition = (Vector2)closestEnemy.transform.position + enemyVelocity * timeToImpact;
-            
-            // Rotate cannon towards predicted position
-            Vector2 direction = predictedPosition - (Vector2)transform.position;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-            gun.SetRotation(angle);
-            gun.SetFiring(true);
-        }
-        else    
-        {
-            gun.SetFiring(false);
-        }
-    }
-
-    Collider2D FindClosestEnemyWithLineOfSight()
+    protected Collider2D FindClosestEnemyWithLineOfSight()
     {
         // Perform a 2D circle cast to find enemies in range
-        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, stats.Range, enemyLayer);
+        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, Range, enemyLayer);
         if (enemiesInRange.Length == 0) return null;
 
         Collider2D closest = null;

@@ -19,7 +19,7 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] RuleTile removeIconTile;
     [SerializeField] VariedAudioClip placeSound;
     [SerializeField] LayerMask structureLayer;
-    [SerializeField] UpgradeMenu upgradeMenu;
+    [SerializeField] TurretUpgradeUI upgradeMenu;
 
     public StructureTile[] Structures => structures;    
 
@@ -203,12 +203,12 @@ public class StructurePlacer : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.zero, rayDistance, structureLayer);
         if (hit.collider != null)
         {
-            // Check if the hit object is a Defense (Turret) instance
-            Turret turret = hit.collider.GetComponent<Turret>();
-            if (turret != null)
-            {
-                // upgradeMenu.Open(turret.GetComponent<TurretStats<Enum>>().GetAvailableUpgrades(), turret.GetComponent<TurretStats>());
-            }
+            // // Check if the hit object is a Defense (Turret) instance
+            // Turret turret = hit.collider.GetComponent<Turret>();
+            // if (turret != null)
+            // {
+            //     // upgradeMenu.Open(turret.GetComponent<TurretStats<Enum>>().GetAvailableUpgrades(), turret.GetComponent<TurretStats>());
+            // }
         }
     }
 
