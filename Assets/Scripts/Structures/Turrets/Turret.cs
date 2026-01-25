@@ -1,27 +1,30 @@
 using System;
 using UnityEngine;
 
-public class Turret : Structure
+public abstract class Turret<StatKey> : Structure where StatKey : Enum
 {
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
 
+    [SerializeField] TurretTile<StatKey> turretTile;
+
+
     Gun gun;
     Target target;
-    TurretStats stats;
-
+    TurretStats<StatKey> stats;
 
     protected override void Awake()
     {
         base.Awake();
+
+        stats = new TurretStats<StatKey>(turretTile);
 
         gun = GetComponentInChildren<Gun>();
     }
 
     void Start()
     {
-        stats = GetComponent<TurretStats>();
         target = FindFirstObjectByType<Target>();
     }
 

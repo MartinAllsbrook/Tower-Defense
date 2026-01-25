@@ -207,7 +207,7 @@ public class StructurePlacer : MonoBehaviour
             Turret turret = hit.collider.GetComponent<Turret>();
             if (turret != null)
             {
-                upgradeMenu.Open(turret.GetComponent<TurretStats>().GetAvailableUpgrades(), turret.GetComponent<TurretStats>());
+                // upgradeMenu.Open(turret.GetComponent<TurretStats<Enum>>().GetAvailableUpgrades(), turret.GetComponent<TurretStats>());
             }
         }
     }

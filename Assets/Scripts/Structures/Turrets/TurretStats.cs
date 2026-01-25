@@ -1,85 +1,50 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum UpgradeType
-{
-    Range,
-    FireRate,
-    Damage,
-}
+class TurretStats<StatKeys> where StatKeys : Enum
+{   
+    Dictionary<StatKeys, float> statValues = new Dictionary<StatKeys, float>();
 
-class TurretStats : MonoBehaviour
-{
-    List<UpgradeType> upgrades = new List<UpgradeType>();
 
-    Dictionary<UpgradeType, int> upgradeCosts = new Dictionary<UpgradeType, int>()
+    public TurretStats(TurretTile<StatKeys> turretTile)
     {
-        { UpgradeType.Range, 0 },
-        { UpgradeType.FireRate, 0 },
-        { UpgradeType.Damage, 0 },
-    };
-    
-    [SerializeField] float baseRange = 5f;
-    [SerializeField] float baseFireRate = 1f;
-    [SerializeField] float baseDamage = 10f;
-    [SerializeField] float baseProjectileSpeed = 15f;
-
-    float range;
-    float fireRate;
-    float damage;
-    float projectileSpeed;
-
-    public float Range => range;
-    public float FireRate => fireRate;
-    public float Damage => damage;
-    public float ProjectileSpeed => projectileSpeed;
-
-    public int GetUpgradeCost(UpgradeType upgrade)
-    {
-        return upgradeCosts[upgrade];
-    }
-
-    public int GetUpgradeLevel(UpgradeType upgrade)
-    {
-        int level = 0;
-        foreach (var up in upgrades)
+        foreach (var stat in turretTile.BaseStats)
         {
-            if (up == upgrade)
-                level++;
+            statValues[stat.Key] = stat.Value;
         }
-        return level;
-    }   
-
-    void Start()
-    {
-        range = baseRange;
-        fireRate = baseFireRate;
-        damage = baseDamage;
-        projectileSpeed = baseProjectileSpeed;
-        upgrades = new List<UpgradeType>();
     }
 
-    public void ApplyUpgrade(UpgradeType upgrade)
+    public float GetStat(StatKeys stat)
     {
-        upgrades.Add(upgrade);
-        switch (upgrade)
+        if (statValues.TryGetValue(stat, out float value))
         {
-            case UpgradeType.Range:
-                range *= 1.2f;
-                break;
-            case UpgradeType.FireRate:
-                fireRate *= 1.2f;
-                break;
-            case UpgradeType.Damage:
-                damage *= 1.2f;
-                break;
+            return value;
         }
-
-        Debug.Log($"Applied upgrade: {upgrade}. New level: {GetUpgradeLevel(upgrade)}. Stats - Range: {range}, FireRate: {fireRate}, Damage: {damage}");
+        else
+        {
+            Debug.LogWarning($"StatKeys {stat} not found in TurretStats.");
+            return 0f;
+        }
     }
 
-    public UpgradeType[] GetAvailableUpgrades()
+    public void ApplyUpgrade(TurretUpgrade<StatKeys> upgrade)
     {
-        return new UpgradeType[] { UpgradeType.Range, UpgradeType.FireRate, UpgradeType.Damage };
+        for (int i = 0; i < upgrade.Keys.Length; i++)
+        {
+            ImproveStat(upgrade.Keys[i], upgrade.Changes[i]);
+        }
+    }
+
+    void ImproveStat(StatKeys stat, float percentIncrease)
+    {
+        if (statValues.ContainsKey(stat))
+        {
+            statValues[stat] *= (1f + percentIncrease);
+        }
+        else
+        {
+            Debug.LogWarning($"StatKeys {stat} not found in TurretStats. Cannot improve.");
+        }
     }
 }
