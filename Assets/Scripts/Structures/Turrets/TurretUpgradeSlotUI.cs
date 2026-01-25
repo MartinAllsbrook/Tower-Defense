@@ -14,17 +14,25 @@ public class TurretUpgradeSlotUI : MonoBehaviour
     public event Action OnHoverEnter;
     public event Action OnHoverExit;
 
+    int maxStatChanges = 6;
+
     void Awake()
     {
-        if (statChangeTexts.Length < 6)
-            Debug.LogError("TurretUpgradeSlotUI requires at least 6 stat change TextMeshProUGUI elements assigned.");
+        if (statChangeTexts.Length != maxStatChanges)
+            Debug.LogError($"TurretUpgradeSlotUI requires exactly {maxStatChanges} elements assigned.");
     }
 
     public void Set(string name, TurretStat<Enum>[] statChanges)
     {
         nameText.text = name;
-        for (int i = 0; i < statChanges.Length; i++)
+        for (int i = 0; i < maxStatChanges; i++)
         {
+            if (i >= statChanges.Length)
+            {
+                statChangeTexts[i].text = "";
+                continue;
+            }
+            
             Enum key = statChanges[i].Key;
             float value = statChanges[i].Value;
 
