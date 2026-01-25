@@ -28,7 +28,13 @@ public struct TurretStat<StatKeys> where StatKeys : Enum
     }
 }
 
-public class TurretTile<StatKeys> : StructureTile where StatKeys : Enum
+// Non-generic base class for polymorphic access
+public abstract class TurretTile : StructureTile
+{
+    public abstract TurretUpgrade<Enum>[] GetUpgradeOptions();
+}
+
+public class TurretTile<StatKeys> : TurretTile where StatKeys : Enum
 {
 
     [SerializeField] protected TurretStat<StatKeys>[] baseStats;
@@ -36,4 +42,21 @@ public class TurretTile<StatKeys> : StructureTile where StatKeys : Enum
 
     public TurretStat<StatKeys>[] BaseStats { get { return baseStats; } }
     public TurretUpgrade<StatKeys>[] UpgradeOptions { get { return upgradeOptions; } }
+
+    public override TurretUpgrade<Enum>[] GetUpgradeOptions()
+    {
+        // Convert the strongly-typed upgrades to the base Enum type
+        TurretUpgrade<Enum>[] result = new TurretUpgrade<Enum>[upgradeOptions.Length];
+        for (int i = 0; i < upgradeOptions.Length; i++)
+        {
+            var upgrade = upgradeOptions[i];
+            TurretStat<Enum>[] stats = new TurretStat<Enum>[upgrade.StatChanges.Length];
+            for (int j = 0; j < upgrade.StatChanges.Length; j++)
+            {
+                stats[j] = new TurretStat<Enum>(upgrade.StatChanges[j].Key, upgrade.StatChanges[j].Value);
+            }
+            result[i] = new TurretUpgrade<Enum>(upgrade.Name, stats);
+        }
+        return result;
+    }
 }

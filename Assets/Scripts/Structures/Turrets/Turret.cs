@@ -1,9 +1,12 @@
 using System;
 using UnityEngine;
 
-public class Turret : Structure {}
+public abstract class Turret : Structure 
+{
+    public abstract TurretTile GetTurretTile();
+}
 
-public abstract class GTurret<Stat> : Turret where Stat : Enum
+public abstract class Turret<Stat> : Turret where Stat : Enum
 {
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
@@ -29,6 +32,11 @@ public abstract class GTurret<Stat> : Turret where Stat : Enum
     void Start()
     {
         target = FindFirstObjectByType<Target>();
+    }
+
+    public override TurretTile GetTurretTile()
+    {
+        return turretTile;
     }
 
     abstract protected float Range { get; }

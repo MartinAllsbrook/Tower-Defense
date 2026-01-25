@@ -13,10 +13,10 @@ public class TurretUpgradeUI : MonoBehaviour
         Close();
     }
 
-    public void Open(TurretTile<Enum> turret)
+    public void Open(TurretTile turret)
     {
         gameObject.SetActive(true);
-        SetUpgrades(turret.UpgradeOptions);
+        SetUpgrades(turret.GetUpgradeOptions());
     }
 
     public void Close()
