@@ -205,21 +205,11 @@ public class StructurePlacer : MonoBehaviour
         {
             Debug.Log("Structure clicked.");
             // Check if the hit object is a Defense (Turret) instance
-            Structure structure = hit.collider.GetComponent<Structure>();
-            if (structure != null && structure.Tile.ID == StructureType.Turret)
+            Turret turret = hit.collider.GetComponent<Turret>();
+            if (turret != null)
             {
-                Turret turret = structure as Turret;
-                if (turret == null)
-                {
-                    Debug.LogWarning("Clicked structure is not a Turret instance.");
-                    return;
-                }
-
-                Debug.Log($"Turret of type {turret.Tile.Name} clicked.");
-
-                // Open the upgrade menu for this turret
-                Debug.Log("Opening upgrade menu for turret.");
-                Debug.Log("Turret clicked, opening upgrade menu.");
+                Debug.Log(turret.Tile);
+                Debug.Log(turret.Tile as TurretTile<Enum>);
                 upgradeMenu.Open(turret.Tile as TurretTile<Enum>);
             }
         }

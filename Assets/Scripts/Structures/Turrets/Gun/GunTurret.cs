@@ -1,6 +1,6 @@
 using UnityEngine;
 
-class GunTurret : Turret
+class GunTurret : GTurret<GunTurretStat>
 {
 
     protected override void Awake()

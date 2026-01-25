@@ -216,7 +216,7 @@ MonoBehaviour:
   obstacleLayers:
     serializedVersion: 2
     m_Bits: 8
-  turretTile: {fileID: 0}
+  turretTile: {fileID: 11400000, guid: 3b4cf2bc6ad724344bff8725da4bdc1e, type: 2}
 --- !u!114 &5995121587222791593
 MonoBehaviour:
   m_ObjectHideFlags: 0
