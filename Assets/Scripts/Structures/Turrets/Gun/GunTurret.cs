@@ -2,10 +2,18 @@ using UnityEngine;
 
 class GunTurret : Turret<GunTurretStat>
 {
+    bool isFiring = false;
+    [SerializeField] Cannon[] cannons;
+    [SerializeField] VariedAudioClip firingSound;
+
 
     protected override void Awake()
     {
         base.Awake();
+        foreach (var cannon in cannons)
+        {
+            cannon.Initialize(stats, Random.Range(0f, 1f / stats.GetStat(GunTurretStat.FireRate)));
+        }
     }
 
     protected override void Update()    
@@ -27,17 +35,16 @@ class GunTurret : Turret<GunTurretStat>
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
             swivel.SetRotation(angle);
-            // swivel.SetFiring(true);
+            SetFiring(true);
         }
         else    
         {
-            // swivel.SetFiring(false);
+            SetFiring(false);
         }
     }
 
     protected override float Range => stats.GetStat(GunTurretStat.Range);
 
-    /* 
     public void AddCannon()
     {
         // TODO: Implement cannon addition
@@ -73,5 +80,5 @@ class GunTurret : Turret<GunTurretStat>
             isFiring = false;
         }
     } 
-    */
+    
 }

@@ -12,7 +12,4 @@ public enum GunTurretStat
 }
 
 [CreateAssetMenu(fileName = "New Gun Turret Tile", menuName = "Tiles/Gun Turret")]
-public class GunTurretTile : TurretTile<GunTurretStat>
-{
-    
-}
+public class GunTurretTile : TurretTile<GunTurretStat> {}

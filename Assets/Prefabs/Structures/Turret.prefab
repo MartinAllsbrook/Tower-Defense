@@ -130,6 +130,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cannon
   muzzleTransform: {fileID: 1556335592263810501}
   projectilePrefab: {fileID: 3881861150001605543, guid: 5f868cb3c68e45b4fa4eb237e8cb46a7, type: 3}
+  firingSound:
+    clips:
+    - {fileID: 8300000, guid: 03cee655fd5469543918b5faed5478a4, type: 3}
+    volume: 0.5
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
 --- !u!1 &757007021079115474
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,6 +224,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   turretTile: {fileID: 11400000, guid: 3b4cf2bc6ad724344bff8725da4bdc1e, type: 2}
+  cannons:
+  - {fileID: 2911963737390370784}
+  firingSound:
+    clips: []
+    volume: 0.5
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
 --- !u!114 &5995121587222791593
 MonoBehaviour:
   m_ObjectHideFlags: 0
