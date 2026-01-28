@@ -4,6 +4,8 @@ using UnityEngine;
 public abstract class Turret : Structure 
 {
     public abstract TurretTile GetTurretTile();
+    public abstract TurretStats Stats { get;  }
+
 }
 
 public abstract class Turret<Stat> : Turret where Stat : Enum
@@ -14,9 +16,10 @@ public abstract class Turret<Stat> : Turret where Stat : Enum
     [SerializeField] TurretTile<Stat> turretTile;
 
     // Protected
-    protected TurretStats<Stat> stats;
+    protected TurretStats stats;
     protected TurretSwivel swivel;
 
+    public override TurretStats Stats => stats;
     // Private
     Target target;
 
@@ -24,7 +27,8 @@ public abstract class Turret<Stat> : Turret where Stat : Enum
     {
         base.Awake();
 
-        stats = new TurretStats<Stat>(turretTile);
+        if (turretTile.VerifyAllBaseStatsExist())
+            stats = new TurretStats(turretTile.GetKeysInt(), turretTile.GetBaseValues());
 
         swivel = GetComponentInChildren<TurretSwivel>();
     }

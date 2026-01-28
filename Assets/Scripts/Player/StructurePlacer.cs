@@ -23,6 +23,7 @@ public class StructurePlacer : MonoBehaviour
 
     public StructureTile[] Structures => structures;    
 
+
     Player player;
     SwizzledHFTTilemap previewTilemap;
     StructureTile currentStructure;
@@ -195,6 +196,9 @@ public class StructurePlacer : MonoBehaviour
     {
         mouseDown = true;
 
+        if (mode != Mode.None)
+            return;
+
         // Raycast from camera to mouse position, check for hit on structure layer
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2 rayOrigin = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
@@ -208,8 +212,7 @@ public class StructurePlacer : MonoBehaviour
             Turret turret = hit.collider.GetComponent<Turret>();
             if (turret != null)
             {
-                Debug.Log(turret.GetTurretTile());
-                upgradeMenu.Open(turret.GetTurretTile());
+                upgradeMenu.Open(turret);
             }
         }
     }

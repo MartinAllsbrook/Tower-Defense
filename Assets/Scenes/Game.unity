@@ -273,7 +273,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 76851920}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 76851921}
+        m_TargetAssemblyTypeName: TurretUpgradeSlotUI, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &76851920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,7 +336,7 @@ MonoBehaviour:
   - {fileID: 746066798}
   - {fileID: 1108272460}
   - {fileID: 999147544}
-  green: {r: 0.1333333, g: 0.5450981, b: 0.1333333, a: 1}
+  green: {r: 0.1960784, g: 0.8039216, b: 0.1960784, a: 1}
   red: {r: 0.8627452, g: 0.07843138, b: 0.2352941, a: 1}
 --- !u!222 &76851922
 CanvasRenderer:
@@ -732,7 +744,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 327841204}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 327841206}
+        m_TargetAssemblyTypeName: TurretUpgradeSlotUI, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &327841204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -792,7 +816,7 @@ MonoBehaviour:
   - {fileID: 2026080303}
   - {fileID: 353626477}
   green: {r: 0.1960784, g: 0.8039216, b: 0.1960784, a: 1}
-  red: {r: 0.8627452, g: 0.07843138, b: 0.2352941, a: 1}
+  red: {r: 0.8627452, g: 0.1921569, b: 0.1960784, a: 1}
 --- !u!1 &342861168
 GameObject:
   m_ObjectHideFlags: 0
@@ -8258,7 +8282,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2040117144}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2040117145}
+        m_TargetAssemblyTypeName: TurretUpgradeSlotUI, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2040117144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8309,7 +8345,7 @@ MonoBehaviour:
   - {fileID: 1377209708}
   - {fileID: 1265355722}
   - {fileID: 1398245143}
-  green: {r: 0.1333333, g: 0.5450981, b: 0.1333333, a: 1}
+  green: {r: 0.1960784, g: 0.8039216, b: 0.1960784, a: 1}
   red: {r: 0.8627452, g: 0.07843138, b: 0.2352941, a: 1}
 --- !u!222 &2040117146
 CanvasRenderer:

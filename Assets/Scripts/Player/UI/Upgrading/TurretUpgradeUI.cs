@@ -5,6 +5,8 @@ public class TurretUpgradeUI : MonoBehaviour
 {
     [SerializeField] TurretUpgradeSlotUI[] upgradeSlotUIs;
 
+    Turret turret;
+
     void Awake()
     {
         if (upgradeSlotUIs.Length != 3)
@@ -13,10 +15,12 @@ public class TurretUpgradeUI : MonoBehaviour
         Close();
     }
 
-    public void Open(TurretTile turret)
+    public void Open(Turret turret)
     {
         gameObject.SetActive(true);
-        SetUpgrades(turret.GetUpgradeOptions());
+        this.turret = turret;
+        TurretTile turretTile = turret.Tile as TurretTile;
+        SetUpgrades(turretTile.GetUpgradeOptions());
     }
 
     public void Close()
@@ -24,19 +28,22 @@ public class TurretUpgradeUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void SetUpgrades(TurretUpgrade<Enum>[] upgrades)
+    public void SetUpgrades(TurretUpgrade[] upgrades)
     {
         for (int i = 0; i < upgradeSlotUIs.Length; i++)
         {
             if (i < upgrades.Length)
             {
                 var upgrade = upgrades[i];
-                upgradeSlotUIs[i].Set(upgrade.Name, upgrade.StatChanges);
-            }
-            else
-            {
-                upgradeSlotUIs[i].gameObject.SetActive(false);
+                upgradeSlotUIs[i].Set(upgrade.Name, upgrade.Stats, upgrade.Keys, upgrade.Values);
+    
+                upgradeSlotUIs[i].OnClicked += UpgradeTurret;
             }
         }
+    }
+
+    void UpgradeTurret(TurretStat[] statChanges)
+    {
+        turret.Stats.ApplyUpgrade(statChanges);
     }
 }

@@ -12,7 +12,7 @@ class GunTurret : Turret<GunTurretStat>
         base.Awake();
         foreach (var cannon in cannons)
         {
-            cannon.Initialize(stats, Random.Range(0f, 1f / stats.GetStat(GunTurretStat.FireRate)));
+            cannon.Initialize(stats, 0f);
         }
     }
 
@@ -27,7 +27,7 @@ class GunTurret : Turret<GunTurretStat>
             // Predictive aiming
             Vector2 enemyVelocity = closestEnemy.attachedRigidbody.linearVelocity;
             float distanceToEnemy = Vector2.Distance(transform.position, closestEnemy.transform.position);
-            float timeToImpact = distanceToEnemy / stats.GetStat(GunTurretStat.ProjectileSpeed);
+            float timeToImpact = distanceToEnemy / stats.GetStat((int)GunTurretStat.ProjectileSpeed);
             Vector2 predictedPosition = (Vector2)closestEnemy.transform.position + enemyVelocity * timeToImpact;
             
             // Rotate cannon towards predicted position
@@ -43,7 +43,7 @@ class GunTurret : Turret<GunTurretStat>
         }
     }
 
-    protected override float Range => stats.GetStat(GunTurretStat.Range);
+    protected override float Range => stats.GetStat((int)GunTurretStat.Range);
 
     public void AddCannon()
     {
