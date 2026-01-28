@@ -32,18 +32,18 @@ public class TurretStats
         return statValues[stat];
     }
 
-    public void ApplyUpgrade(TurretStat[] statChanges)
+    public void ApplyUpgrade(TurretUpgrade upgrade)
     {
-        for (int i = 0; i < statChanges.Length; i++)
+        for (int i = 0; i < upgrade.Keys.Length; i++)
         {
-            if (statChanges[i].Key < 0 || statChanges[i].Key >= statValues.Length)
+            if (upgrade.Keys[i] < 0 || upgrade.Keys[i] >= statValues.Length)
             {
-                Debug.LogError($"Stat key {statChanges[i].Key} is out of bounds.");
+                Debug.LogError($"Stat key {upgrade.Keys[i]} is out of bounds.");
                 continue;
             }
 
-            statValues[statChanges[i].Key] *= (1f + statChanges[i].Value / 100f);
-            Debug.Log($"Applied upgrade: Stat {statChanges[i].Key} changed by {statChanges[i].Value}% to {statValues[statChanges[i].Key]}");
+            statValues[upgrade.Keys[i]] *= (1f + upgrade.Values[i] / 100f);
+            Debug.Log($"Applied upgrade: Stat {upgrade.Keys[i]} changed by {upgrade.Values[i]}% to {statValues[upgrade.Keys[i]]}");
         }
     }
 }

@@ -5,13 +5,15 @@ using UnityEngine;
 public struct TurretUpgrade
 {
     public string Name;
+    public int Level;
     public string[] Stats;
     public int[] Keys;
     public float[] Values;
 
-    public TurretUpgrade(string name, string[] stats, int[] keys, float[] values)
+    public TurretUpgrade(string name, int level, string[] stats, int[] keys, float[] values)
     {
         Name = name;
+        Level = level;
         Stats = stats;
         Keys = keys;
         Values = values;
@@ -59,7 +61,6 @@ public struct TurretStat<StatKeys> where StatKeys : Enum
 // Non-generic base class for polymorphic access
 public abstract class TurretTile : StructureTile
 {
-    public abstract TurretUpgrade[] GetUpgradeOptions();
 }
 
 public class TurretTile<StatKeys> : TurretTile where StatKeys : Enum
@@ -122,28 +123,5 @@ public class TurretTile<StatKeys> : TurretTile where StatKeys : Enum
             values[i] = baseStats[i].Value;
         }
         return values;
-    }
-
-    public override TurretUpgrade[] GetUpgradeOptions()
-    {
-        // Convert the strongly-typed upgrades to the int type
-        TurretUpgrade[] result = new TurretUpgrade[upgradeOptions.Length];
-        for (int i = 0; i < upgradeOptions.Length; i++)
-        {
-            TurretUpgrade<StatKeys> upgrade = upgradeOptions[i];
-
-            string[] stats = new string[upgrade.StatChanges.Length];
-            int[] keys = new int[upgrade.StatChanges.Length];
-            float[] values = new float[upgrade.StatChanges.Length];
-
-            for (int j = 0; j < upgrade.StatChanges.Length; j++)
-            {
-                stats[j] = upgrade.StatChanges[j].Key.ToString();
-                keys[j] = Convert.ToInt32(upgrade.StatChanges[j].Key);
-                values[j] = upgrade.StatChanges[j].Value;
-            }
-            result[i] = new TurretUpgrade(upgrade.Name, stats, keys, values);
-        }
-        return result;
     }
 }

@@ -12,11 +12,11 @@ public class TurretUpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
     [SerializeField] Color green;
     [SerializeField] Color red;
 
-    public event Action<TurretStat[]> OnClicked = delegate { };
-    public event Action<TurretStat[]> OnHoverEnter = delegate { };
-    public event Action<TurretStat[]> OnHoverExit = delegate { };
+    public event Action<TurretUpgrade> OnClicked = delegate { };
+    public event Action<TurretUpgrade> OnHoverEnter = delegate { };
+    public event Action<TurretUpgrade> OnHoverExit = delegate { };
 
-    TurretStat[] statChanges;
+    TurretUpgrade upgrade;
     int maxStatChanges = 6;
 
     void Awake()
@@ -25,47 +25,42 @@ public class TurretUpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointer
             Debug.LogError($"TurretUpgradeSlotUI requires exactly {maxStatChanges} elements assigned.");
     }
 
-    public void Set(string name, string[] statNames, int[] statKeys, float[] statPercents)
+    public void Set(TurretUpgrade upgrade)
     {
-        nameText.text = name;
-        statChanges = new TurretStat[statKeys.Length];
+        this.upgrade = upgrade;
+
+        nameText.text = $"{upgrade.Name} (Lv. {upgrade.Level})";
 
         for (int i = 0; i < maxStatChanges; i++)
         {
-            if (i >= statKeys.Length)
+            if (i >= upgrade.Keys.Length)
             {
                 statChangeTexts[i].text = "";
                 continue;
             }
             
-            string statName = statNames[i];
-            float percent = statPercents[i];
+            string statName = upgrade.Stats[i];
+            float percent = upgrade.Values[i];
 
             string sign = percent >= 0 ? "+" : "-";
             statChangeTexts[i].text = $"{statName}: {sign}{Mathf.Abs(percent)}%";
 
             statChangeTexts[i].color = percent >= 0 ? green : red;
-        
-            statChanges[i] = new TurretStat(statKeys[i], percent);
         }
     }
 
     public void OnClick()
     {
-        OnClicked?.Invoke(statChanges);
+        OnClicked.Invoke(upgrade);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Called when mouse enters the button
-        Debug.Log("Mouse entered button");
-        OnHoverEnter.Invoke(statChanges);
+        OnHoverEnter.Invoke(upgrade);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // Called when mouse exits the button
-        Debug.Log("Mouse exited button");
-        OnHoverExit.Invoke(statChanges);
+        OnHoverExit.Invoke(upgrade);
     }
 }

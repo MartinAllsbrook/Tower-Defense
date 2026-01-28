@@ -3,12 +3,11 @@ using UnityEngine;
 
 public abstract class Turret : Structure 
 {
-    public abstract TurretTile GetTurretTile();
-    public abstract TurretStats Stats { get;  }
-
+    public abstract TurretUpgrade[] GetUpgradeOptions();
+    public abstract void ApplyUpgrade(TurretUpgrade upgrade);
 }
 
-public abstract class Turret<Stat> : Turret where Stat : Enum
+public abstract class Turret<Stat> : Turret where Stat : Enum // This class does not NEED to be abstract
 {
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
@@ -18,17 +17,21 @@ public abstract class Turret<Stat> : Turret where Stat : Enum
     // Protected
     protected TurretStats stats;
     protected TurretSwivel swivel;
-
-    public override TurretStats Stats => stats;
+    
     // Private
     Target target;
+    int[] upgradeLevels;
 
     protected override void Awake()
     {
         base.Awake();
 
         if (turretTile.VerifyAllBaseStatsExist())
+        {
             stats = new TurretStats(turretTile.GetKeysInt(), turretTile.GetBaseValues());
+        }
+
+        upgradeLevels = new int[turretTile.UpgradeOptions.Length];
 
         swivel = GetComponentInChildren<TurretSwivel>();
     }
@@ -38,17 +41,10 @@ public abstract class Turret<Stat> : Turret where Stat : Enum
         target = FindFirstObjectByType<Target>();
     }
 
-    public override TurretTile GetTurretTile()
-    {
-        return turretTile;
-    }
-
-    abstract protected float Range { get; }
-
-    protected Collider2D FindClosestEnemyWithLineOfSight()
+    protected Collider2D FindClosestEnemyWithLineOfSight(float range)
     {
         // Perform a 2D circle cast to find enemies in range
-        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, Range, enemyLayer);
+        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, range, enemyLayer);
         if (enemiesInRange.Length == 0) return null;
 
         Collider2D closest = null;
@@ -83,5 +79,56 @@ public abstract class Turret<Stat> : Turret where Stat : Enum
         return closest;
     }
 
+    #region Upgrading
 
+    public override TurretUpgrade[] GetUpgradeOptions()
+    {
+        // Convert the strongly-typed upgrades to the int type
+        TurretUpgrade<Stat>[] upgradeOptions = turretTile.UpgradeOptions;
+
+        TurretUpgrade[] result = new TurretUpgrade[upgradeOptions.Length];
+        for (int i = 0; i < upgradeOptions.Length; i++)
+        {
+            TurretUpgrade<Stat> upgrade = upgradeOptions[i];
+
+            string[] stats = new string[upgrade.StatChanges.Length];
+            int[] keys = new int[upgrade.StatChanges.Length];
+            float[] values = new float[upgrade.StatChanges.Length];
+
+            for (int j = 0; j < upgrade.StatChanges.Length; j++)
+            {
+                stats[j] = upgrade.StatChanges[j].Key.ToString();
+                keys[j] = Convert.ToInt32(upgrade.StatChanges[j].Key);
+                values[j] = upgrade.StatChanges[j].Value;
+            }
+            result[i] = new TurretUpgrade(upgrade.Name, upgradeLevels[i] + 1, stats, keys, values);
+        }
+        return result;
+    }
+
+    public override void ApplyUpgrade(TurretUpgrade upgrade)
+    {
+        stats.ApplyUpgrade(upgrade);
+        
+        int index = 0;
+        for (int i = 0; i < turretTile.UpgradeOptions.Length; i++)
+        {
+            if (turretTile.UpgradeOptions[i].Name == upgrade.Name)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index >= 0 && index < upgradeLevels.Length)
+        {
+            upgradeLevels[index]++;
+        }
+        else
+        {
+            Debug.LogError("Attempted to apply an upgrade that does not belong to this turret.");
+        }
+    }
+
+    #endregion
 }

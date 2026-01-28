@@ -21,7 +21,7 @@ class GunTurret : Turret<GunTurretStat>
         base.Update();
         if (isVisualPreview) return;
 
-        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight();
+        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight(stats.GetStat((int)GunTurretStat.ProjectileSpeed));
         if (closestEnemy != null)
         {
             // Predictive aiming
@@ -42,8 +42,6 @@ class GunTurret : Turret<GunTurretStat>
             SetFiring(false);
         }
     }
-
-    protected override float Range => stats.GetStat((int)GunTurretStat.Range);
 
     public void AddCannon()
     {

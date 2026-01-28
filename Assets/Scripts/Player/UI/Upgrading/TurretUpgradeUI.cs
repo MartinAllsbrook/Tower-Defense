@@ -17,33 +17,44 @@ public class TurretUpgradeUI : MonoBehaviour
 
     public void Open(Turret turret)
     {
+        // Ensure any previous subscriptions are cleared
+        Close();
+
         gameObject.SetActive(true);
         this.turret = turret;
-        TurretTile turretTile = turret.Tile as TurretTile;
-        SetUpgrades(turretTile.GetUpgradeOptions());
+        SetUpgrades(turret.GetUpgradeOptions());
     }
 
     public void Close()
     {
         gameObject.SetActive(false);
+
+        for (int i = 0; i < upgradeSlotUIs.Length; i++)
+        {
+            upgradeSlotUIs[i].OnClicked -= UpgradeTurret;
+        }
     }
 
     public void SetUpgrades(TurretUpgrade[] upgrades)
     {
         for (int i = 0; i < upgradeSlotUIs.Length; i++)
         {
-            if (i < upgrades.Length)
-            {
-                var upgrade = upgrades[i];
-                upgradeSlotUIs[i].Set(upgrade.Name, upgrade.Stats, upgrade.Keys, upgrade.Values);
-    
-                upgradeSlotUIs[i].OnClicked += UpgradeTurret;
-            }
+            if (i >= upgrades.Length)
+                continue;
+
+            var upgrade = upgrades[i];
+            upgradeSlotUIs[i].Set(upgrade);
+
+            upgradeSlotUIs[i].OnClicked += UpgradeTurret;
         }
     }
 
-    void UpgradeTurret(TurretStat[] statChanges)
+    void UpgradeTurret(TurretUpgrade upgrade)
     {
-        turret.Stats.ApplyUpgrade(statChanges);
+        turret.ApplyUpgrade(upgrade);
+
+        // Refresh the UI
+        Close();
+        Open(turret);
     }
 }
