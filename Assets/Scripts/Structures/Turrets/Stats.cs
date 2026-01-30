@@ -24,50 +24,54 @@ public struct Upgrade
 public struct Upgrade<StatKeys> where StatKeys : Enum
 {
     public string Name;
-    public Stat<StatKeys> [] StatChanges;
+    public StatKeyValue<StatKeys> [] StatChanges;
 
-    public Upgrade(string name, Stat<StatKeys> [] statChanges)
+    public Upgrade(string name, StatKeyValue<StatKeys> [] statChanges)
     {
         Name = name;
         StatChanges = statChanges;
     }
 }
 
-public struct Stat
-{
-    public string Name;
-    public int Key;
-    public float Value;
-    /// <summary>
-    /// Estimated min value for the stat
-    /// </summary>
-    public float MinValue;
-    /// <summary>
-    /// Estimated max value for the stat
-    /// </summary>
-    public float MaxValue;
-
-    public Stat(string name, int key, float value, float minValue, float maxValue)
-    {
-        Name = name;
-        Key = key;
-        Value = value;
-        MinValue = minValue;
-        MaxValue = maxValue;
-    }
-}
-
 [Serializable]
-public struct Stat<StatKeys> where StatKeys : Enum
+public struct StatKeyValue<StatKeys> where StatKeys : Enum
 {
     public StatKeys Key;
     public float Value;
 
-    public Stat(StatKeys key, float value)
+    public StatKeyValue(StatKeys key, float value)
     {
         Key = key;
         Value = value;
     }
+}
+
+public struct StatInfo
+{
+    public string Name;
+    public int Key;
+    public float Value;
+    public float EstimatedMin;
+    public float EstimatedMax;
+
+    public StatInfo(string name, int key, float value, float estimatedMin, float estimatedMax)
+    {
+        Name = name;
+        Key = key;
+        Value = value;
+        EstimatedMin = estimatedMin;
+        EstimatedMax = estimatedMax;
+    }
+}
+
+[Serializable]
+public struct StatInfo<StatKeys> where StatKeys : Enum
+{
+    public string Name;
+    public StatKeys Key;
+    public float Value;
+    public float EstimatedMin;
+    public float EstimatedMax;
 }
 
 /// <summary>
@@ -76,7 +80,7 @@ public struct Stat<StatKeys> where StatKeys : Enum
 /// </summary>
 public class Stats
 {   
-    float[] statValues;
+    Dictionary<int, float> statValues;
 
     public Stats(int[] keys, float[] values)
     {
@@ -86,7 +90,7 @@ public class Stats
             return;
         }
 
-        statValues = new float[keys.Length];
+        statValues = new Dictionary<int, float>();
         for (int i = 0; i < keys.Length; i++)
         {
             statValues[keys[i]] = values[i];
@@ -95,12 +99,6 @@ public class Stats
 
     public float GetStat(int key)
     {
-        if (key < 0 || key >= statValues.Length)
-        {
-            Debug.LogError($"Stat key {key} is out of bounds.");
-            return 0f;
-        }
-
         return statValues[key];
     }
 
@@ -114,12 +112,6 @@ public class Stats
     {
         for (int i = 0; i < upgrade.Keys.Length; i++)
         {
-            if (upgrade.Keys[i] < 0 || upgrade.Keys[i] >= statValues.Length)
-            {
-                Debug.LogError($"Stat key {upgrade.Keys[i]} is out of bounds.");
-                continue;
-            }
-
             statValues[upgrade.Keys[i]] *= (1f + upgrade.Values[i] / 100f);
             Debug.Log($"Applied upgrade: Stat {upgrade.Keys[i]} changed by {upgrade.Values[i]}% to {statValues[upgrade.Keys[i]]}");
         }

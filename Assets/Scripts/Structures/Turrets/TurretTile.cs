@@ -12,10 +12,10 @@ public abstract class TurretTile : StructureTile
 public class TurretTile<StatKeys> : TurretTile where StatKeys : Enum
 {
 
-    [SerializeField] protected Stat<StatKeys>[] baseStats;
+    [SerializeField] protected StatInfo<StatKeys>[] baseStats;
     [SerializeField] protected Upgrade<StatKeys>[] upgradeOptions;
 
-    public Stat<StatKeys>[] BaseStats { get { return baseStats; } }
+    public StatInfo<StatKeys>[] BaseStats { get { return baseStats; } }
     public Upgrade<StatKeys>[] UpgradeOptions { get { return upgradeOptions; } }
 
     public bool VerifyAllBaseStatsExist()

@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Turret : Structure 
 {
     public abstract Upgrade[] GetUpgradeOptions();
-    public abstract Stat[] GetStats();
+    public abstract StatInfo[] GetStatsAsInfo();
     public abstract void ApplyUpgrade(Upgrade upgrade);
 }
 
@@ -107,42 +107,18 @@ public class Turret<StatKey> : Turret where StatKey : Enum // This class does no
         return result;
     }
 
-    public override Stat[] GetStats()
+    public override StatInfo[] GetStatsAsInfo()
     {
-        StatKey[] keys = turretTile.GetKeys();
-        float[] values = new float[keys.Length];
-        for (int i = 0; i < keys.Length; i++)
+        StatInfo<StatKey>[] baseStats = turretTile.BaseStats;
+        StatInfo[] result = new StatInfo[baseStats.Length];
+
+        for (int i = 0; i < baseStats.Length; i++)
         {
-            values[i] = stats.GetStat(keys[i]);
+            StatInfo<StatKey> baseStat = baseStats[i];
+            StatKey key = baseStat.Key;
+            result[i] = new StatInfo(baseStat.Name, Convert.ToInt32(key), stats.GetStat(key), baseStat.EstimatedMin, baseStat.EstimatedMax);
         }
 
-        Stat[] result = new Stat[keys.Length];
-
-        // for (int i = 0; i < keys.Length; i++)
-        // {
-        //     Stat key = keys[i];
-        //     float value = values[i];
-
-        //     // Find the corresponding base stat to get min and max values
-        //     Stat<Stat> baseStat = null;
-        //     foreach (var stat in turretTile.BaseStats)
-        //     {
-        //         if (stat.Key.Equals(key))
-        //         {
-        //             baseStat = stat;
-        //             break;
-        //         }
-        //     }
-
-        //     if (baseStat != null)
-        //     {
-        //         result[i] = new Stat(key.ToString(), value, baseStat.MinValue, baseStat.MaxValue);
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError($"Base stat for key {key} not found in TurretTile.");
-        //     }
-        // }
         return result;
     }
 

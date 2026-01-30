@@ -14,7 +14,7 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public event Action<Upgrade> OnClicked = delegate { };
     public event Action<Upgrade> OnHoverEnter = delegate { };
-    public event Action<Upgrade> OnHoverExit = delegate { };
+    public event Action OnHoverExit = delegate { };
 
     Upgrade upgrade;
     int maxStatChanges = 6;
@@ -61,6 +61,6 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        OnHoverExit.Invoke(upgrade);
+        OnHoverExit.Invoke();
     }
 }

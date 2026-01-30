@@ -25,18 +25,36 @@ MonoBehaviour:
   structureName: Turret
   cost: 50
   baseStats:
-  - Key: 0
+  - Name: Range
+    Key: 0
     Value: 5
-  - Key: 1
+    EstimatedMin: 0
+    EstimatedMax: 15
+  - Name: Fire Rate
+    Key: 1
     Value: 1
-  - Key: 2
+    EstimatedMin: 0
+    EstimatedMax: 15
+  - Name: Damage
+    Key: 2
     Value: 10
-  - Key: 3
+    EstimatedMin: 0
+    EstimatedMax: 120
+  - Name: Velocity
+    Key: 3
     Value: 10
-  - Key: 4
+    EstimatedMin: 0
+    EstimatedMax: 20
+  - Name: Penetration
+    Key: 4
     Value: 1
-  - Key: 5
+    EstimatedMin: 1
+    EstimatedMax: 3
+  - Name: Accuracy
+    Key: 5
     Value: 0.1
+    EstimatedMin: 0
+    EstimatedMax: 1
   upgradeOptions:
   - Name: Firing Mechanism
     StatChanges:

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Mono.CSharp;
 using UnityEngine;
 
 public class UpgradeUI : MonoBehaviour
@@ -7,8 +9,10 @@ public class UpgradeUI : MonoBehaviour
     [SerializeField] StatDisplayUI[] statDisplayUIs;
 
     Turret turret;
-    Stat[] savedStats;
+    Dictionary<int, StatInfo> savedStats = new Dictionary<int, StatInfo>();
 
+    bool isPreviewing = false;
+    Upgrade previewingUpgrade;
 
     void Awake()
     {
@@ -30,16 +34,24 @@ public class UpgradeUI : MonoBehaviour
         this.turret = turret;
 
         SetUpgrades(turret.GetUpgradeOptions());
-        SetStats(turret.GetStats());
+        SetStats(turret.GetStatsAsInfo());
+
+        if (isPreviewing)
+        {
+            PreviewUpgrade(previewingUpgrade);
+        }
     }
 
     public void Close()
     {
         gameObject.SetActive(false);
+        isPreviewing = false;
 
         for (int i = 0; i < upgradeSlotUIs.Length; i++)
         {
             upgradeSlotUIs[i].OnClicked -= UpgradeTurret;
+            upgradeSlotUIs[i].OnHoverEnter -= PreviewUpgrade;
+            upgradeSlotUIs[i].OnHoverExit -= ClearPreview;
         }
     }
 
@@ -54,12 +66,18 @@ public class UpgradeUI : MonoBehaviour
             upgradeSlotUIs[i].Set(upgrade);
 
             upgradeSlotUIs[i].OnClicked += UpgradeTurret;
+            upgradeSlotUIs[i].OnHoverEnter += PreviewUpgrade;
+            upgradeSlotUIs[i].OnHoverExit += ClearPreview;
         }
     }
 
-    public void SetStats(Stat[] stats)
+    public void SetStats(StatInfo[] stats)
     {
-        savedStats = stats;
+        savedStats.Clear();
+        for (int i = 0; i < stats.Length; i++)
+        {
+            savedStats[Convert.ToInt32(stats[i].Key)] = stats[i];
+        }
 
         for (int i = 0; i < statDisplayUIs.Length; i++)
         {
@@ -71,24 +89,35 @@ public class UpgradeUI : MonoBehaviour
 
             statDisplayUIs[i].gameObject.SetActive(true);
             var stat = stats[i];
-            statDisplayUIs[i].Set(stat.Name, stat.Value, stat.MinValue, stat.MaxValue);
+            statDisplayUIs[i].Set(stat.Name, stat.Value, stat.EstimatedMin, stat.EstimatedMax);
         }
+    }
+
+    public void SetStats(Dictionary<int, StatInfo> stats)
+    {
+        SetStats(new List<StatInfo>(stats.Values).ToArray());
     }
 
     public void PreviewUpgrade(Upgrade upgrade)
     {
+        isPreviewing = true;
+        previewingUpgrade = upgrade;
+
         for (int i = 0; i < upgrade.Keys.Length; i++)
         {
             int key = upgrade.Keys[i];
-            float newValue = upgrade.Values[i];
-            string name = upgrade.Stats[i];
-            var statDisplayUI = statDisplayUIs[key];
-            statDisplayUI.Set(name, savedStats[key].Value, newValue, savedStats[key].MinValue, savedStats[key].MaxValue); 
+            float currentValue = savedStats[key].Value;
+            float newValue = ((upgrade.Values[i] / 100f) + 1) * currentValue;
+
+            var statDisplayUI = statDisplayUIs[key]; // This is expecting keys to be at proper index
+            statDisplayUI.Set(savedStats[key].Name, currentValue, newValue, savedStats[key].EstimatedMin, savedStats[key].EstimatedMax); 
         }
     }
 
     public void ClearPreview()
     {
+        isPreviewing = false;
+
         SetStats(savedStats);
     }
 
@@ -98,6 +127,7 @@ public class UpgradeUI : MonoBehaviour
 
         // Refresh the UI
         Close();
+        isPreviewing = true;
         Open(turret);
     }
 }
