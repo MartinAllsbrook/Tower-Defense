@@ -8,11 +8,8 @@ public class UpgradeUI : MonoBehaviour
     [SerializeField] UpgradeSlotUI[] upgradeSlotUIs;
     [SerializeField] StatDisplayUI[] statDisplayUIs;
 
-    Turret turret;
+    Turret turret = null;
     Dictionary<int, StatInfo> savedStats = new Dictionary<int, StatInfo>();
-
-    bool isPreviewing = false;
-    Upgrade previewingUpgrade;
 
     void Awake()
     {
@@ -25,28 +22,39 @@ public class UpgradeUI : MonoBehaviour
         Close();
     }
 
+    /// <summary>
+    /// Opens the upgrade UI for the given turret.
+    /// </summary>
     public void Open(Turret turret)
     {
-        // Ensure any previous subscriptions are cleared
-        Close();
+        Clear();
 
-        gameObject.SetActive(true);
         this.turret = turret;
+        gameObject.SetActive(true);
 
+        Set(turret);
+    }
+
+    /// <summary>
+    /// Set's the info in the UI
+    /// </summary>
+    void Set(Turret turret)
+    {
         SetUpgrades(turret.GetUpgradeOptions());
         SetStats(turret.GetStatsAsInfo());
-
-        if (isPreviewing)
-        {
-            PreviewUpgrade(previewingUpgrade);
-        }
     }
 
     public void Close()
     {
         gameObject.SetActive(false);
-        isPreviewing = false;
 
+        turret = null;
+
+        Clear();
+    }
+
+    void Clear()
+    {
         for (int i = 0; i < upgradeSlotUIs.Length; i++)
         {
             upgradeSlotUIs[i].OnClicked -= UpgradeTurret;
@@ -100,9 +108,6 @@ public class UpgradeUI : MonoBehaviour
 
     public void PreviewUpgrade(Upgrade upgrade)
     {
-        isPreviewing = true;
-        previewingUpgrade = upgrade;
-
         for (int i = 0; i < upgrade.Keys.Length; i++)
         {
             int key = upgrade.Keys[i];
@@ -116,8 +121,6 @@ public class UpgradeUI : MonoBehaviour
 
     public void ClearPreview()
     {
-        isPreviewing = false;
-
         SetStats(savedStats);
     }
 
@@ -126,8 +129,9 @@ public class UpgradeUI : MonoBehaviour
         turret.ApplyUpgrade(upgrade);
 
         // Refresh the UI
-        Close();
-        isPreviewing = true;
-        Open(turret);
+        Clear();
+        Set(turret);
+
+        PreviewUpgrade(upgrade);
     }
 }
