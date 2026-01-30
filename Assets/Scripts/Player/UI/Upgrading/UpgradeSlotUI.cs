@@ -43,7 +43,7 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             float percent = upgrade.Values[i];
 
             string sign = percent >= 0 ? "+" : "-";
-            statChangeTexts[i].text = $"{statName}: {sign}{Mathf.Abs(percent)}%";
+            statChangeTexts[i].text = $"{statName}: {sign}{Mathf.Abs(percent)}";
 
             statChangeTexts[i].color = percent >= 0 ? green : red;
         }

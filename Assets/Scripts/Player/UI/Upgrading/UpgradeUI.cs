@@ -63,7 +63,7 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    public void SetUpgrades(Upgrade[] upgrades)
+    void SetUpgrades(Upgrade[] upgrades)
     {
         for (int i = 0; i < upgradeSlotUIs.Length; i++)
         {
@@ -79,7 +79,7 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    public void SetStats(StatInfo[] stats)
+    void SetStats(StatInfo[] stats)
     {
         savedStats.Clear();
         for (int i = 0; i < stats.Length; i++)
@@ -101,25 +101,25 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    public void SetStats(Dictionary<int, StatInfo> stats)
+    void SetStats(Dictionary<int, StatInfo> stats)
     {
         SetStats(new List<StatInfo>(stats.Values).ToArray());
     }
 
-    public void PreviewUpgrade(Upgrade upgrade)
+    void PreviewUpgrade(Upgrade upgrade)
     {
         for (int i = 0; i < upgrade.Keys.Length; i++)
         {
             int key = upgrade.Keys[i];
             float currentValue = savedStats[key].Value;
-            float newValue = ((upgrade.Values[i] / 100f) + 1) * currentValue;
+            float newValue = currentValue + upgrade.Values[i];
 
             var statDisplayUI = statDisplayUIs[key]; // This is expecting keys to be at proper index
             statDisplayUI.Set(savedStats[key].Name, currentValue, newValue, savedStats[key].EstimatedMin, savedStats[key].EstimatedMax); 
         }
     }
 
-    public void ClearPreview()
+    void ClearPreview()
     {
         SetStats(savedStats);
     }

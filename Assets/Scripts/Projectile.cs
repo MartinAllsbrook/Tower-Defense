@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Projectile : MonoBehaviour
 {
@@ -14,19 +15,25 @@ public class Projectile : MonoBehaviour
     float maxRange;
     float speed;
     float damage;
+    float penetration;
+
+    Rigidbody2D rb;
 
     void Awake()
     {
         impactEffect = Instantiate(impactEffectPrefab);
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    public void Initialize(float range, float speed, float damage, ObjectPool<Projectile> pool)
+    public void Initialize(float range, float speed, float damage, float penetration, ObjectPool<Projectile> pool)
     {
         this.pool = pool;
-        startPosition = transform.position;
         this.speed = speed;
-        maxRange = range;
         this.damage = damage;
+        this.penetration = penetration;
+        this.maxRange = range;
+
+        startPosition = transform.position;
         isInitialized = true;
     }
 
@@ -41,7 +48,8 @@ public class Projectile : MonoBehaviour
             float distanceTraveled = Vector3.Distance(startPosition, transform.position);
             if (distanceTraveled >= maxRange)
             {
-                gameObject.SetActive(false);
+                isInitialized = false;
+                pool.Return(this);
             }
         }
     }
@@ -53,10 +61,30 @@ public class Projectile : MonoBehaviour
             Health enemyHealth = collision.gameObject.GetComponent<Health>();
             if (enemyHealth != null)
             {
-                enemyHealth.DecreaseHealth(damage); // Apply damage to the enemy
+                float effectiveDamage = damage;
+
+                if (penetration < 1f)
+                {
+                    effectiveDamage *= penetration; // Reduce damage based on penetration
+                }
+
+                enemyHealth.DecreaseHealth(effectiveDamage); // Apply damage to the enemy
+                penetration -= 1f; // Decrease penetration count
+            }
+
+            if (penetration <= 0f)
+            {
+                Kill();
             }
         }
+        else
+        {
+            Kill();
+        }
+    }
 
+    void Kill()
+    {
         impactEffect.transform.position = transform.position;
         impactEffect.gameObject.SetActive(true);
 

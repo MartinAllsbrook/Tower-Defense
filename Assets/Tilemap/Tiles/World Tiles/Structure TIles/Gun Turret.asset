@@ -32,14 +32,14 @@ MonoBehaviour:
     EstimatedMax: 15
   - Name: Fire Rate
     Key: 1
-    Value: 1
+    Value: 2.5
     EstimatedMin: 0
     EstimatedMax: 15
   - Name: Damage
     Key: 2
-    Value: 10
+    Value: 15
     EstimatedMin: 0
-    EstimatedMax: 120
+    EstimatedMax: 100
   - Name: Velocity
     Key: 3
     Value: 10
@@ -48,35 +48,37 @@ MonoBehaviour:
   - Name: Penetration
     Key: 4
     Value: 1
-    EstimatedMin: 1
+    EstimatedMin: 0
     EstimatedMax: 3
   - Name: Accuracy
     Key: 5
-    Value: 0.1
+    Value: 0.8
     EstimatedMin: 0
     EstimatedMax: 1
   upgradeOptions:
   - Name: Firing Mechanism
     StatChanges:
     - Key: 1
-      Value: 10
+      Value: 0.75
     - Key: 5
-      Value: -5
+      Value: -0.05
+    - Key: 4
+      Value: -0.03
   - Name: Barrel
     StatChanges:
     - Key: 0
-      Value: 10
+      Value: 0.5
     - Key: 3
-      Value: 10
+      Value: 0.5
     - Key: 4
-      Value: 10
+      Value: 0.1
     - Key: 5
-      Value: 10
+      Value: 0.05
   - Name: Caliber
     StatChanges:
     - Key: 2
-      Value: 10
+      Value: 7.5
     - Key: 4
-      Value: 5
+      Value: 0.05
     - Key: 3
-      Value: -10
+      Value: -0.5

@@ -67,15 +67,21 @@ class Cannon : MonoBehaviour
     void Fire()
     {
         Debug.Log("Firing cannon"); 
-        Projectile projectile = projectilePool.Get(muzzleTransform.position, muzzleTransform.rotation);
-        projectile.Initialize(stats.GetStat((int)GunStat.Range), stats.GetStat((int)GunStat.ProjectileSpeed), stats.GetStat((int)GunStat.Damage), projectilePool);
+        
+        float accuracy = Mathf.Clamp(stats.GetStat(GunStat.Accuracy), 0f, 1f);
+        float inaccuracy =  (1f - accuracy) * 45f; // Max 10 degrees of inaccuracy
+        Quaternion rotation = muzzleTransform.rotation * Quaternion.Euler(0f, 0f, Random.Range(-inaccuracy / 2f, inaccuracy / 2f));
+
+        Projectile projectile = projectilePool.Get(muzzleTransform.position, rotation);
+        
+        projectile.Initialize(stats.GetStat(GunStat.Range), stats.GetStat(GunStat.ProjectileSpeed), stats.GetStat(GunStat.Damage), stats.GetStat(GunStat.Penetration), projectilePool);
 
         AudioManager.PlayAudioAt(firingSound, transform.position);
 
-        float timeBetweenShots = 1f / stats.GetStat((int)GunStat.FireRate);
+        float timeBetweenShots = 1f / stats.GetStat(GunStat.FireRate);
 
         animator.SetTrigger("Fire");
-        animator.speed = stats.GetStat((int)GunStat.FireRate);
+        animator.speed = stats.GetStat(GunStat.FireRate);
 
         fireCooldown = timeBetweenShots;
     }

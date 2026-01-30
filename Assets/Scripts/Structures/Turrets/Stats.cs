@@ -112,7 +112,7 @@ public class Stats
     {
         for (int i = 0; i < upgrade.Keys.Length; i++)
         {
-            statValues[upgrade.Keys[i]] *= (1f + upgrade.Values[i] / 100f);
+            statValues[upgrade.Keys[i]] += upgrade.Values[i];
             Debug.Log($"Applied upgrade: Stat {upgrade.Keys[i]} changed by {upgrade.Values[i]}% to {statValues[upgrade.Keys[i]]}");
         }
     }

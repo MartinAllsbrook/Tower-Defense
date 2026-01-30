@@ -6,7 +6,6 @@ class GunTurret : Turret<GunStat>
     [SerializeField] Cannon[] cannons;
     [SerializeField] VariedAudioClip firingSound;
 
-
     protected override void Awake()
     {
         base.Awake();
@@ -21,7 +20,7 @@ class GunTurret : Turret<GunStat>
         base.Update();
         if (isVisualPreview) return;
 
-        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight(stats.GetStat((int)GunStat.ProjectileSpeed));
+        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight(stats.GetStat(GunStat.Range));
         if (closestEnemy != null)
         {
             // Predictive aiming
