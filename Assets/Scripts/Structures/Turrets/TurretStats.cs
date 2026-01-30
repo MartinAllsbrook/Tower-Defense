@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Holds and manages a number of stats in key-value pairs. The keys are represented as integers (typically from an enum), and the values are floats.
+/// Provides methods to get stat values and apply upgrades that modify these stats.
+/// </summary>
 public class TurretStats
 {   
     float[] statValues;
@@ -21,15 +25,21 @@ public class TurretStats
         }
     }
 
-    public float GetStat(int stat)
+    public float GetStat(int key)
     {
-        if (stat < 0 || stat >= statValues.Length)
+        if (key < 0 || key >= statValues.Length)
         {
-            Debug.LogError($"Stat key {stat} is out of bounds.");
+            Debug.LogError($"Stat key {key} is out of bounds.");
             return 0f;
         }
 
-        return statValues[stat];
+        return statValues[key];
+    }
+
+    public float GetStat(Enum stat)
+    {
+        int key = Convert.ToInt32(stat);
+        return GetStat(key);
     }
 
     public void ApplyUpgrade(TurretUpgrade upgrade)

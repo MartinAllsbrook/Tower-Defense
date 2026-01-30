@@ -35,13 +35,25 @@ public struct TurretUpgrade<StatKeys> where StatKeys : Enum
 
 public struct TurretStat
 {
+    public string Name;
     public int Key;
     public float Value;
+    /// <summary>
+    /// Estimated min value for the stat
+    /// </summary>
+    public float MinValue;
+    /// <summary>
+    /// Estimated max value for the stat
+    /// </summary>
+    public float MaxValue;
 
-    public TurretStat(int key, float value)
+    public TurretStat(string name, int key, float value, float minValue, float maxValue)
     {
+        Name = name;
         Key = key;
         Value = value;
+        MinValue = minValue;
+        MaxValue = maxValue;
     }
 }
 

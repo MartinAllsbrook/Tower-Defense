@@ -4,13 +4,19 @@ using UnityEngine;
 public class TurretUpgradeUI : MonoBehaviour
 {
     [SerializeField] TurretUpgradeSlotUI[] upgradeSlotUIs;
+    [SerializeField] StatDisplayUI[] statDisplayUIs;
 
     Turret turret;
+    TurretStat[] savedStats;
+
 
     void Awake()
     {
         if (upgradeSlotUIs.Length != 3)
             Debug.LogError("TurretUpgradeUI requires exactly 3 TurretUpgradeSlotUIs assigned.");
+
+        if (statDisplayUIs.Length != 6)
+            Debug.LogError("StatsPreviewUI requires exactly 6 StatDisplayUIs assigned.");
 
         Close();
     }
@@ -22,7 +28,9 @@ public class TurretUpgradeUI : MonoBehaviour
 
         gameObject.SetActive(true);
         this.turret = turret;
+        
         SetUpgrades(turret.GetUpgradeOptions());
+        SetStats(turret.GetStats());
     }
 
     public void Close()
@@ -47,6 +55,41 @@ public class TurretUpgradeUI : MonoBehaviour
 
             upgradeSlotUIs[i].OnClicked += UpgradeTurret;
         }
+    }
+
+    public void SetStats(TurretStat[] stats)
+    {
+        savedStats = stats;
+
+        for (int i = 0; i < statDisplayUIs.Length; i++)
+        {
+            if (i >= stats.Length)
+            {
+                statDisplayUIs[i].gameObject.SetActive(false);
+                continue;   
+            }
+
+            statDisplayUIs[i].gameObject.SetActive(true);
+            var stat = stats[i];
+            statDisplayUIs[i].Set(stat.Name, stat.Value, stat.MinValue, stat.MaxValue);
+        }
+    }
+
+    public void PreviewUpgrade(TurretUpgrade upgrade)
+    {
+        for (int i = 0; i < upgrade.Keys.Length; i++)
+        {
+            int key = upgrade.Keys[i];
+            float newValue = upgrade.Values[i];
+            string name = upgrade.Stats[i];
+            var statDisplayUI = statDisplayUIs[key];
+            statDisplayUI.Set(name, savedStats[key].Value, newValue, savedStats[key].MinValue, savedStats[key].MaxValue); 
+        }
+    }
+
+    public void ClearPreview()
+    {
+        SetStats(savedStats);
     }
 
     void UpgradeTurret(TurretUpgrade upgrade)

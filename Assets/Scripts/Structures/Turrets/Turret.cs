@@ -4,10 +4,11 @@ using UnityEngine;
 public abstract class Turret : Structure 
 {
     public abstract TurretUpgrade[] GetUpgradeOptions();
+    public abstract TurretStat[] GetStats();
     public abstract void ApplyUpgrade(TurretUpgrade upgrade);
 }
 
-public abstract class Turret<Stat> : Turret where Stat : Enum // This class does not NEED to be abstract
+public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED to be abstract
 {
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
@@ -103,6 +104,45 @@ public abstract class Turret<Stat> : Turret where Stat : Enum // This class does
             }
             result[i] = new TurretUpgrade(upgrade.Name, upgradeLevels[i] + 1, stats, keys, values);
         }
+        return result;
+    }
+
+    public override TurretStat[] GetStats()
+    {
+        Stat[] keys = turretTile.GetKeys();
+        float[] values = new float[keys.Length];
+        for (int i = 0; i < keys.Length; i++)
+        {
+            values[i] = stats.GetStat(keys[i]);
+        }
+
+        TurretStat[] result = new TurretStat[keys.Length];
+
+        // for (int i = 0; i < keys.Length; i++)
+        // {
+        //     Stat key = keys[i];
+        //     float value = values[i];
+
+        //     // Find the corresponding base stat to get min and max values
+        //     TurretStat<Stat> baseStat = null;
+        //     foreach (var stat in turretTile.BaseStats)
+        //     {
+        //         if (stat.Key.Equals(key))
+        //         {
+        //             baseStat = stat;
+        //             break;
+        //         }
+        //     }
+
+        //     if (baseStat != null)
+        //     {
+        //         result[i] = new TurretStat(key.ToString(), value, baseStat.MinValue, baseStat.MaxValue);
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError($"Base stat for key {key} not found in TurretTile.");
+        //     }
+        // }
         return result;
     }
 
