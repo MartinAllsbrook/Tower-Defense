@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public enum GunTurretStat
+public enum GunStat
 {
     Range,
     FireRate,
@@ -12,4 +12,4 @@ public enum GunTurretStat
 }
 
 [CreateAssetMenu(fileName = "New Gun Turret Tile", menuName = "Tiles/Gun Turret")]
-public class GunTurretTile : TurretTile<GunTurretStat> {}
+public class GunTurretTile : TurretTile<GunStat> {}

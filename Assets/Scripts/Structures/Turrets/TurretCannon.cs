@@ -11,7 +11,7 @@ class Cannon : MonoBehaviour
     bool isFiring = false;
 
     // References passed from Turret
-    TurretStats stats;
+    Stats stats;
     ObjectPool<Projectile> projectilePool;
     float firingOffset = 0f;
 
@@ -24,10 +24,10 @@ class Cannon : MonoBehaviour
     void Update()
     {
         if (isFiring)
-            TryFire(stats.GetStat((int)GunTurretStat.FireRate));
+            TryFire(stats.GetStat((int)GunStat.FireRate));
     }
 
-    public void Initialize(TurretStats stats, float firingOffset)
+    public void Initialize(Stats stats, float firingOffset)
     {
         this.stats = stats;
         this.firingOffset = firingOffset;
@@ -68,14 +68,14 @@ class Cannon : MonoBehaviour
     {
         Debug.Log("Firing cannon"); 
         Projectile projectile = projectilePool.Get(muzzleTransform.position, muzzleTransform.rotation);
-        projectile.Initialize(stats.GetStat((int)GunTurretStat.Range), stats.GetStat((int)GunTurretStat.ProjectileSpeed), stats.GetStat((int)GunTurretStat.Damage), projectilePool);
+        projectile.Initialize(stats.GetStat((int)GunStat.Range), stats.GetStat((int)GunStat.ProjectileSpeed), stats.GetStat((int)GunStat.Damage), projectilePool);
 
         AudioManager.PlayAudioAt(firingSound, transform.position);
 
-        float timeBetweenShots = 1f / stats.GetStat((int)GunTurretStat.FireRate);
+        float timeBetweenShots = 1f / stats.GetStat((int)GunStat.FireRate);
 
         animator.SetTrigger("Fire");
-        animator.speed = stats.GetStat((int)GunTurretStat.FireRate);
+        animator.speed = stats.GetStat((int)GunStat.FireRate);
 
         fireCooldown = timeBetweenShots;
     }

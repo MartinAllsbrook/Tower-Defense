@@ -3,20 +3,20 @@ using UnityEngine;
 
 public abstract class Turret : Structure 
 {
-    public abstract TurretUpgrade[] GetUpgradeOptions();
-    public abstract TurretStat[] GetStats();
-    public abstract void ApplyUpgrade(TurretUpgrade upgrade);
+    public abstract Upgrade[] GetUpgradeOptions();
+    public abstract Stat[] GetStats();
+    public abstract void ApplyUpgrade(Upgrade upgrade);
 }
 
-public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED to be abstract
+public class Turret<StatKey> : Turret where StatKey : Enum // This class does not NEED to be abstract
 {
     [Header("Layers")]
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] LayerMask obstacleLayers;
-    [SerializeField] TurretTile<Stat> turretTile;
+    [SerializeField] TurretTile<StatKey> turretTile;
 
     // Protected
-    protected TurretStats stats;
+    protected Stats stats;
     protected TurretSwivel swivel;
     
     // Private
@@ -29,7 +29,7 @@ public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED
 
         if (turretTile.VerifyAllBaseStatsExist())
         {
-            stats = new TurretStats(turretTile.GetKeysInt(), turretTile.GetBaseValues());
+            stats = new Stats(turretTile.GetKeysInt(), turretTile.GetBaseValues());
         }
 
         upgradeLevels = new int[turretTile.UpgradeOptions.Length];
@@ -82,15 +82,15 @@ public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED
 
     #region Upgrading
 
-    public override TurretUpgrade[] GetUpgradeOptions()
+    public override Upgrade[] GetUpgradeOptions()
     {
         // Convert the strongly-typed upgrades to the int type
-        TurretUpgrade<Stat>[] upgradeOptions = turretTile.UpgradeOptions;
+        Upgrade<StatKey>[] upgradeOptions = turretTile.UpgradeOptions;
 
-        TurretUpgrade[] result = new TurretUpgrade[upgradeOptions.Length];
+        Upgrade[] result = new Upgrade[upgradeOptions.Length];
         for (int i = 0; i < upgradeOptions.Length; i++)
         {
-            TurretUpgrade<Stat> upgrade = upgradeOptions[i];
+            Upgrade<StatKey> upgrade = upgradeOptions[i];
 
             string[] stats = new string[upgrade.StatChanges.Length];
             int[] keys = new int[upgrade.StatChanges.Length];
@@ -102,21 +102,21 @@ public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED
                 keys[j] = Convert.ToInt32(upgrade.StatChanges[j].Key);
                 values[j] = upgrade.StatChanges[j].Value;
             }
-            result[i] = new TurretUpgrade(upgrade.Name, upgradeLevels[i] + 1, stats, keys, values);
+            result[i] = new Upgrade(upgrade.Name, upgradeLevels[i] + 1, stats, keys, values);
         }
         return result;
     }
 
-    public override TurretStat[] GetStats()
+    public override Stat[] GetStats()
     {
-        Stat[] keys = turretTile.GetKeys();
+        StatKey[] keys = turretTile.GetKeys();
         float[] values = new float[keys.Length];
         for (int i = 0; i < keys.Length; i++)
         {
             values[i] = stats.GetStat(keys[i]);
         }
 
-        TurretStat[] result = new TurretStat[keys.Length];
+        Stat[] result = new Stat[keys.Length];
 
         // for (int i = 0; i < keys.Length; i++)
         // {
@@ -124,7 +124,7 @@ public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED
         //     float value = values[i];
 
         //     // Find the corresponding base stat to get min and max values
-        //     TurretStat<Stat> baseStat = null;
+        //     Stat<Stat> baseStat = null;
         //     foreach (var stat in turretTile.BaseStats)
         //     {
         //         if (stat.Key.Equals(key))
@@ -136,7 +136,7 @@ public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED
 
         //     if (baseStat != null)
         //     {
-        //         result[i] = new TurretStat(key.ToString(), value, baseStat.MinValue, baseStat.MaxValue);
+        //         result[i] = new Stat(key.ToString(), value, baseStat.MinValue, baseStat.MaxValue);
         //     }
         //     else
         //     {
@@ -146,7 +146,7 @@ public class Turret<Stat> : Turret where Stat : Enum // This class does not NEED
         return result;
     }
 
-    public override void ApplyUpgrade(TurretUpgrade upgrade)
+    public override void ApplyUpgrade(Upgrade upgrade)
     {
         stats.ApplyUpgrade(upgrade);
         

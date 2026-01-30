@@ -1,6 +1,6 @@
 using UnityEngine;
 
-class GunTurret : Turret<GunTurretStat>
+class GunTurret : Turret<GunStat>
 {
     bool isFiring = false;
     [SerializeField] Cannon[] cannons;
@@ -21,13 +21,13 @@ class GunTurret : Turret<GunTurretStat>
         base.Update();
         if (isVisualPreview) return;
 
-        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight(stats.GetStat((int)GunTurretStat.ProjectileSpeed));
+        Collider2D closestEnemy = FindClosestEnemyWithLineOfSight(stats.GetStat((int)GunStat.ProjectileSpeed));
         if (closestEnemy != null)
         {
             // Predictive aiming
             Vector2 enemyVelocity = closestEnemy.attachedRigidbody.linearVelocity;
             float distanceToEnemy = Vector2.Distance(transform.position, closestEnemy.transform.position);
-            float timeToImpact = distanceToEnemy / stats.GetStat((int)GunTurretStat.ProjectileSpeed);
+            float timeToImpact = distanceToEnemy / stats.GetStat((int)GunStat.ProjectileSpeed);
             Vector2 predictedPosition = (Vector2)closestEnemy.transform.position + enemyVelocity * timeToImpact;
             
             // Rotate cannon towards predicted position

@@ -19,7 +19,7 @@ public class StructurePlacer : MonoBehaviour
     [SerializeField] RuleTile removeIconTile;
     [SerializeField] VariedAudioClip placeSound;
     [SerializeField] LayerMask structureLayer;
-    [SerializeField] TurretUpgradeUI upgradeMenu;
+    [SerializeField] UpgradeUI upgradeMenu;
 
     public StructureTile[] Structures => structures;    
 

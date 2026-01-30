@@ -1,19 +1,19 @@
 using System;
 using UnityEngine;
 
-public class TurretUpgradeUI : MonoBehaviour
+public class UpgradeUI : MonoBehaviour
 {
-    [SerializeField] TurretUpgradeSlotUI[] upgradeSlotUIs;
+    [SerializeField] UpgradeSlotUI[] upgradeSlotUIs;
     [SerializeField] StatDisplayUI[] statDisplayUIs;
 
     Turret turret;
-    TurretStat[] savedStats;
+    Stat[] savedStats;
 
 
     void Awake()
     {
         if (upgradeSlotUIs.Length != 3)
-            Debug.LogError("TurretUpgradeUI requires exactly 3 TurretUpgradeSlotUIs assigned.");
+            Debug.LogError("UpgradeUI requires exactly 3 UpgradeSlotUIs assigned.");
 
         if (statDisplayUIs.Length != 6)
             Debug.LogError("StatsPreviewUI requires exactly 6 StatDisplayUIs assigned.");
@@ -28,7 +28,7 @@ public class TurretUpgradeUI : MonoBehaviour
 
         gameObject.SetActive(true);
         this.turret = turret;
-        
+
         SetUpgrades(turret.GetUpgradeOptions());
         SetStats(turret.GetStats());
     }
@@ -43,7 +43,7 @@ public class TurretUpgradeUI : MonoBehaviour
         }
     }
 
-    public void SetUpgrades(TurretUpgrade[] upgrades)
+    public void SetUpgrades(Upgrade[] upgrades)
     {
         for (int i = 0; i < upgradeSlotUIs.Length; i++)
         {
@@ -57,7 +57,7 @@ public class TurretUpgradeUI : MonoBehaviour
         }
     }
 
-    public void SetStats(TurretStat[] stats)
+    public void SetStats(Stat[] stats)
     {
         savedStats = stats;
 
@@ -75,7 +75,7 @@ public class TurretUpgradeUI : MonoBehaviour
         }
     }
 
-    public void PreviewUpgrade(TurretUpgrade upgrade)
+    public void PreviewUpgrade(Upgrade upgrade)
     {
         for (int i = 0; i < upgrade.Keys.Length; i++)
         {
@@ -92,7 +92,7 @@ public class TurretUpgradeUI : MonoBehaviour
         SetStats(savedStats);
     }
 
-    void UpgradeTurret(TurretUpgrade upgrade)
+    void UpgradeTurret(Upgrade upgrade)
     {
         turret.ApplyUpgrade(upgrade);
 

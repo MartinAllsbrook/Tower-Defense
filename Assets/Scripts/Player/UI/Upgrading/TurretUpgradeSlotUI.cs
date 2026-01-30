@@ -5,27 +5,27 @@ using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 
 
-public class TurretUpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] TextMeshProUGUI[] statChangeTexts;
     [SerializeField] Color green;
     [SerializeField] Color red;
 
-    public event Action<TurretUpgrade> OnClicked = delegate { };
-    public event Action<TurretUpgrade> OnHoverEnter = delegate { };
-    public event Action<TurretUpgrade> OnHoverExit = delegate { };
+    public event Action<Upgrade> OnClicked = delegate { };
+    public event Action<Upgrade> OnHoverEnter = delegate { };
+    public event Action<Upgrade> OnHoverExit = delegate { };
 
-    TurretUpgrade upgrade;
+    Upgrade upgrade;
     int maxStatChanges = 6;
 
     void Awake()
     {
         if (statChangeTexts.Length != maxStatChanges)
-            Debug.LogError($"TurretUpgradeSlotUI requires exactly {maxStatChanges} elements assigned.");
+            Debug.LogError($"UpgradeSlotUI requires exactly {maxStatChanges} elements assigned.");
     }
 
-    public void Set(TurretUpgrade upgrade)
+    public void Set(Upgrade upgrade)
     {
         this.upgrade = upgrade;
 
